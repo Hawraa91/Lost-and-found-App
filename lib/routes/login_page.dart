@@ -62,7 +62,7 @@ return MaterialApp(
 
                 TextButton(
                   onPressed: () {
-                    //navigate back
+                    //navigate back to signup page
                     //TODO: change the navigation to go to the signup page
                     Navigator.pop(context);
                   },
