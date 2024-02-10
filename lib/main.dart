@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:lost_and_found/routes/login_page.dart';
 import 'ImageSection.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MyApp(),
+      routes: {
+        '/login': (context) => const Login(),
+      },
+    ));
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -9,59 +16,57 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //const String appTitle = 'FindMyThing';
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                // Text section
-                const TitleSection(
-                  desc: 'FindMyThing',
-                ),
-                const TextSection(
-                  desc:
-                      'Find what\'s lost, reunite what\'s found. Together, let\'s make lost things found',
-                ),
-                const ImageSection(
-                  image: 'images/pic.png',
-                  width: 250, // Adjust the width as needed
-                  height: 250,
-                ),
-                // Signup button
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Container(
-                    width: 200, // match parent width
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(
-                          96, 172, 182, 1.0), // change color as needed
-                      borderRadius:
-                          BorderRadius.circular(8.0), // apply border radius
-                    ),
-                    child: TextButton(
-                      onPressed: () {
-                        // Handle signup button press
-                      },
-                      child: const Text(
-                        'Sign Up',
-                        style: TextStyle(color: Colors.white),
-                      ),
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              // Text section
+              const TitleSection(
+                desc: 'FindMyThing',
+              ),
+              const TextSection(
+                desc:
+                    'Find what\'s lost, reunite what\'s found. Together, let\'s make lost things found',
+              ),
+              const ImageSection(
+                image: 'images/pic.png',
+                width: 250, // Adjust the width as needed
+                height: 250,
+              ),
+              // Signup button
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Container(
+                  width: 200, // match parent width
+                  decoration: BoxDecoration(
+                    color: const Color.fromRGBO(
+                        96, 172, 182, 1.0), // change color as needed
+                    borderRadius:
+                        BorderRadius.circular(8.0), // apply border radius
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      // Handle signup button press
+                    },
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
-                //the login click
-                TextButton(
-                  onPressed: () {
-                    // Handle link tap
-                  },
-                  child: const Text(
-                    'got an account? Log in',
-                  ),
+              ),
+              //the login click
+              TextButton(
+                onPressed: () {
+                  //navigate to login page
+                  Navigator.pushNamed(context, "/login");
+                },
+                child: const Text(
+                  'got an account? Log in',
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -108,4 +113,3 @@ class TextSection extends StatelessWidget {
     );
   }
 }
-
