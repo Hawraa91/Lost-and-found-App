@@ -9,16 +9,36 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //const String appTitle = 'FindMyThing';
-    return MaterialApp(
+    //Adding the Text Fields method
+    Widget input(String label, IconData icon) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: TextField(
+          decoration: InputDecoration(
+            labelText: label,
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(icon),
+          ),
+        ),
+      );
+    }
+
+return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                ImageSection(image: 'images/login.png', width: 250, height: 250),
+                const ImageSection(image: 'images/login.png', width: 200, height: 250),
+                const TitleSection(desc: 'Login'),
+                //const SizedBox(height: 20), // Add some spacing between the image and input fields
+                input('Email', Icons.email),
+                const SizedBox(height: 10), // Add some spacing between input fields
+                input('Password', Icons.lock),
+                const SizedBox(height: 10), // Add some spacing between input fields and login button
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Container(
                     width: 200, // match parent width
                     decoration: BoxDecoration(
@@ -27,15 +47,26 @@ class Login extends StatelessWidget {
                       borderRadius:
                       BorderRadius.circular(8.0), // apply border radius
                     ),
+
                     child: TextButton(
                       onPressed: () {
-                        //navigate back
+                        //navigate to home page
                       },
                       child: const Text(
-                        'Sign Up',
+                        'Login',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
+                  ),
+                ),
+
+                TextButton(
+                  onPressed: () {
+                    //navigate back
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'return to sign Up page',
                   ),
                 ),
               ],
@@ -55,32 +86,14 @@ class TitleSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.only(right: 230, bottom: 20),
       child: Text(
         desc,
-        textAlign: TextAlign.center,
-        style: TextStyle(
+        textAlign: TextAlign.left,
+        style: const TextStyle(
           fontSize: 28, // Adjust the font size as needed
           fontWeight: FontWeight.bold, // Make the text bold
         ),
-        softWrap: true,
-      ),
-    );
-  }
-}
-
-// Text field
-class TextSection extends StatelessWidget {
-  const TextSection({Key? key, required this.desc}) : super(key: key);
-  final String desc;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(32),
-      child: Text(
-        desc,
-        textAlign: TextAlign.center,
         softWrap: true,
       ),
     );
