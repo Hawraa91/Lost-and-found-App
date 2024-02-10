@@ -8,7 +8,6 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //const String appTitle = 'FindMyThing';
     //Adding the Text Fields method
     Widget input(String label, IconData icon) {
       return Padding(
@@ -16,7 +15,7 @@ class Login extends StatelessWidget {
         child: TextField(
           decoration: InputDecoration(
             labelText: label,
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             prefixIcon: Icon(icon),
           ),
         ),
@@ -36,6 +35,7 @@ return MaterialApp(
                 input('Email', Icons.email),
                 const SizedBox(height: 10), // Add some spacing between input fields
                 input('Password', Icons.lock),
+                //TODO: the forgot password page
                 const SizedBox(height: 10), // Add some spacing between input fields and login button
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -63,10 +63,11 @@ return MaterialApp(
                 TextButton(
                   onPressed: () {
                     //navigate back
+                    //TODO: change the navigation to go to the signup page
                     Navigator.pop(context);
                   },
                   child: const Text(
-                    'return to sign Up page',
+                    'new account? Sign Up',
                   ),
                 ),
               ],
