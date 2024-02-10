@@ -1,6 +1,6 @@
 # lost_and_found
 
-A new Flutter project.
+Our senior project
 
 ## Getting Started
 
