@@ -7,13 +7,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String appTitle = 'FindMyThing';
+    //const String appTitle = 'FindMyThing';
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        // appBar: AppBar(
-        //   title: const Text(appTitle),
-        // ),
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -24,7 +21,7 @@ class MyApp extends StatelessWidget {
                 ),
                 const TextSection(
                   desc:
-                  'Find what\'s lost, reunite what\'s found. Together, let\'s make lost things found',
+                      'Find what\'s lost, reunite what\'s found. Together, let\'s make lost things found',
                 ),
                 const ImageSection(
                   image: 'images/pic.png',
@@ -38,7 +35,7 @@ class MyApp extends StatelessWidget {
                       color: const Color.fromRGBO(
                           96, 172, 182, 1.0), // change color as needed
                       borderRadius:
-                      BorderRadius.circular(8.0), // apply border radius
+                          BorderRadius.circular(8.0), // apply border radius
                     ),
                     child: TextButton(
                       onPressed: () {
@@ -68,10 +65,10 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 //Title field
 class TitleSection extends StatelessWidget {
   const TitleSection({Key? key, required this.desc}) : super(key: key);
-
   final String desc;
 
   @override
@@ -90,10 +87,10 @@ class TitleSection extends StatelessWidget {
     );
   }
 }
+
 // Text field
 class TextSection extends StatelessWidget {
   const TextSection({Key? key, required this.desc}) : super(key: key);
-
   final String desc;
 
   @override
