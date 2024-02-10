@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ImageSection.dart';
 
 void main() => runApp(const MyApp());
 
@@ -25,6 +26,8 @@ class MyApp extends StatelessWidget {
                 ),
                 const ImageSection(
                   image: 'images/pic.png',
+                  width: 250, // Adjust the width as needed
+                  height: 250,
                 ),
                 // Signup button
                 Padding(
@@ -106,19 +109,3 @@ class TextSection extends StatelessWidget {
   }
 }
 
-// Image Section
-class ImageSection extends StatelessWidget {
-  const ImageSection({Key? key, required this.image}) : super(key: key);
-
-  final String image;
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      image,
-      width: 250, // Adjust the width as needed
-      height: 250, // Adjust the height as needed
-      fit: BoxFit.cover,
-    );
-  }
-}
