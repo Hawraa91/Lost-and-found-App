@@ -48,7 +48,7 @@ class _LoginState extends State<Login> {
             future: _initializeFirebase,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               } else {
                 return SingleChildScrollView(
                   child: Column(
@@ -72,7 +72,7 @@ class _LoginState extends State<Login> {
                           ),
                           child: TextButton(
                             onPressed: () {
-                              //navigate to home page
+                              Navigator.pop(context);
                             },
                             child: const Text(
                               'Login',
