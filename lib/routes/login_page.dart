@@ -25,10 +25,11 @@ class _LoginState extends State<Login> {
   }
 
   //Adding the Input Fields method
-  Widget input(String label, IconData icon) {
+  Widget input(String label, IconData icon, bool obsecureText) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: TextField(
+        obscureText: obsecureText,
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
@@ -53,14 +54,18 @@ class _LoginState extends State<Login> {
                 return SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      const ImageSection(image: 'images/login.png', width: 200, height: 250),
+                      const ImageSection(
+                          image: 'images/login.png', width: 200, height: 250),
                       const TitleSection(desc: 'Login'),
                       //const SizedBox(height: 20), // Add some spacing between the image and input fields
-                      input('Email', Icons.email),
-                      const SizedBox(height: 10), // Add some spacing between input fields
-                      input('Password', Icons.security),
+                      input('Email', Icons.email, false),
+                      const SizedBox(
+                          height: 10), // Add some spacing between input fields
+                      input('Password', Icons.security, true),
                       //TODO: the forgot password page
-                      const SizedBox(height: 10), // Add some spacing between input fields and login button
+                      const SizedBox(
+                          height:
+                              10), // Add some spacing between input fields and login button
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: Container(
@@ -68,11 +73,14 @@ class _LoginState extends State<Login> {
                           decoration: BoxDecoration(
                             color: const Color.fromRGBO(
                                 96, 172, 182, 1.0), // change color as needed
-                            borderRadius: BorderRadius.circular(8.0), // apply border radius
+                            borderRadius: BorderRadius.circular(
+                                8.0), // apply border radius
                           ),
                           child: TextButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              //navigate to home page
+                              //TODO: Fix the route problem
+                              Navigator.pushNamed(context, '/home');
                             },
                             child: const Text(
                               'Login',
