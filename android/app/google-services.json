@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "336882153933",
+    "project_id": "findmything-9663a",
+    "storage_bucket": "findmything-9663a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336882153933:android:16afdc1d5782301706ac84",
+        "android_client_info": {
+          "package_name": "com.example.lost_and_found"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtmIZXK524Gtjt8FDdTafoKD9lfmYlGso"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
