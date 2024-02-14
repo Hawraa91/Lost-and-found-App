@@ -83,7 +83,7 @@ class TitleSection extends StatelessWidget {
       child: Text(
         desc,
         textAlign: TextAlign.center,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 28, // Adjust the font size as needed
           fontWeight: FontWeight.bold, // Make the text bold
         ),
