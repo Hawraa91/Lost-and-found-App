@@ -7,10 +7,8 @@ void main() => runApp(MaterialApp(
   debugShowCheckedModeBanner: false,
   initialRoute: '/',
   routes: {
-    '/': (context) => const startPage(),
+    '/': (context) => const startPage(), // Route for the startup page
     '/login': (context) => const Login(),
     '/home': (context) => Home(),
   },
 ));
-
-
