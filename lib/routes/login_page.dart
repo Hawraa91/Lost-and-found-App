@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
                         onPressed: () {
                           //navigate back to signup page
                           //TODO: change the navigation to go to the signup page
-                          Navigator.pop(context);
+                          Navigator.pop(context,"/");
                         },
                         child: const Text(
                           'new account? Sign Up',
@@ -131,4 +131,4 @@ class TitleSection extends StatelessWidget {
       ),
     );
   }
-}//
+}
