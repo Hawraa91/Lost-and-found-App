@@ -1,14 +1,18 @@
+// main.dart
 import 'package:flutter/material.dart';
-import 'package:lost_and_found/routes/login_page.dart';
-import 'package:lost_and_found/startPage.dart';
-import 'package:lost_and_found/HomePage.dart'; // Import the home page
+import 'routes.dart'; // Import routes from route.dart
 
-void main() => runApp(MaterialApp(
-  debugShowCheckedModeBanner: false,
-  initialRoute: '/',
-  routes: {
-    '/': (context) => const startPage(), // Route for the startup page
-    '/login': (context) => const Login(),
-    '/home': (context) => Home(),
-  },
-));
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: routes, // Use routes defined in route.dart
+    );
+  }
+}

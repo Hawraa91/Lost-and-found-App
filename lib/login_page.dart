@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../ImageSection.dart';
+import 'ImageSection.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() => runApp(const Login());
@@ -41,9 +41,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
         body: Center(
           child: FutureBuilder(
             future: _initializeFirebase,
@@ -91,9 +89,7 @@ class _LoginState extends State<Login> {
                       ),
                       TextButton(
                         onPressed: () {
-                          //navigate back to signup page
-                          //TODO: change the navigation to go to the signup page
-                          print('It is working');
+                          // Navigate to the start page
                           Navigator.pushNamed(context, "/");
                         },
                         child: const Text(
@@ -107,8 +103,7 @@ class _LoginState extends State<Login> {
             },
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
