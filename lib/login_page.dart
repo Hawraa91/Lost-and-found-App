@@ -41,7 +41,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
         body: Center(
           child: FutureBuilder(
             future: _initializeFirebase,
@@ -63,7 +65,7 @@ class _LoginState extends State<Login> {
                       //TODO: the forgot password page
                       const SizedBox(
                           height:
-                              10), // Add some spacing between input fields and login button
+                          10), // Add some spacing between input fields and login button
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: Container(
@@ -90,7 +92,7 @@ class _LoginState extends State<Login> {
                       TextButton(
                         onPressed: () {
                           // Navigate to the start page
-                          Navigator.pushNamed(context, "/");
+                          Navigator.pushNamed(context, "/home");
                         },
                         child: const Text(
                           'new account? Sign Up',
@@ -103,7 +105,8 @@ class _LoginState extends State<Login> {
             },
           ),
         ),
-      );
+      ),
+    );
   }
 }
 
