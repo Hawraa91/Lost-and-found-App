@@ -73,7 +73,7 @@ class MainScreen extends StatelessWidget {
                    Text(
                     "Categories",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -97,6 +97,18 @@ class MainScreen extends StatelessWidget {
                               const Color.fromRGBO(237, 245, 246, 1.0)),
                         ],
                       ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              const Row(
+                children: [
+                  Text(
+                    "Lost Items",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
