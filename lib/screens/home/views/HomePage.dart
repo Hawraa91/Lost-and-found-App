@@ -14,11 +14,11 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      //appBar: AppBar(),
       bottomNavigationBar: ClipRRect( // Corrected ClipRRect
         borderRadius: const BorderRadius.vertical(top: Radius.circular(30)), // Corrected BorderRadius
         child: BottomNavigationBar(
-          backgroundColor: Colors.white,
+          backgroundColor: const Color.fromRGBO(237, 245, 246, 1.0),
           showSelectedLabels: false,
           showUnselectedLabels: false,
           elevation: 3,
@@ -40,8 +40,9 @@ class _HomeState extends State<Home> {
         onPressed: (){
           //new post action
         },
+        backgroundColor: const Color.fromRGBO(22, 19, 85, 1.0),
         shape: const CircleBorder(),
-        child: const Icon(CupertinoIcons.add),
+        child: const Icon(CupertinoIcons.add, color: Colors.white),
       ),
       body: const MainScreen(),
     );
