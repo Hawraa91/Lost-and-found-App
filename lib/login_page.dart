@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ImageSection.dart';
+import 'components/ImageSection.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() => runApp(const Login());
@@ -41,9 +41,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
         body: Center(
           child: FutureBuilder(
             future: _initializeFirebase,
@@ -55,7 +53,7 @@ class _LoginState extends State<Login> {
                   child: Column(
                     children: <Widget>[
                       const ImageSection(
-                          image: 'images/login.png', width: 200, height: 250),
+                          image: 'assets/images/login.png', width: 200, height: 250),
                       const TitleSection(desc: 'Login'),
                       //const SizedBox(height: 20), // Add some spacing between the image and input fields
                       input('Email', Icons.email, false),
@@ -105,8 +103,7 @@ class _LoginState extends State<Login> {
             },
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
