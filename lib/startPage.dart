@@ -45,6 +45,7 @@ class _startPageState extends State<startPage> {
                   child: TextButton(
                     onPressed: () {
                       // Handle signup button press
+                      Navigator.pushNamed(context, "/signup");
                     },
                     child: const Text(
                       'Sign Up',
