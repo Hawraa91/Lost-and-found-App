@@ -22,6 +22,7 @@ class _SignupState extends State<Signup> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController(); // New controller
 
   @override
   void initState() {
@@ -31,6 +32,34 @@ class _SignupState extends State<Signup> {
 
   Future<FirebaseApp> _initializeFirebaseApp() async {
     return await Firebase.initializeApp();
+  }
+
+  Future<void> signUp() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      // Get the user ID after successful sign-up
+      String userId = userCredential.user!.uid;
+
+      // Save additional user data to Firestore
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'firstName': firstNameController.text,
+        'lastName': lastNameController.text,
+        'email': emailController.text,
+        'phoneNumber': phoneNumberController.text,
+      });
+
+      // Navigate to the next screen or perform any other action after sign-up
+      // For example, you can use Navigator.pushNamed to navigate to another screen
+      // Navigator.pushNamed(context, '/next_screen');
+    } catch (e) {
+      // Handle sign-up errors
+      print("Error during sign-up: $e");
+      // You can display an error message to the user using a Snackbar or some other UI element
+    }
   }
 
   Widget input(String label, IconData icon, bool obscureText, TextEditingController controller) {
@@ -72,7 +101,7 @@ class _SignupState extends State<Signup> {
                     const SizedBox(height: 10),
                     input('Password', Icons.security, true, passwordController),
                     const SizedBox(height: 10),
-                    input('Confirm Password', Icons.security, true, passwordController),
+                    input('Confirm Password', Icons.security, true, confirmPasswordController),
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Container(
@@ -83,37 +112,7 @@ class _SignupState extends State<Signup> {
                         ),
                         child: TextButton(
                           onPressed: () async {
-                            if (Firebase.apps.isEmpty) {
-                              await Firebase.initializeApp();
-                            }
-
-                            final firstName = firstNameController.text;
-                            final lastName = lastNameController.text;
-                            final email = emailController.text;
-                            final phoneNumber = phoneNumberController.text;
-                            final password = passwordController.text;
-
-                            try {
-                              final UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                                email: email,
-                                password: password,
-                              );
-
-                              final String userId = userCredential.user!.uid;
-
-                              await FirebaseFirestore.instance.collection('users').doc(userId).set({
-                                'firstName': firstName,
-                                'lastName': lastName,
-                                'email': email,
-                                'phoneNumber': phoneNumber,
-                              });
-
-                              print('User registered successfully');
-                              Navigator.pushNamed(context, '/home');
-                            } catch (e) {
-                              print('Error during signup: $e');
-                              // TODO: Handle any error that occurred during signup
-                            }
+                            await signUp();
                           },
                           child: const Text(
                             'Sign Up',
