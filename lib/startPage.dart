@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ImageSection.dart';
+import 'components/ImageSection.dart';
 
 void main() => runApp(const startPage());
 
@@ -27,7 +27,7 @@ class _startPageState extends State<startPage> {
                     'Find what\'s lost, reunite what\'s found. Together, let\'s make lost things found',
               ),
               const ImageSection(
-                image: 'images/pic.png',
+                image: 'assets/images/pic.png',
                 width: 250, // Adjust the width as needed
                 height: 250,
               ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ImageSection.dart';
+import 'components/ImageSection.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() => runApp(const Login());
@@ -53,7 +53,7 @@ class _LoginState extends State<Login> {
                   child: Column(
                     children: <Widget>[
                       const ImageSection(
-                          image: 'images/login.png', width: 200, height: 250),
+                          image: 'assets/images/login.png', width: 200, height: 250),
                       const TitleSection(desc: 'Login'),
                       //const SizedBox(height: 20), // Add some spacing between the image and input fields
                       input('Email', Icons.email, false),
@@ -63,7 +63,7 @@ class _LoginState extends State<Login> {
                       //TODO: the forgot password page
                       const SizedBox(
                           height:
-                              10), // Add some spacing between input fields and login button
+                          10), // Add some spacing between input fields and login button
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: Container(
@@ -90,7 +90,7 @@ class _LoginState extends State<Login> {
                       TextButton(
                         onPressed: () {
                           // Navigate to the start page
-                          Navigator.pushNamed(context, "/");
+                          Navigator.pushNamed(context, "/home");
                         },
                         child: const Text(
                           'new account? Sign Up',
