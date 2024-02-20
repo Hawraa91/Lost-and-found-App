@@ -12,7 +12,12 @@
           "package_name": "com.example.lost_and_found"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "336882153933-cvvg6rtt2lhsrpg9if7kjdvtm524pf72.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDtmIZXK524Gtjt8FDdTafoKD9lfmYlGso"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336882153933-cvvg6rtt2lhsrpg9if7kjdvtm524pf72.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
