@@ -1,6 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:lost_and_found/screens/home/views/main_screen.dart'; // Import CupertinoIcons
+import 'package:lost_and_found/screens/home/views/main_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -22,14 +23,25 @@ class _HomeState extends State<Home> {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           elevation: 3,
-          items: const [
-            BottomNavigationBarItem(
+          items: [
+            const BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.home),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.person),
-              label: 'Stats',
+              icon: GestureDetector(
+               onTap: () async {
+                 try {
+                   FirebaseAuth.instance.signOut();
+                   //navigate to login screen
+                   Navigator.pushNamed(context, '/login');
+                 } catch (e) {
+                   print('Error signing out: $e');
+                 }
+               },
+                  child: const Icon(CupertinoIcons.person)
+              ),
+              label: 'profile',
             ),
 
 
@@ -41,6 +53,7 @@ class _HomeState extends State<Home> {
       FloatingActionButton (
         onPressed: (){
           //new post action
+
         },
         backgroundColor: const Color.fromRGBO(22, 19, 85, 1.0),
         shape: const CircleBorder(),
