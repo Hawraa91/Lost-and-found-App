@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lost_and_found/screens/home/views/main_screen.dart';
@@ -23,28 +23,16 @@ class _HomeState extends State<Home> {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           elevation: 3,
-          items: [
-            const BottomNavigationBarItem(
+          items: const [
+            BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.home),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: GestureDetector(
-               onTap: () async {
-                 try {
-                   FirebaseAuth.instance.signOut();
-                   //navigate to login screen
-                   Navigator.pushNamed(context, '/login');
-                 } catch (e) {
-                   print('Error signing out: $e');
-                 }
-               },
-                  child: const Icon(CupertinoIcons.person)
-              ),
+              icon: Icon(CupertinoIcons.person)
+              ,
               label: 'profile',
             ),
-
-
           ],
         ),
       ),
