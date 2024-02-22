@@ -1,6 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:lost_and_found/screens/home/views/main_screen.dart'; // Import CupertinoIcons
+import 'package:lost_and_found/screens/home/views/main_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -28,11 +29,10 @@ class _HomeState extends State<Home> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.person),
-              label: 'Stats',
+              icon: Icon(CupertinoIcons.person)
+              ,
+              label: 'profile',
             ),
-
-
           ],
         ),
       ),
@@ -41,6 +41,7 @@ class _HomeState extends State<Home> {
       FloatingActionButton (
         onPressed: (){
           //new post action
+
         },
         backgroundColor: const Color.fromRGBO(22, 19, 85, 1.0),
         shape: const CircleBorder(),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key});
 
@@ -91,13 +92,13 @@ class MainScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           cardIcon(Icons.key,
-                              const Color.fromRGBO(237, 245, 246, 1.0)),
+                              const Color.fromRGBO(237, 245, 246, 1.0), "Keys"),
                           cardIcon(Icons.headset,
-                              const Color.fromRGBO(237, 245, 246, 1.0)),
+                              const Color.fromRGBO(237, 245, 246, 1.0), "Devices"),
                           cardIcon(Icons.diamond,
-                              const Color.fromRGBO(237, 245, 246, 1.0)),
+                              const Color.fromRGBO(237, 245, 246, 1.0), "Jewels"),
                           cardIcon(Icons.book,
-                              const Color.fromRGBO(237, 245, 246, 1.0)),
+                              const Color.fromRGBO(237, 245, 246, 1.0), "Books"),
                         ],
                       ),
                     ),
@@ -132,20 +133,27 @@ class MainScreen extends StatelessWidget {
 }
 
 //The category icons method
-Widget cardIcon(IconData icon, Color backgroundColor) {
+Widget cardIcon(IconData icon, Color backgroundColor,String type) {
   return Container(
-    height: 50,
+    height: 65,
     width: 100,
     child: Card(
       child: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 4.5),
             child: Container(
               color: backgroundColor,
               child: Icon(icon),
             ),
-          )
+          ),
+          Text(
+            type, // Add your text here
+            style: const TextStyle(
+              fontSize: 12, // Set the font size as per your requirement
+              fontWeight: FontWeight.bold, // Set the font weight as per your requirement
+            ),
+          ),
         ],
       ),
     ),
