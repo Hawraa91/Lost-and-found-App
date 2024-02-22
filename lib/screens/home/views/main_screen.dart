@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -119,11 +120,36 @@ class MainScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               //the blue container
-              containerPost(context),
-              const SizedBox(height: 30),
-              containerPost(context),
-              const SizedBox(height: 30),
-              containerPost(context),
+              StreamBuilder<QuerySnapshot>(
+                //taking the data from the collection
+                stream: FirebaseFirestore.instance.collection('lost').snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  final List<DocumentSnapshot> documents = snapshot.data!.docs; //making sure the doc is not null
+                  return Column(
+                    children: documents.map((doc) {
+                      final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                      //TODO: Add the other details
+                      final String title = data['Title']; //Printing the title
+                      final String description = data['description'];
+
+                      return Column(
+                        children: [
+                          const SizedBox(height: 20), // Add space before the container
+                          containerPost(context, title, description),
+                        ],
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -160,9 +186,10 @@ Widget cardIcon(IconData icon, Color backgroundColor,String type) {
   );
 }
 
-Widget containerPost(BuildContext context) {
+//TODO: Update the things that you want to print
+Widget containerPost(BuildContext context, String title, String desc) {
   return Container(
-    width: MediaQuery.of(context).size.width,
+    width: 310,
     height: MediaQuery.of(context).size.width / 2,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(30),
@@ -175,6 +202,34 @@ Widget containerPost(BuildContext context) {
       ],
       // Dark blue
       color: const Color.fromRGBO(96, 173, 183, 1.0),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(20.0), // Adjust padding as needed
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            children: [
+              Text(
+                desc,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
     ),
   );
 }
