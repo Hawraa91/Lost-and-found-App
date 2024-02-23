@@ -111,7 +111,9 @@ class _SignupState extends State<Signup> {
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: TextButton(
-                          onPressed: () async {
+                          onPressed:
+                          () async {
+                            Navigator.pushNamed(context, '/login');
                             await signUp();
                           },
                           child: const Text(
