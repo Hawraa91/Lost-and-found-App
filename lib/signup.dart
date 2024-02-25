@@ -22,7 +22,15 @@ class _SignupState extends State<Signup> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController(); // New controller
+  final TextEditingController confirmPasswordController =
+  TextEditingController(); // New controller
+
+  final RegExp passwordPattern =
+  RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$');
+  final RegExp passwordMatchPattern =
+  RegExp(r'^$|^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$');
+
+  bool _isPasswordVisible = false; // New variable to track password visibility
 
   @override
   void initState() {
@@ -35,8 +43,25 @@ class _SignupState extends State<Signup> {
   }
 
   Future<void> signUp() async {
+    // Validate password strength
+    if (!passwordPattern.hasMatch(passwordController.text)) {
+      // Password is weak, show error message
+      print('Weak password');
+      // You can display an error message to the user using a Snackbar or some other UI element
+      return;
+    }
+
+    // Check if password and confirm password match
+    if (passwordController.text != confirmPasswordController.text) {
+      // Passwords don't match, show error message
+      print('Passwords do not match');
+      // You can display an error message to the user using a Snackbar or some other UI element
+      return;
+    }
+
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
@@ -62,7 +87,8 @@ class _SignupState extends State<Signup> {
     }
   }
 
-  Widget input(String label, IconData icon, bool obscureText, TextEditingController controller) {
+  Widget input(String label, IconData icon, bool obscureText,
+      TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: TextField(
@@ -70,8 +96,17 @@ class _SignupState extends State<Signup> {
         obscureText: obscureText,
         decoration: InputDecoration(
           labelText: label,
-          border: const OutlineInputBorder(),
+          hintText: 'Enter your $label',
           prefixIcon: Icon(icon),
+          border: const OutlineInputBorder(),
+          suffixIcon: IconButton(
+            icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
+            onPressed: () {
+              setState(() {
+                obscureText = !obscureText;
+              });
+            },
+          ),
         ),
       ),
     );
@@ -91,17 +126,22 @@ class _SignupState extends State<Signup> {
                 child: Column(
                   children: <Widget>[
                     TitleSection(desc: 'Signup'),
-                    input('First Name', Icons.person, false, firstNameController),
+                    input('First Name', Icons.person, false,
+                        firstNameController),
                     const SizedBox(height: 10),
-                    input('Last Name', Icons.person, false, lastNameController),
+                    input(
+                        'Last Name', Icons.person, false, lastNameController),
                     const SizedBox(height: 10),
                     input('Email', Icons.email, false, emailController),
                     const SizedBox(height: 10),
-                    input('Phone Number', Icons.phone, false, phoneNumberController),
+                    input('Phone Number', Icons.phone, false,
+                        phoneNumberController),
                     const SizedBox(height: 10),
-                    input('Password', Icons.security, true, passwordController),
+                    input('Password', Icons.security, _isPasswordVisible,
+                        passwordController),
                     const SizedBox(height: 10),
-                    input('Confirm Password', Icons.security, true, confirmPasswordController),
+                    input('Confirm Password', Icons.security, true,
+                        confirmPasswordController),
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Container(
@@ -111,8 +151,7 @@ class _SignupState extends State<Signup> {
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: TextButton(
-                          onPressed:
-                          () async {
+                          onPressed: () async {
                             Navigator.pushNamed(context, '/login');
                             await signUp();
                           },
@@ -121,17 +160,6 @@ class _SignupState extends State<Signup> {
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    TextButton(
-                      onPressed: () {
-                        print('Login button pressed');
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      child: const Text(
-                        'Already have an account? Login',
-                        style: TextStyle(color: Colors.blue),
                       ),
                     ),
                   ],
@@ -148,20 +176,23 @@ class _SignupState extends State<Signup> {
 class TitleSection extends StatelessWidget {
   final String desc;
 
-  TitleSection({required this.desc});
+  const TitleSection({required this.desc});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 230, bottom: 20),
-      child: Text(
-        desc,
-        textAlign: TextAlign.left,
-        style: const TextStyle(
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-        ),
-        softWrap: true,
+    return Container(
+      padding: const EdgeInsets.only(top: 32.0),
+      child: Column(
+        children: <Widget>[
+          Text(
+            desc,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24.0,
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }
