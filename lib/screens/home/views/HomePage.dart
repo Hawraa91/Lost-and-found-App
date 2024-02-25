@@ -1,4 +1,4 @@
-
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lost_and_found/screens/home/views/main_screen.dart';
@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.person)
               ,
-              label: 'profile',
+              label: 'profile', //testing
             ),
           ],
         ),
