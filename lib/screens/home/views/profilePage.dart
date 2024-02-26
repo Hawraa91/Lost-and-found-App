@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../startPage.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -18,15 +20,68 @@ class ProfilePage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Text(
-                    user?.displayName ?? "Guest",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user?.uid)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Text("Loading...");
+                      }
+                      // fetch user first name
+                      var userData = snapshot.data!.data() as Map<String, dynamic>;
+                      var firstName = userData['firstName'] ?? "Guest";
+                      var lastName = userData['lastName'] ?? "";
+
+                      return Text(
+                        '$firstName $lastName',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      );
+                    },
                   ),
                   const SizedBox(height: 16),
-                  // You can add more widgets here to display user details
+                  ListTile(
+                    leading: Icon(Icons.email),
+                    title: Text(user?.email ?? "No email"),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.phone),
+                    title: StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user?.uid)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Text("Loading...");
+                        }
+
+                        var userData = snapshot.data!.data() as Map<String, dynamic>;
+                        var phoneNumber = userData['phoneNumber'] ?? "No phone number";
+
+                        return Text(phoneNumber);
+                      },
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.home),
+                    title: Text("Address goes here"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => startPage()), // Replace with the actual name of your home screen widget
+                            (Route<dynamic> route) => false,
+                      );
+                    },
+                    child: Text("Logout"),
+                  ),
                 ],
               ),
             ),
@@ -72,7 +127,7 @@ class _TopPortion extends StatelessWidget {
                     image: DecorationImage(
                         fit: BoxFit.cover,
                         image: NetworkImage(
-                            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')),
+                            'https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg')),
                   ),
                 ),
               ],
