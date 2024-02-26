@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key});
@@ -91,13 +93,13 @@ class MainScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           cardIcon(Icons.key,
-                              const Color.fromRGBO(237, 245, 246, 1.0)),
+                              const Color.fromRGBO(237, 245, 246, 1.0), "Keys"),
                           cardIcon(Icons.headset,
-                              const Color.fromRGBO(237, 245, 246, 1.0)),
+                              const Color.fromRGBO(237, 245, 246, 1.0), "Devices"),
                           cardIcon(Icons.diamond,
-                              const Color.fromRGBO(237, 245, 246, 1.0)),
+                              const Color.fromRGBO(237, 245, 246, 1.0), "Jewels"),
                           cardIcon(Icons.book,
-                              const Color.fromRGBO(237, 245, 246, 1.0)),
+                              const Color.fromRGBO(237, 245, 246, 1.0), "Books"),
                         ],
                       ),
                     ),
@@ -118,11 +120,36 @@ class MainScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               //the blue container
-              containerPost(context),
-              const SizedBox(height: 30),
-              containerPost(context),
-              const SizedBox(height: 30),
-              containerPost(context),
+              StreamBuilder<QuerySnapshot>(
+                //taking the data from the collection
+                stream: FirebaseFirestore.instance.collection('lost').snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  final List<DocumentSnapshot> documents = snapshot.data!.docs; //making sure the doc is not null
+                  return Column(
+                    children: documents.map((doc) {
+                      final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                      //TODO: Add the other details
+                      final String title = data['Title']; //Printing the title
+                      final String description = data['description'];
+
+                      return Column(
+                        children: [
+                          const SizedBox(height: 20), // Add space before the container
+                          containerPost(context, title, description),
+                        ],
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -132,29 +159,37 @@ class MainScreen extends StatelessWidget {
 }
 
 //The category icons method
-Widget cardIcon(IconData icon, Color backgroundColor) {
+Widget cardIcon(IconData icon, Color backgroundColor,String type) {
   return Container(
-    height: 50,
+    height: 65,
     width: 100,
     child: Card(
       child: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 4.5),
             child: Container(
               color: backgroundColor,
               child: Icon(icon),
             ),
-          )
+          ),
+          Text(
+            type, // Add your text here
+            style: const TextStyle(
+              fontSize: 12, // Set the font size as per your requirement
+              fontWeight: FontWeight.bold, // Set the font weight as per your requirement
+            ),
+          ),
         ],
       ),
     ),
   );
 }
 
-Widget containerPost(BuildContext context) {
+//TODO: Update the things that you want to print
+Widget containerPost(BuildContext context, String title, String desc) {
   return Container(
-    width: MediaQuery.of(context).size.width,
+    width: 310,
     height: MediaQuery.of(context).size.width / 2,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(30),
@@ -167,6 +202,34 @@ Widget containerPost(BuildContext context) {
       ],
       // Dark blue
       color: const Color.fromRGBO(96, 173, 183, 1.0),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(20.0), // Adjust padding as needed
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            children: [
+              Text(
+                desc,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
     ),
   );
 }

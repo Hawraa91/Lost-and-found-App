@@ -16,6 +16,35 @@ class _LoginState extends State<Login> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  //pop up dialog if the password is wrong
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Wrong Password'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('You have entered an invalid password.'),
+                Text('Please try again'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   //sign in with email and password
   Future<void> signIn() async {
     try {
@@ -36,6 +65,7 @@ class _LoginState extends State<Login> {
         print('Wrong password provided for that user.');
       } else {
         print('Error occurred: ${e.message}');
+        _showMyDialog();
       }
     } catch (e) {
       print('Unexpected error occurred: $e');
@@ -127,7 +157,7 @@ class _LoginState extends State<Login> {
               TextButton(
                 onPressed: () {
                   // Navigate to the start page
-                  Navigator.pushNamed(context, "/home");
+                  Navigator.pushNamed(context, "/signup");
                 },
                 child: const Text(
                   'new account? Sign Up',

@@ -1,8 +1,10 @@
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lost_and_found/screens/home/views/main_screen.dart';
 import 'package:lost_and_found/screens/home/views/profilePage.dart';
 
+=======
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -42,6 +44,7 @@ class _HomeState extends State<Home> {
               ),
               onPressed: () {},
             ),
+
             IconButton(
               icon: const Icon(
                 Icons.search,
@@ -76,3 +79,4 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
