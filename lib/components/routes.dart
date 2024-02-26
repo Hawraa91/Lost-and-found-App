@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lost_and_found/screens/login/login_page.dart';
-import 'package:lost_and_found/startPage.dart';
+import 'package:lost_and_found/screens/login&signup/view/login_page.dart';
+import 'package:lost_and_found/screens/startPage.dart';
 import 'package:lost_and_found/screens/home/views/HomePage.dart'; // Import the home page
 import 'package:lost_and_found/Signup.dart';
 

@@ -22,7 +22,7 @@ class ProfilePage extends StatelessWidget {
                     user?.displayName ?? "Guest",
                     style: Theme.of(context)
                         .textTheme
-                        .headline6
+                        .titleLarge
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
@@ -33,6 +33,7 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
+
     );
   }
 }

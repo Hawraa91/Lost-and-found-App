@@ -2,8 +2,8 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lost_and_found/screens/login/login_page.dart';
-import '../home/views/HomePage.dart';
+import 'package:lost_and_found/screens/login&signup//view/login_page.dart';
+import '../../home/views/HomePage.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
