@@ -12,60 +12,67 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int _selectedIndex = 0;
-
-  static const List<Widget> _pages = [
-    MainScreen(),
-    ProfilePage(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProfilePage()),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-        child: BottomNavigationBar(
-          backgroundColor: const Color.fromRGBO(237, 245, 246, 1.0),
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          elevation: 3,
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.home),
-              label: 'Home',
+      extendBody: true,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromRGBO(22, 19, 85, 1.0),
+        shape: const CircleBorder(),
+        onPressed: () {},
+        child: const Icon(CupertinoIcons.add, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+      bottomNavigationBar: BottomAppBar(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        height: 50,
+        color: const Color.fromRGBO(237, 245, 246, 1.0),
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 5,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            IconButton(
+              icon: const Icon(
+                Icons.home,
+                color: Colors.black,
+              ),
+              onPressed: () {},
             ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.person),
-              label: 'Profile',
+            IconButton(
+              icon: const Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.chat_rounded,
+                color: Colors.black,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.person,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
+              },
             ),
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // New post action
-        },
-        backgroundColor: const Color.fromRGBO(22, 19, 85, 1.0),
-        shape: const CircleBorder(),
-        child: const Icon(CupertinoIcons.add, color: Colors.white),
-      ),
-      body: _pages[_selectedIndex],
+      //The Home screen
+      body: const MainScreen(),
     );
   }
 }
