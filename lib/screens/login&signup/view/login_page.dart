@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../components/ImageSection.dart';
+import '../../../components/ImageSection.dart';
 
 void main() => runApp(const Login());
 

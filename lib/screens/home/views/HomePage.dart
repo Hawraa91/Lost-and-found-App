@@ -1,4 +1,4 @@
-//import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lost_and_found/screens/home/views/main_screen.dart';
@@ -12,11 +12,22 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  Future<void> _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut(); // Sign out the current user
+      // Navigate to the login page or any other desired page
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      print('Error signing out: $e');
+      // Handle sign-out errors here
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
+      //floating button action, to start a new entry
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(22, 19, 85, 1.0),
         shape: const CircleBorder(),
@@ -25,6 +36,7 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
+      //the bottom navigation bar
       bottomNavigationBar: BottomAppBar(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         height: 50,
@@ -40,7 +52,9 @@ class _HomeState extends State<Home> {
                 Icons.home,
                 color: Colors.black,
               ),
-              onPressed: () {},
+              onPressed: () {
+                _signOut();
+              },
             ),
 
             IconButton(

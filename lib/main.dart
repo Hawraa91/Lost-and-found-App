@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'routes.dart'; // Import routes from route.dart
+import 'components/routes.dart'; // Import routes from route.dart
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';

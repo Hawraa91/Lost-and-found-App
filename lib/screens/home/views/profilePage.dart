@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../startPage.dart';
+
+import '../../startPage.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -29,7 +30,6 @@ class ProfilePage extends StatelessWidget {
                       if (!snapshot.hasData) {
                         return Text("Loading...");
                       }
-                      // fetch user first name
                       var userData = snapshot.data!.data() as Map<String, dynamic>;
                       var firstName = userData['firstName'] ?? "Guest";
                       var lastName = userData['lastName'] ?? "";
@@ -38,10 +38,17 @@ class ProfilePage extends StatelessWidget {
                         '$firstName $lastName',
                         style: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(fontWeight: FontWeight.bold),
                       );
                     },
+                  ),
+                  Text(
+                    user?.displayName ?? "Guest",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
                   ListTile(
@@ -59,7 +66,6 @@ class ProfilePage extends StatelessWidget {
                         if (!snapshot.hasData) {
                           return Text("Loading...");
                         }
-
                         var userData = snapshot.data!.data() as Map<String, dynamic>;
                         var phoneNumber = userData['phoneNumber'] ?? "No phone number";
 
@@ -76,7 +82,7 @@ class ProfilePage extends StatelessWidget {
                       await FirebaseAuth.instance.signOut();
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => startPage()), // Replace with the actual name of your home screen widget
+                        MaterialPageRoute(builder: (context) => startPage()),
                             (Route<dynamic> route) => false,
                       );
                     },
@@ -103,14 +109,16 @@ class _TopPortion extends StatelessWidget {
         Container(
           margin: const EdgeInsets.only(bottom: 50),
           decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [Color(0xff0c066d), Color(0xff062144)]),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(50),
-                bottomRight: Radius.circular(50),
-              )),
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [Color(0xff0c066d), Color(0xff062144)],
+            ),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(50),
+              bottomRight: Radius.circular(50),
+            ),
+          ),
         ),
         Align(
           alignment: Alignment.bottomCenter,
@@ -125,15 +133,17 @@ class _TopPortion extends StatelessWidget {
                     color: Colors.black,
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                            'https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg')),
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        'https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg',
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-        )
+        ),
       ],
     );
   }

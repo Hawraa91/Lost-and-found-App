@@ -129,14 +129,19 @@ class MainScreen extends StatelessWidget {
                   }
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
+                    //the loading icon
                     return const CircularProgressIndicator();
                   }
 
-                  final List<DocumentSnapshot> documents = snapshot.data!.docs; //making sure the doc is not null
+                  /* "snapshot.data": This retrieves the data snapshot from
+                  the snapshot object. It represents the latest data snapshot of the stream.*/
+                  final List<DocumentSnapshot> documents = snapshot.data!.docs; //making sure the doc is not null by using doc!
                   return Column(
                     children: documents.map((doc) {
+                      /*documents.map((doc) { ... }): This iterates over each DocumentSnapshot in
+                      the documents list using the map method*/
                       final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                      //TODO: Add the other details
+                      //TODO: Add the other details of the
                       final String title = data['Title']; //Printing the title
                       final String description = data['description'];
 
