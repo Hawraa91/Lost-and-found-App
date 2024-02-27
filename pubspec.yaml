@@ -22,6 +22,7 @@ dependencies:
   google_fonts: ^6.1.0
   flutter_svg: ^2.0.10+1
   image_picker: ^1.0.7
+  image_field: ^0.0.9
 
 
 dev_dependencies:
