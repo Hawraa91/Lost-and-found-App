@@ -21,6 +21,7 @@ dependencies:
   persistent_bottom_nav_bar: ^5.0.2
   google_fonts: ^6.1.0
   flutter_svg: ^2.0.10+1
+  image_picker: ^1.0.7
 
 
 dev_dependencies:
