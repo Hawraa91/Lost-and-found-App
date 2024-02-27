@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../components/bottomNavBar.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -10,12 +12,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Forms',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const LostItemForm(),
+    return const Scaffold(
+      body: LostItemForm(),
+      bottomNavigationBar: BottomNavBar(),
     );
   }
 }
