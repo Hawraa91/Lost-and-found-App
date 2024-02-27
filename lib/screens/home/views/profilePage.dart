@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../components/bottomNavBar.dart';
 import '../../startPage.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -28,7 +29,7 @@ class ProfilePage extends StatelessWidget {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return Text("Loading...");
+                        return const Text("Loading...");
                       }
                       var userData = snapshot.data!.data() as Map<String, dynamic>;
                       var firstName = userData['firstName'] ?? "Guest";
@@ -52,11 +53,11 @@ class ProfilePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   ListTile(
-                    leading: Icon(Icons.email),
+                    leading: const Icon(Icons.email),
                     title: Text(user?.email ?? "No email"),
                   ),
                   ListTile(
-                    leading: Icon(Icons.phone),
+                    leading: const Icon(Icons.phone),
                     title: StreamBuilder<DocumentSnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('users')
@@ -64,7 +65,7 @@ class ProfilePage extends StatelessWidget {
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
-                          return Text("Loading...");
+                          return const Text("Loading...");
                         }
                         var userData = snapshot.data!.data() as Map<String, dynamic>;
                         var phoneNumber = userData['phoneNumber'] ?? "No phone number";
@@ -73,7 +74,7 @@ class ProfilePage extends StatelessWidget {
                       },
                     ),
                   ),
-                  ListTile(
+                  const ListTile(
                     leading: Icon(Icons.home),
                     title: Text("Address goes here"),
                   ),
@@ -82,11 +83,11 @@ class ProfilePage extends StatelessWidget {
                       await FirebaseAuth.instance.signOut();
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => startPage()),
+                        MaterialPageRoute(builder: (context) => const startPage()),
                             (Route<dynamic> route) => false,
                       );
                     },
-                    child: Text("Logout"),
+                    child: const Text("Logout"),
                   ),
                 ],
               ),
@@ -94,6 +95,7 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }

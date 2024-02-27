@@ -1,33 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:lost_and_found/screens/home/views/main_screen.dart';
-import 'package:lost_and_found/screens/home/views/profilePage.dart';
+import '../../../components/bottomNavBar.dart';
 
-class Home extends StatefulWidget {
+class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
-
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  Future<void> _signOut() async {
-    try {
-      await FirebaseAuth.instance.signOut(); // Sign out the current user
-      // Navigate to the login page or any other desired page
-      Navigator.pushReplacementNamed(context, '/login');
-    } catch (e) {
-      print('Error signing out: $e');
-      // Handle sign-out errors here
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      //floating button action, to start a new entry
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(22, 19, 85, 1.0),
         shape: const CircleBorder(),
@@ -35,60 +17,8 @@ class _HomeState extends State<Home> {
         child: const Icon(CupertinoIcons.add, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-      //the bottom navigation bar
-      bottomNavigationBar: BottomAppBar(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        height: 50,
-        color: const Color.fromRGBO(237, 245, 246, 1.0),
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 5,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            IconButton(
-              icon: const Icon(
-                Icons.home,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                _signOut();
-              },
-            ),
-
-            IconButton(
-              icon: const Icon(
-                Icons.search,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.chat_rounded,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.person,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      //The Home screen
+      bottomNavigationBar: const BottomNavBar(),
       body: const MainScreen(),
     );
   }
 }
-
