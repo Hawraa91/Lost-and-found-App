@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'package:flutter/services.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const appTitle = 'Form Validation Demo';
-
     return MaterialApp(
-      title: appTitle,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(appTitle),
-        ),
-        body: const LostItemForm(),
+      title: 'Flutter Forms',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: const LostItemForm(),
     );
   }
 }
@@ -27,143 +24,129 @@ class LostItemForm extends StatefulWidget {
   const LostItemForm({Key? key}) : super(key: key);
 
   @override
-  LostItemFormState createState() {
-    return LostItemFormState();
-  }
+  State<LostItemForm> createState() => _LostItemFormState();
 }
 
-class LostItemFormState extends State<LostItemForm> {
+class _LostItemFormState extends State<LostItemForm> {
   final _formKey = GlobalKey<FormState>();
-  String itemName = '';
-  String date = '';
-  String category = '';
-  String title = '';
-  String description = '';
-  File? image;
-  final ImagePicker _picker = ImagePicker();
+  final _itemTitleController = TextEditingController();
+  final _itemNameController = TextEditingController();
+  final _itemLostDateController = TextEditingController();
+  final _categoryController = TextEditingController();
+  final _descriptionController = TextEditingController();
+
+  @override
+  void dispose() {
+    _itemTitleController.dispose();
+    _itemNameController.dispose();
+    _itemLostDateController.dispose();
+    _categoryController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              onChanged: (value) {
-                setState(() {
-                  itemName = value;
-                });
-              },
-              decoration: InputDecoration(
-                labelText: 'Item Name',
-              ),
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              onChanged: (value) {
-                setState(() {
-                  date = value;
-                });
-              },
-              decoration: InputDecoration(
-                labelText: 'Date',
-              ),
-            ),
-            DropdownButtonFormField(
-              value: category,
-              onChanged: (value) {
-                setState(() {
-                  category = value.toString();
-                });
-              },
-              items: [
-                DropdownMenuItem(
-                  child: Text('Category 1'),
-                  value: 'Category 1',
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Lost and Found Form'),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _itemTitleController,
+                decoration: InputDecoration(
+                  labelText: 'Item Title',
+                  hintText: 'Enter item title',
                 ),
-                DropdownMenuItem(
-                  child: Text('Category 2'),
-                  value: 'Category 2',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter item title';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _itemNameController,
+                decoration: InputDecoration(
+                  labelText: 'Item Name',
+                  hintText: 'Enter item name',
                 ),
-                // Add more categories as needed
-              ],
-              decoration: InputDecoration(
-                labelText: 'Category',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter item name';
+                  }
+                  return null;
+                },
               ),
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              onChanged: (value) {
-                setState(() {
-                  title = value;
-                });
-              },
-              decoration: InputDecoration(
-                labelText: 'Title',
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _itemLostDateController,
+                decoration: InputDecoration(
+                  labelText: 'Item Lost Date',
+                  hintText: 'Enter item lost date',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter item lost date';
+                  }
+                  return null;
+                },
               ),
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              onChanged: (value) {
-                setState(() {
-                  description = value;
-                });
-              },
-              decoration: InputDecoration(
-                labelText: 'Description',
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _categoryController,
+                decoration: InputDecoration(
+                  labelText: 'Category',
+                  hintText: 'Enter category',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter category';
+                  }
+                  return null;
+                },
               ),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final pickedFile =
-                await _picker.pickImage(source: ImageSource.gallery);
-                if (pickedFile != null) {
-                  setState(() {
-                    image = File(pickedFile.path);
-                  });
-                }
-              },
-              child: Text('Upload Image'),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: ElevatedButton(
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  hintText: 'Enter description',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter description';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')),
+                      SnackBar(
+                        content: Text('Form submitted successfully'),
+                      ),
                     );
-                    // Add code to handle form submission and image upload
+                    // Clear form fields
+                    _itemTitleController.clear();
+                    _itemNameController.clear();
+                    _itemLostDateController.clear();
+                    _categoryController.clear();
+                    _descriptionController.clear();
                   }
                 },
-                child: const Text('Submit'),
+                child: Text('Submit'),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
