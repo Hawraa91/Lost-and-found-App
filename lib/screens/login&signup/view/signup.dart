@@ -49,6 +49,9 @@ class _SignupState extends State<Signup> {
         password: passwordController.text,
       );
 
+      // Send email verification
+      await userCredential.user!.sendEmailVerification();
+
       // Get the user ID after successful sign-up
       String userId = userCredential.user!.uid;
 
