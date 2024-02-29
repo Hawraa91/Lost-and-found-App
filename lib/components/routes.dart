@@ -14,6 +14,6 @@ final Map<String, WidgetBuilder> routes = {
   '/home': (context) => const Home(),
   '/signup': (context) => const Signup(),
   '/profile': (context) => const ProfilePage(),
-  '/lost': (context) => const LostItemForm(),
+  '/lost': (context) => const LostItem(),
 };
 

@@ -4,38 +4,28 @@ import 'package:image_picker/image_picker.dart';
 import '../../components/bottomNavBar.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(
+    home: LostItem(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class LostItem extends StatefulWidget {
+  const LostItem({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: LostItemForm(),
-      bottomNavigationBar: BottomNavBar(),
-    );
-  }
+  _LostItemState createState() => _LostItemState();
 }
 
-class LostItemForm extends StatefulWidget {
-  const LostItemForm({Key? key}) : super(key: key);
-
-  @override
-  State<LostItemForm> createState() => _LostItemFormState();
-}
-
-class _LostItemFormState extends State<LostItemForm> {
+class _LostItemState extends State<LostItem> {
   final _formKey = GlobalKey<FormState>();
-  final _itemTitleController = TextEditingController();
-  final _itemNameController = TextEditingController();
-  final _itemLostDateController = TextEditingController();
-  final _categoryController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  XFile? _imageFile; // To store the selected image
+  final TextEditingController _itemTitleController = TextEditingController();
+  final TextEditingController _itemNameController = TextEditingController();
+  final TextEditingController _itemLostDateController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  XFile? _imageFile;
 
-  final ImagePicker _picker = ImagePicker(); // Image picker instance
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void dispose() {
@@ -68,81 +58,12 @@ class _LostItemFormState extends State<LostItemForm> {
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
-                controller: _itemTitleController,
-                decoration: const InputDecoration(
-                  labelText: 'Item Title',
-                  hintText: 'Enter item title',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter item title';
-                  }
-                  return null;
-                },
-              ),
+              _buildTextFormField('Item Title', _itemTitleController),
+              _buildTextFormField('Item Name', _itemNameController),
+              _buildTextFormField('Item Lost Date', _itemLostDateController),
+              _buildTextFormField('Category', _categoryController),
+              _buildTextFormField('Description', _descriptionController),
               const SizedBox(height: 10),
-              TextFormField(
-                controller: _itemNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Item Name',
-                  hintText: 'Enter item name',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter item name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _itemLostDateController,
-                decoration: const InputDecoration(
-                  labelText: 'Item Lost Date',
-                  hintText: 'Enter item lost date',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter item lost date';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _categoryController,
-                decoration: const InputDecoration(
-                  labelText: 'Category',
-                  hintText: 'Enter category',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter category';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                  hintText: 'Enter description',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter description';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-
-
-              const SizedBox(height: 10),
-
-              // Image upload section
               Row(
                 children: [
                   IconButton(
@@ -152,10 +73,7 @@ class _LostItemFormState extends State<LostItemForm> {
                   Text(_imageFile?.path ?? 'No image selected'),
                 ],
               ),
-
               const SizedBox(height: 10),
-
-              // Submit button (after image upload)
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -179,9 +97,29 @@ class _LostItemFormState extends State<LostItemForm> {
               ),
             ],
           ),
+
         ),
+      ),
+      bottomNavigationBar: const BottomNavBar(),
+    );
+  }
+
+  Widget _buildTextFormField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: 'Enter $label',
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter $label';
+          }
+          return null;
+        },
       ),
     );
   }
 }
-
