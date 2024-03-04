@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import '../../components/bottomNavBar.dart';
 
@@ -60,7 +61,7 @@ class _LostItemState extends State<LostItem> {
             children: [
               _buildTextFormField('Item Title', _itemTitleController),
               _buildTextFormField('Item Name', _itemNameController),
-              _buildTextFormField('Item Lost Date', _itemLostDateController),
+              _buildDateTimePickerFormField('Item Lost Date'),
               _buildTextFormField('Category', _categoryController),
               _buildTextFormField('Description', _descriptionController),
               const SizedBox(height: 10),
@@ -97,7 +98,6 @@ class _LostItemState extends State<LostItem> {
               ),
             ],
           ),
-
         ),
       ),
       bottomNavigationBar: const BottomNavBar(),
@@ -119,6 +119,44 @@ class _LostItemState extends State<LostItem> {
           }
           return null;
         },
+      ),
+    );
+  }
+
+  Widget _buildDateTimePickerFormField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: GestureDetector(
+        onTap: () {
+          DatePicker.showDatePicker(
+            context,
+            showTitleActions: true,
+            minTime: DateTime(2000, 1, 1),
+            maxTime: DateTime(2100, 12, 31),
+            onConfirm: (date) {
+              setState(() {
+                _itemLostDateController.text = date.toString();
+              });
+            },
+            currentTime: DateTime.now(),
+            locale: LocaleType.en,
+          );
+        },
+        child: AbsorbPointer(
+          child: TextFormField(
+            controller: _itemLostDateController,
+            decoration: InputDecoration(
+              labelText: label,
+              hintText: 'Select $label',
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select $label';
+              }
+              return null;
+            },
+          ),
+        ),
       ),
     );
   }

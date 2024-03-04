@@ -60,7 +60,7 @@ class _LostItemState extends State<LostItem> {
             children: [
               _buildTextFormField('Item Title', _itemTitleController),
               _buildTextFormField('Item Name', _itemNameController),
-              _buildTextFormField('Item Lost Date', _itemLostDateController),
+              _buildDateTimePickerFormField('Item Lost Date'),
               _buildTextFormField('Category', _categoryController),
               _buildTextFormField('Description', _descriptionController),
               const SizedBox(height: 10),
@@ -97,7 +97,6 @@ class _LostItemState extends State<LostItem> {
               ),
             ],
           ),
-
         ),
       ),
       bottomNavigationBar: const BottomNavBar(),
@@ -116,6 +115,41 @@ class _LostItemState extends State<LostItem> {
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter $label';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildDateTimePickerFormField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: TextFormField(
+        controller: _itemLostDateController,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: 'Select $label',
+          suffixIcon: IconButton(
+            icon: Icon(Icons.calendar_today),
+            onPressed: () async {
+              final DateTime? picked = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+              );
+              if (picked != null) {
+                setState(() {
+                  _itemLostDateController.text = picked.toString();
+                });
+              }
+            },
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please select $label';
           }
           return null;
         },
