@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../components/bottomNavBar.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MaterialApp(
     home: LostItem(),
   ));
@@ -46,6 +50,39 @@ class _LostItemState extends State<LostItem> {
     });
   }
 
+  Future<void> _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      Map<String, dynamic> data = {
+        'itemTitle': _itemTitleController.text,
+        'itemName': _itemNameController.text,
+        'itemLostDate': _itemLostDateController.text,
+        'category': _categoryController.text,
+        'description': _descriptionController.text,
+      };
+
+      try {
+        await FirebaseFirestore.instance.collection('lost').add(data);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Form submitted successfully'),
+          ),
+        );
+        _itemTitleController.clear();
+        _itemNameController.clear();
+        _itemLostDateController.clear();
+        _categoryController.clear();
+        _descriptionController.clear();
+        _imageFile = null;
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to submit form. Please try again later.'),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,56 +91,45 @@ class _LostItemState extends State<LostItem> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              _buildTextFormField('Item Title', _itemTitleController),
-              _buildTextFormField('Item Name', _itemNameController),
-              _buildDateTimePickerFormField('Item Lost Date'),
-              _buildTextFormField('Category', _categoryController),
-              _buildTextFormField('Description', _descriptionController),
-              const SizedBox(height: 10),
-              Row(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              child: ToggleButton(),
+            ),
+            const SizedBox(height: 10),
+            Form(
+              key: _formKey,
+              child: Column(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.image_outlined),
-                    onPressed: _getImage,
+                  _buildInputField('Item Title', _itemTitleController),
+                  _buildInputField('Item Name', _itemNameController),
+                  _buildDateTimePickerFormField('Item Lost Date'),
+                  _buildCategoryDropdown('Category', _categoryController),
+                  _buildInputField('Description', _descriptionController),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.image_outlined),
+                        onPressed: _getImage,
+                      ),
+                      Text(_imageFile?.path ?? 'No image selected'),
+                    ],
                   ),
-                  Text(_imageFile?.path ?? 'No image selected'),
+                  const SizedBox(height: 10),
+                  _buildButton('Submit', _submitForm),
                 ],
               ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Handle form submission with image upload
-                    // ...
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Form submitted successfully'),
-                      ),
-                    );
-                    // Clear form fields and image selection
-                    _itemTitleController.clear();
-                    _itemNameController.clear();
-                    _itemLostDateController.clear();
-                    _categoryController.clear();
-                    _descriptionController.clear();
-                    _imageFile = null;
-                  }
-                },
-                child: Text('Submit'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: const BottomNavBar(),
     );
   }
 
-  Widget _buildTextFormField(String label, TextEditingController controller) {
+  Widget _buildInputField(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
@@ -111,6 +137,7 @@ class _LostItemState extends State<LostItem> {
         decoration: InputDecoration(
           labelText: label,
           hintText: 'Enter $label',
+          border: OutlineInputBorder(),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -130,6 +157,7 @@ class _LostItemState extends State<LostItem> {
         decoration: InputDecoration(
           labelText: label,
           hintText: 'Select $label',
+          border: OutlineInputBorder(),
           suffixIcon: IconButton(
             icon: Icon(Icons.calendar_today),
             onPressed: () async {
@@ -153,6 +181,164 @@ class _LostItemState extends State<LostItem> {
           }
           return null;
         },
+      ),
+    );
+  }
+
+  Widget _buildCategoryDropdown(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: 'Select $label',
+          border: OutlineInputBorder(),
+        ),
+        value: controller.text.isNotEmpty ? controller.text : 'devices',
+        onChanged: (String? value) {
+          setState(() {
+            controller.text = value!;
+          });
+        },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please select $label';
+          }
+          return null;
+        },
+        items: <String>['devices', 'jewels', 'keys', 'personal document', 'others']
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildButton(String label, Function() onPressed) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Container(
+        width: 200,
+        decoration: BoxDecoration(
+          color: const Color.fromRGBO(96, 172, 182, 1.0),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: TextButton(
+          onPressed: onPressed,
+          child: Text(
+            label,
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ToggleButton extends StatefulWidget {
+  @override
+  _ToggleButtonState createState() => _ToggleButtonState();
+}
+
+const double width = 300.0;
+const double height = 60.0;
+const double loginAlign = -1;
+const double signInAlign = 1;
+final Color selectedColor = const Color.fromRGBO(96, 172, 182, 1.0);
+final Color normalColor = Colors.black54;
+
+class _ToggleButtonState extends State<ToggleButton> {
+  late double xAlign;
+  late Color loginColor;
+  late Color signInColor;
+
+  @override
+  void initState() {
+    super.initState();
+    xAlign = loginAlign;
+    loginColor = selectedColor;
+    signInColor = normalColor;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.grey,
+        borderRadius: BorderRadius.all(
+          Radius.circular(50.0),
+        ),
+      ),
+      child: Stack(
+        children: [
+          AnimatedAlign(
+            alignment: Alignment(xAlign, 0),
+            duration: Duration(milliseconds: 300),
+            child: Container(
+              width: width * 0.5,
+              height: height,
+              decoration: BoxDecoration(
+                color: selectedColor, // Change color here
+                borderRadius: BorderRadius.all(
+                  Radius.circular(50.0),
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                xAlign = loginAlign;
+                loginColor = selectedColor;
+                signInColor = normalColor;
+              });
+            },
+            child: Align(
+              alignment: Alignment(-1, 0),
+              child: Container(
+                width: width * 0.5,
+                color: Colors.transparent,
+                alignment: Alignment.center,
+                child: Text(
+                  'Lost',
+                  style: TextStyle(
+                    color: loginColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                xAlign = signInAlign;
+                signInColor = selectedColor;
+                loginColor = normalColor;
+              });
+            },
+            child: Align(
+              alignment: Alignment(1, 0),
+              child: Container(
+                width: width * 0.5,
+                color: Colors.transparent,
+                alignment: Alignment.center,
+                child: Text(
+                  'Found',
+                  style: TextStyle(
+                    color: signInColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
