@@ -191,13 +191,13 @@ class _LostItemState extends State<LostItem> {
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           labelText: label,
-          hintText: 'Select $label',
+          hintText: 'Select $label', // Add the hintText here
           border: OutlineInputBorder(),
         ),
-        value: controller.text.isNotEmpty ? controller.text : 'devices',
+        value: controller.text.isNotEmpty ? controller.text : null, // Change default value to null
         onChanged: (String? value) {
           setState(() {
-            controller.text = value!;
+            controller.text = value ?? ''; // Use null-aware operator to handle null value
           });
         },
         validator: (value) {
@@ -216,6 +216,7 @@ class _LostItemState extends State<LostItem> {
       ),
     );
   }
+
 
   Widget _buildButton(String label, Function() onPressed) {
     return Padding(
@@ -283,7 +284,7 @@ class _ToggleButtonState extends State<ToggleButton> {
               width: width * 0.5,
               height: height,
               decoration: BoxDecoration(
-                color: selectedColor, // Change color here
+                color: selectedColor, // Change background color here
                 borderRadius: BorderRadius.all(
                   Radius.circular(50.0),
                 ),
@@ -304,10 +305,10 @@ class _ToggleButtonState extends State<ToggleButton> {
                 width: width * 0.5,
                 color: Colors.transparent,
                 alignment: Alignment.center,
-                child: Text(
+                child: const Text(
                   'Lost',
                   style: TextStyle(
-                    color: loginColor,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -331,7 +332,7 @@ class _ToggleButtonState extends State<ToggleButton> {
                 child: Text(
                   'Found',
                   style: TextStyle(
-                    color: signInColor,
+                    color: signInColor == selectedColor ? Colors.white : Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

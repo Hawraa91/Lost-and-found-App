@@ -144,6 +144,7 @@ class MainScreen extends StatelessWidget {
                       //TODO: Add the other details of the
                       final String title = data['Title']; //Printing the title
                       final String description = data['description'];
+                      //final String active = data['is-active']; //check if the post is-active
 
                       return Column(
                         children: [
