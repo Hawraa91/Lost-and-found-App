@@ -142,8 +142,9 @@ class MainScreen extends StatelessWidget {
                       the documents list using the map method*/
                       final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
                       //TODO: Add the other details of the
-                      final String title = data['Title']; //Printing the title
-                      final String description = data['description'];
+                      final String title = data['itemTitle'] ?? ''; // Use default value if null
+                      final String description = data['description'] ?? '';
+                      //final String description = data['description'] ?? '';// Use default value if null
                       //final String active = data['is-active']; //check if the post is-active
 
                       return Column(

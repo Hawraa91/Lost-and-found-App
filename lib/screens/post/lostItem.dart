@@ -50,6 +50,7 @@ class _LostItemState extends State<LostItem> {
     });
   }
 
+    //TODO: add the public or private reports
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic> data = {
