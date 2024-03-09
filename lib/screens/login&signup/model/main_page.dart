@@ -1,5 +1,3 @@
-// import 'dart:js_interop';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lost_and_found/screens/login&signup//view/login_page.dart';

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import "package:intl/intl.dart";
+
 
 
 class MainScreen extends StatelessWidget {
@@ -135,7 +137,7 @@ class MainScreen extends StatelessWidget {
 
                   /* "snapshot.data": This retrieves the data snapshot from
                   the snapshot object. It represents the latest data snapshot of the stream.*/
-                  final List<DocumentSnapshot> documents = snapshot.data!.docs; //making sure the doc is not null by using doc!
+                  final List<DocumentSnapshot> documents = snapshot.data!.docs; //making sure the doc is not null by using data!
                   return Column(
                     children: documents.map((doc) {
                       /*documents.map((doc) { ... }): This iterates over each DocumentSnapshot in
@@ -144,13 +146,15 @@ class MainScreen extends StatelessWidget {
                       //TODO: Add the other details of the
                       final String title = data['itemTitle'] ?? ''; // Use default value if null
                       final String description = data['description'] ?? '';
-                      //final String description = data['description'] ?? '';// Use default value if null
-                      //final String active = data['is-active']; //check if the post is-active
+                      final String category = data['category'] ?? '';// Use default value if null
+                      final String dateStr = data['itemLostDate'] ?? ''; // Fetch date as string
+                      final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now(); // Convert string to DateTime, fallback to current time if conversion fails
+
 
                       return Column(
                         children: [
                           const SizedBox(height: 20), // Add space before the container
-                          containerPost(context, title, description),
+                          containerPost(context, title, description, category, date),
                         ],
                       );
                     }).toList(),
@@ -194,7 +198,7 @@ Widget cardIcon(IconData icon, Color backgroundColor,String type) {
 }
 
 //TODO: Update the things that you want to print
-Widget containerPost(BuildContext context, String title, String desc) {
+Widget containerPost(BuildContext context, String title, String desc,  String category, DateTime date) {
   return Container(
     width: 310,
     height: MediaQuery.of(context).size.width / 2,
@@ -233,6 +237,22 @@ Widget containerPost(BuildContext context, String title, String desc) {
                   color: Colors.white,
                 ),
               ),
+              const SizedBox(height: 10),
+              Text(
+                'Category: $category',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Date: ${DateFormat('yyyy-MM-dd').format(date)}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
             ],
           )
         ],
@@ -240,3 +260,4 @@ Widget containerPost(BuildContext context, String title, String desc) {
     ),
   );
 }
+

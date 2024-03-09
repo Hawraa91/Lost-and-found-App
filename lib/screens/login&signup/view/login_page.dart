@@ -163,6 +163,15 @@ class _LoginState extends State<Login> {
                   'new account? Sign Up',
                 ),
               ),
+              TextButton(
+                onPressed: () {
+                  // Navigate to the forget password
+                  Navigator.pushNamed(context, "/forgetPassword");
+                },
+                child: const Text(
+                  'Forget Password?',
+                ),
+              ),
             ],
           ),
         ),

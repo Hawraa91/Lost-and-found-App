@@ -24,6 +24,7 @@ dependencies:
   image_picker: ^1.0.7
   image_field: ^0.0.9
   flutter_datetime_picker: ^1.5.1
+  intl: ^0.19.0
 
 
 
