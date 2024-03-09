@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../components/bottomNavBar.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: LostItem(),
+    home: FoundItem(),
   ));
 }
 
-class LostItem extends StatefulWidget {
-  const LostItem({Key? key}) : super(key: key);
+class FoundItem extends StatefulWidget {
+  const FoundItem({Key? key}) : super(key: key);
 
   @override
-  _LostItemState createState() => _LostItemState();
+  _FoundItemState createState() => _FoundItemState();
 }
 
-class _LostItemState extends State<LostItem> {
+class _FoundItemState extends State<FoundItem> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _itemTitleController = TextEditingController();
   final TextEditingController _itemNameController = TextEditingController();
-  final TextEditingController _itemLostDateController = TextEditingController();
+  final TextEditingController _itemFoundDateController =
+  TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   XFile? _imageFile;
@@ -32,7 +34,7 @@ class _LostItemState extends State<LostItem> {
   void dispose() {
     _itemTitleController.dispose();
     _itemNameController.dispose();
-    _itemLostDateController.dispose();
+    _itemFoundDateController.dispose();
     _categoryController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -51,7 +53,7 @@ class _LostItemState extends State<LostItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lost and Found Form'),
+        title: const Text('Found Item Form'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -61,7 +63,7 @@ class _LostItemState extends State<LostItem> {
             children: [
               _buildTextFormField('Item Title', _itemTitleController),
               _buildTextFormField('Item Name', _itemNameController),
-              _buildDateTimePickerFormField('Item Lost Date'),
+              _buildDateTimePickerFormField('Item Found Date'),
               _buildTextFormField('Category', _categoryController),
               _buildTextFormField('Description', _descriptionController),
               const SizedBox(height: 10),
@@ -76,22 +78,33 @@ class _LostItemState extends State<LostItem> {
               ),
               const SizedBox(height: 10),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    // Handle form submission with image upload
-                    // ...
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Form submitted successfully'),
-                      ),
-                    );
-                    // Clear form fields and image selection
-                    _itemTitleController.clear();
-                    _itemNameController.clear();
-                    _itemLostDateController.clear();
-                    _categoryController.clear();
-                    _descriptionController.clear();
-                    _imageFile = null;
+                    _formKey.currentState!.save(); // Save form data
+                    try {
+                      await FirebaseFirestore.instance.collection('found').add({
+                        'itemTitle': _itemTitleController.text,
+                        'itemName': _itemNameController.text,
+                        'itemFoundDate': _itemFoundDateController.text,
+                        'category': _categoryController.text,
+                        'description': _descriptionController.text,
+                        // Add more fields as needed
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Form submitted successfully'),
+                        ),
+                      );
+                      // Clear form fields and image selection
+                      _itemTitleController.clear();
+                      _itemNameController.clear();
+                      _itemFoundDateController.clear();
+                      _categoryController.clear();
+                      _descriptionController.clear();
+                      _imageFile = null;
+                    } catch (e) {
+                      print('Error saving form data: $e');
+                    }
                   }
                 },
                 child: Text('Submit'),
@@ -104,7 +117,8 @@ class _LostItemState extends State<LostItem> {
     );
   }
 
-  Widget _buildTextFormField(String label, TextEditingController controller) {
+  Widget _buildTextFormField(
+      String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
@@ -118,6 +132,9 @@ class _LostItemState extends State<LostItem> {
             return 'Please enter $label';
           }
           return null;
+        },
+        onSaved: (value) {
+          controller.text = value!;
         },
       ),
     );
@@ -135,7 +152,7 @@ class _LostItemState extends State<LostItem> {
             maxTime: DateTime(2100, 12, 31),
             onConfirm: (date) {
               setState(() {
-                _itemLostDateController.text = date.toString();
+                _itemFoundDateController.text = date.toString();
               });
             },
             currentTime: DateTime.now(),
@@ -144,7 +161,7 @@ class _LostItemState extends State<LostItem> {
         },
         child: AbsorbPointer(
           child: TextFormField(
-            controller: _itemLostDateController,
+            controller: _itemFoundDateController,
             decoration: InputDecoration(
               labelText: label,
               hintText: 'Select $label',
@@ -161,3 +178,4 @@ class _LostItemState extends State<LostItem> {
     );
   }
 }
+
