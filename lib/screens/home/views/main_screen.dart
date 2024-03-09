@@ -197,10 +197,9 @@ Widget cardIcon(IconData icon, Color backgroundColor,String type) {
   );
 }
 
-//TODO: Update the things that you want to print
-Widget containerPost(BuildContext context, String title, String desc,  String category, DateTime date) {
+Widget containerPost(BuildContext context, String title, String desc, String category, DateTime date) {
   return Container(
-    width: 310,
+    width: MediaQuery.of(context).size.width,
     height: MediaQuery.of(context).size.width / 2,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(30),
@@ -217,7 +216,8 @@ Widget containerPost(BuildContext context, String title, String desc,  String ca
     child: Padding(
       padding: const EdgeInsets.all(20.0), // Adjust padding as needed
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center, // Center items vertically
+        crossAxisAlignment: CrossAxisAlignment.center, // Center items horizontally
         children: [
           Text(
             title,
@@ -226,38 +226,37 @@ Widget containerPost(BuildContext context, String title, String desc,  String ca
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 10),
-          Wrap(
-            children: [
-              Text(
-                desc,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Category: $category',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Date: ${DateFormat('yyyy-MM-dd').format(date)}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          )
+          Text(
+            desc,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Category: $category',
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Date: ${DateFormat('yyyy-MM-dd').format(date)}',
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     ),
   );
 }
-
