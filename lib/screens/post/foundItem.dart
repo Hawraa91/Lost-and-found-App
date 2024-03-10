@@ -10,22 +10,22 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MaterialApp(
-    home: LostItem(),
+    home: FoundItem(),
   ));
 }
 
-class LostItem extends StatefulWidget {
-  const LostItem({Key? key}) : super(key: key);
+class FoundItem extends StatefulWidget {
+  const FoundItem({Key? key}) : super(key: key);
 
   @override
-  _LostItemState createState() => _LostItemState();
+  _FoundItemPageState createState() => _FoundItemPageState();
 }
 
-class _LostItemState extends State<LostItem> {
+class _FoundItemPageState extends State<FoundItem> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _itemTitleController = TextEditingController();
   final TextEditingController _itemNameController = TextEditingController();
-  final TextEditingController _itemLostDateController = TextEditingController();
+  final TextEditingController _itemFoundDateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   XFile? _imageFile;
@@ -36,7 +36,7 @@ class _LostItemState extends State<LostItem> {
   void dispose() {
     _itemTitleController.dispose();
     _itemNameController.dispose();
-    _itemLostDateController.dispose();
+    _itemFoundDateController.dispose();
     _categoryController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -51,19 +51,18 @@ class _LostItemState extends State<LostItem> {
     });
   }
 
-  //TODO: add the public or private reports
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic> data = {
         'itemTitle': _itemTitleController.text,
         'itemName': _itemNameController.text,
-        'itemLostDate': _itemLostDateController.text,
+        'itemFoundDate': _itemFoundDateController.text,
         'category': _categoryController.text,
         'description': _descriptionController.text,
       };
 
       try {
-        await FirebaseFirestore.instance.collection('lost').add(data);
+        await FirebaseFirestore.instance.collection('found').add(data);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Form submitted successfully'),
@@ -71,7 +70,7 @@ class _LostItemState extends State<LostItem> {
         );
         _itemTitleController.clear();
         _itemNameController.clear();
-        _itemLostDateController.clear();
+        _itemFoundDateController.clear();
         _categoryController.clear();
         _descriptionController.clear();
         _imageFile = null;
@@ -89,7 +88,7 @@ class _LostItemState extends State<LostItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lost and Found Form'),
+        title: const Text('Found Item Form'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -106,7 +105,7 @@ class _LostItemState extends State<LostItem> {
                 children: [
                   _buildInputField('Item Title', _itemTitleController),
                   _buildInputField('Item Name', _itemNameController),
-                  _buildDateTimePickerFormField('Item Lost Date'),
+                  _buildDateTimePickerFormField('Item Found Date'),
                   _buildCategoryDropdown('Category', _categoryController),
                   _buildInputField('Description', _descriptionController),
                   const SizedBox(height: 10),
@@ -155,7 +154,7 @@ class _LostItemState extends State<LostItem> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
-        controller: _itemLostDateController,
+        controller: _itemFoundDateController,
         decoration: InputDecoration(
           labelText: label,
           hintText: 'Select $label',
@@ -171,7 +170,7 @@ class _LostItemState extends State<LostItem> {
               );
               if (picked != null) {
                 setState(() {
-                  _itemLostDateController.text = picked.toString();
+                  _itemFoundDateController.text = picked.toString();
                 });
               }
             },
@@ -245,16 +244,31 @@ class ToggleButton extends StatefulWidget {
   _ToggleButtonState createState() => _ToggleButtonState();
 }
 
+const double width = 300.0;
+const double height = 60.0;
+const double loginAlign = -1;
+const double signInAlign = 1;
+final Color selectedColor = const Color.fromRGBO(96, 172, 182, 1.0);
+final Color normalColor = Colors.black54;
+
 class _ToggleButtonState extends State<ToggleButton> {
-  double xAlign = 1; // Initialize with default value
-  Color loginColor = Colors.black54; // Initialize with default value
-  Color signInColor = const Color.fromRGBO(96, 172, 182, 1.0); // Initialize with default value
+  late double xAlign;
+  late Color loginColor;
+  late Color signInColor;
+
+  @override
+  void initState() {
+    super.initState();
+    xAlign = signInAlign;
+    loginColor = normalColor;
+    signInColor = selectedColor;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300,
-      height: 60,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         color: Colors.grey,
         borderRadius: BorderRadius.all(
@@ -267,10 +281,10 @@ class _ToggleButtonState extends State<ToggleButton> {
             alignment: Alignment(xAlign, 0),
             duration: Duration(milliseconds: 300),
             child: Container(
-              width: 150,
-              height: 60,
+              width: width * 0.5,
+              height: height,
               decoration: BoxDecoration(
-                color: signInColor,
+                color: selectedColor, // Change background color here
                 borderRadius: BorderRadius.all(
                   Radius.circular(50.0),
                 ),
@@ -287,7 +301,7 @@ class _ToggleButtonState extends State<ToggleButton> {
             child: Align(
               alignment: Alignment(-1, 0),
               child: Container(
-                width: 150,
+                width: width * 0.5,
                 color: Colors.transparent,
                 alignment: Alignment.center,
                 child: const Text(
@@ -303,21 +317,21 @@ class _ToggleButtonState extends State<ToggleButton> {
           GestureDetector(
             onTap: () {
               setState(() {
-                xAlign = 1;
-                signInColor = Colors.black54;
-                loginColor = const Color.fromRGBO(96, 172, 182, 1.0);
+                xAlign = signInAlign;
+                signInColor = selectedColor;
+                loginColor = normalColor;
               });
             },
             child: Align(
               alignment: Alignment(1, 0),
               child: Container(
-                width: 150,
+                width: width * 0.5,
                 color: Colors.transparent,
                 alignment: Alignment.center,
                 child: Text(
                   'Found',
                   style: TextStyle(
-                    color: signInColor == signInColor ? Colors.white : Colors.black,
+                    color: signInColor == selectedColor ? Colors.white : Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
