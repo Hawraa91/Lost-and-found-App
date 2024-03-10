@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../components/bottomNavBar.dart';
+import 'founditem.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +51,7 @@ class _LostItemState extends State<LostItem> {
     });
   }
 
-    //TODO: add the public or private reports
+  //TODO: add the public or private reports
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic> data = {
@@ -218,7 +219,6 @@ class _LostItemState extends State<LostItem> {
     );
   }
 
-
   Widget _buildButton(String label, Function() onPressed) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -294,11 +294,10 @@ class _ToggleButtonState extends State<ToggleButton> {
           ),
           GestureDetector(
             onTap: () {
-              setState(() {
-                xAlign = loginAlign;
-                loginColor = selectedColor;
-                signInColor = normalColor;
-              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FoundItem()),
+              );
             },
             child: Align(
               alignment: Alignment(-1, 0),
