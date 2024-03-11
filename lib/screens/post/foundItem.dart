@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../components/bottomNavBar.dart';
 import 'founditem.dart';
+import 'lostItem.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -295,7 +296,7 @@ class _ToggleButtonState extends State<ToggleButton> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FoundItem()),
+                MaterialPageRoute(builder: (context) => LostItem()),
               );
             },
             child: Align(
@@ -314,6 +315,7 @@ class _ToggleButtonState extends State<ToggleButton> {
               ),
             ),
           ),
+
           GestureDetector(
             onTap: () {
               setState(() {

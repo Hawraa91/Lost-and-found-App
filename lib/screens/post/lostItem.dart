@@ -317,11 +317,10 @@ class _ToggleButtonState extends State<ToggleButton> {
           ),
           GestureDetector(
             onTap: () {
-              setState(() {
-                xAlign = signInAlign;
-                signInColor = selectedColor;
-                loginColor = normalColor;
-              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FoundItem()),
+              );
             },
             child: Align(
               alignment: Alignment(1, 0),
@@ -339,6 +338,7 @@ class _ToggleButtonState extends State<ToggleButton> {
               ),
             ),
           ),
+
         ],
       ),
     );
