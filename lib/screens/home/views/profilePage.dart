@@ -21,6 +21,7 @@ class ProfilePage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
+                  // Display user's full name
                   StreamBuilder<DocumentSnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('users')
@@ -43,6 +44,7 @@ class ProfilePage extends StatelessWidget {
                       );
                     },
                   ),
+                  // Display user's display name
                   Text(
                     user?.displayName ?? "Guest",
                     style: Theme.of(context)
@@ -51,10 +53,12 @@ class ProfilePage extends StatelessWidget {
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
+                  // Display user's email
                   ListTile(
                     leading: const Icon(Icons.email),
                     title: Text(user?.email ?? "No email"),
                   ),
+                  // Display user's phone number
                   ListTile(
                     leading: const Icon(Icons.phone),
                     title: StreamBuilder<DocumentSnapshot>(
@@ -73,10 +77,12 @@ class ProfilePage extends StatelessWidget {
                       },
                     ),
                   ),
+                  // Placeholder for user's address
                   const ListTile(
                     leading: Icon(Icons.home),
                     title: Text("Address goes here"),
                   ),
+                  // Logout button
                   ElevatedButton(
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
@@ -109,6 +115,7 @@ class _TopPortion extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
+          // Background gradient
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -122,6 +129,7 @@ class _TopPortion extends StatelessWidget {
               ),
             ),
           ),
+          // User profile image
           Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(

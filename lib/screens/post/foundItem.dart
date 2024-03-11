@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../components/bottomNavBar.dart';
-import 'founditem.dart';
 import 'lostItem.dart';
 
 void main() async {
@@ -29,9 +29,34 @@ class _FoundItemPageState extends State<FoundItem> {
   final TextEditingController _itemFoundDateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController(); // Location controller
+
   XFile? _imageFile;
 
   final ImagePicker _picker = ImagePicker();
+
+  void _selectLocationOnMap() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 300,
+          child: GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(37.77483, -122.41942), // Default location (San Francisco)
+              zoom: 12,
+            ),
+            onTap: (LatLng latLng) {
+              setState(() {
+                _locationController.text = '${latLng.latitude}, ${latLng.longitude}';
+              });
+              Navigator.pop(context); // Close the modal bottom sheet
+            },
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -40,6 +65,7 @@ class _FoundItemPageState extends State<FoundItem> {
     _itemFoundDateController.dispose();
     _categoryController.dispose();
     _descriptionController.dispose();
+    _locationController.dispose(); // Dispose location controller
     super.dispose();
   }
 
@@ -54,34 +80,20 @@ class _FoundItemPageState extends State<FoundItem> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      Map<String, dynamic> data = {
-        'itemTitle': _itemTitleController.text,
-        'itemName': _itemNameController.text,
-        'itemFoundDate': _itemFoundDateController.text,
-        'category': _categoryController.text,
-        'description': _descriptionController.text,
-      };
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Form submitted successfully'),
+        ),
+      );
 
-      try {
-        await FirebaseFirestore.instance.collection('found').add(data);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Form submitted successfully'),
-          ),
-        );
-        _itemTitleController.clear();
-        _itemNameController.clear();
-        _itemFoundDateController.clear();
-        _categoryController.clear();
-        _descriptionController.clear();
-        _imageFile = null;
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to submit form. Please try again later.'),
-          ),
-        );
-      }
+      // Clear form fields and image file
+      _itemTitleController.clear();
+      _itemNameController.clear();
+      _itemFoundDateController.clear();
+      _categoryController.clear();
+      _descriptionController.clear();
+      _locationController.clear();
+      _imageFile = null;
     }
   }
 
@@ -109,6 +121,31 @@ class _FoundItemPageState extends State<FoundItem> {
                   _buildDateTimePickerFormField('Item Found Date'),
                   _buildCategoryDropdown('Category', _categoryController),
                   _buildInputField('Description', _descriptionController),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _locationController,
+                          readOnly: true, // Make the field read-only
+                          decoration: InputDecoration(
+                            labelText: 'Location Found',
+                            hintText: 'Tap to select location',
+                            border: OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.map),
+                              onPressed: _selectLocationOnMap, // Show map when icon is pressed
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a location';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 10),
                   Row(
                     children: [
@@ -128,6 +165,7 @@ class _FoundItemPageState extends State<FoundItem> {
         ),
       ),
       bottomNavigationBar: const BottomNavBar(),
+      resizeToAvoidBottomInset: false, // Prevent keyboard from resizing the screen
     );
   }
 
@@ -193,13 +231,13 @@ class _FoundItemPageState extends State<FoundItem> {
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           labelText: label,
-          hintText: 'Select $label', // Add the hintText here
+          hintText: 'Select $label',
           border: OutlineInputBorder(),
         ),
-        value: controller.text.isNotEmpty ? controller.text : null, // Change default value to null
+        value: controller.text.isNotEmpty ? controller.text : null,
         onChanged: (String? value) {
           setState(() {
-            controller.text = value ?? ''; // Use null-aware operator to handle null value
+            controller.text = value ?? '';
           });
         },
         validator: (value) {
