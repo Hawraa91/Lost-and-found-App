@@ -262,6 +262,7 @@ class _LostItemState extends State<LostItem> {
     );
   }
 
+  //TODO: we want to add the searchLostItemsForCurrentUser function
   Widget _buildButton(String label, Function() onPressed) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
