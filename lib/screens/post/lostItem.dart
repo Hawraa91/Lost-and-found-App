@@ -263,6 +263,7 @@ class _LostItemState extends State<LostItem> {
   }
 
   //TODO: we want to add the searchLostItemsForCurrentUser function
+  //i want to see if the reported item is in the found collection
   Widget _buildButton(String label, Function() onPressed) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
