@@ -82,6 +82,19 @@ class ProfilePage extends StatelessWidget {
                     leading: Icon(Icons.home),
                     title: Text("Address goes here"),
                   ),
+                  // Edit Profile button
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditProfilePage(),
+                        ),
+                      );
+                    },
+                    child: const Text("Edit Profile"),
+                  ),
+                  const SizedBox(height: 16),
                   // Logout button
                   ElevatedButton(
                     onPressed: () async {
@@ -155,6 +168,51 @@ class _TopPortion extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class EditProfilePage extends StatelessWidget {
+  const EditProfilePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Edit Profile"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Edit your profile information:"),
+            const SizedBox(height: 16),
+            TextFormField(
+              decoration: const InputDecoration(labelText: "First Name"),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              decoration: const InputDecoration(labelText: "Last Name"),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              decoration: const InputDecoration(labelText: "Phone Number"),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              decoration: const InputDecoration(labelText: "Address"),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Implement update profile logic
+              },
+              child: const Text("Save"),
+            ),
+          ],
+        ),
       ),
     );
   }

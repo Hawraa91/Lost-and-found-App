@@ -27,6 +27,7 @@ dependencies:
   intl: ^0.19.0
   google_maps_flutter: ^2.5.3
   geocoding: ^2.2.1
+  firebase_storage: ^11.6.10
 
 
 
