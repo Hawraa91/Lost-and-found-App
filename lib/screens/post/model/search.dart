@@ -45,11 +45,9 @@ Future<void> searchLostItemsForCurrentUser(String currentUserID) async
   }
   catch (error)
   {
-    print('Error searching for lost items: $error');
+    if (kDebugMode) {
+      print('Error searching for lost items: $error');
+    }
   }
 }
 
-// void main() {
-//
-//   searchLostItemsForCurrentUser();
-// }
