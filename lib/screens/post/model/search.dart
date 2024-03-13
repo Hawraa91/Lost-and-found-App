@@ -32,12 +32,17 @@ Future<void> searchLostItemsForCurrentUser(String currentUserID) async
         String? secondCateg = (foundDoc.data() as Map<String, dynamic>?)?['category'];
 
         // Check if the titles of the lost and found items match
-        if (lostTitle == foundTitle && lostName == foundName && lostCateg == secondCateg)
-        {
+        if (lostTitle == foundTitle && lostName == foundName && lostCateg == secondCateg) {
           // Found a match, you can take further action here
           if (kDebugMode) {
             print(
-              'Match found! Lost item title: $lostTitle, Found item title: $foundTitle');
+                'Match found! Lost item title: $lostTitle, Found item title: $foundTitle');
+          }
+          else {
+            if (kDebugMode) {
+              print(
+                'No Match Found Yet! ');
+            }
           }
         }
       }

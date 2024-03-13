@@ -183,8 +183,7 @@ class MainScreen extends StatelessWidget {
                       final String category = data['category'] ?? '';// Use default value if null
                       final String dateStr = data['itemLostDate'] ?? ''; // Fetch date as string
                       final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now(); // Convert string to DateTime, fallback to current time if conversion fails
-
-
+                      
                       return Column(
                         children: [
                           const SizedBox(height: 20), // Add space before the container
