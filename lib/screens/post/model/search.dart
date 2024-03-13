@@ -13,7 +13,7 @@ Future<void> searchLostItemsForCurrentUser(String currentUserID) async
         .where('userId', isEqualTo: currentUserID)
         .get();
 
-    //perform query to grab all the found items info
+    //perform query to grab all the found items information
     QuerySnapshot foundItemsSnapshot =
     await FirebaseFirestore.instance.collection('found').get();
 
