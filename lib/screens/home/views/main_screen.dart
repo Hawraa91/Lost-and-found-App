@@ -1,15 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:intl/intl.dart";
-
-
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
+
+    //a function to retrieve the current user's ID
+    Future<String?> getCurrentUserID() async {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      User? user = auth.currentUser;
+      if (user != null) {
+        return user.uid;
+      }
+      else {
+        return null; // User is not logged in
+      }
+    }
+
+    //saving the current user's ID
+    String currentUser = getCurrentUserID() as String;
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(

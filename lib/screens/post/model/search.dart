@@ -1,48 +1,55 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-//
-// /*
-// *********** Lost Report ***********
-// step 1 : retrieve the data from the documents in found collection
-// step 2: check if the lost item is in the lost collection
-//         - if yes, provide the probable match
-//           * contact with the user who found it (create a chat between them) (do that for the founder as well)
-//         - if not, print a message saying no match found yet, and add it in the lost collection
-// */
-//
-// void fetchDataAndCompare() async {
-//   // Fetch documents from the lost collection
-//   QuerySnapshot firstCollectionSnapshot =
-//   await FirebaseFirestore.instance.collection('lost').get();
-//
-//   // Fetch documents from the found collection
-//   QuerySnapshot secondCollectionSnapshot =
-//   await FirebaseFirestore.instance.collection('found').get();
-//
-//   // Compare documents from both collections
-//   firstCollectionSnapshot.docs.forEach((firstDoc) {
-//     secondCollectionSnapshot.docs.forEach((secondDoc) {
-//       // Compare documents based on your criteria (e.g., title, description)
-//       if (areDocumentsSimilar(firstDoc, secondDoc)) {
-//         // Documents are similar, take action or display them
-//         print('Similar documents found:');
-//         print('First document: ${firstDoc.data()}');
-//         print('Second document: ${secondDoc.data()}');
-//       }
-//     });
-//   });
-// }
-//
-// bool areDocumentsSimilar(DocumentSnapshot firstDoc, DocumentSnapshot secondDoc) {
-//   // Implement your comparison logic here
-//   // For example, compare titles or descriptions
-//   String firstTitle = firstDoc.data()['title'];
-//   String secondTitle = secondDoc.data()['title'];
-//
-//   // Perform string comparison or other matching techniques
-//   // Return true if the documents are similar, false otherwise
-//   return firstTitle == secondTitle;
-// }
-//
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+
+/* i grab the lost items with the current users ID, then i save them in variables,
+* then i get all the docs that are active
+* The i do the matching */
+Future<void> searchLostItemsForCurrentUser(String currentUserID) async
+{
+  try {
+    // Perform a query to find lost items that match the current user's information
+    QuerySnapshot lostItemsSnapshot = await FirebaseFirestore.instance
+        .collection('lost')
+        .where('userId', isEqualTo: currentUserID)
+        .get();
+
+    //perform query to grab all the found items info
+    QuerySnapshot foundItemsSnapshot =
+    await FirebaseFirestore.instance.collection('found').get();
+
+    //save all the fields of the lost item
+    for (var lostDoc in lostItemsSnapshot.docs) {
+      // Extract information from the lost document
+      String? lostTitle = (lostDoc.data() as Map<String, dynamic>?)?['itemTitle'];
+      String? lostName = (lostDoc.data() as Map<String, dynamic>?)?['itemName'];
+      String? lostCateg = (lostDoc.data() as Map<String, dynamic>?)?['category'];
+
+      // Iterate through the found items
+      for (var foundDoc in foundItemsSnapshot.docs) {
+        // Extract information from the found document
+        String? foundTitle = (foundDoc.data() as Map<String, dynamic>?)?['itemTitle'];
+        String? foundName = (foundDoc.data() as Map<String, dynamic>?)?['itemName'];
+        String? secondCateg = (foundDoc.data() as Map<String, dynamic>?)?['category'];
+
+        // Check if the titles of the lost and found items match
+        if (lostTitle == foundTitle && lostName == foundName && lostCateg == secondCateg)
+        {
+          // Found a match, you can take further action here
+          if (kDebugMode) {
+            print(
+              'Match found! Lost item title: $lostTitle, Found item title: $foundTitle');
+          }
+        }
+      }
+    }
+  }
+  catch (error)
+  {
+    print('Error searching for lost items: $error');
+  }
+}
+
 // void main() {
-//   fetchDataAndCompare();
+//
+//   searchLostItemsForCurrentUser();
 // }

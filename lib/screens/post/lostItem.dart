@@ -1,8 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../components/bottomNavBar.dart';
 import 'founditem.dart';
 
@@ -28,6 +28,7 @@ class _LostItemState extends State<LostItem> {
   final TextEditingController _itemLostDateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  bool isPublic = true;
   XFile? _imageFile;
 
   final ImagePicker _picker = ImagePicker();
@@ -54,36 +55,54 @@ class _LostItemState extends State<LostItem> {
   //TODO: add the public or private reports
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      Map<String, dynamic> data = {
-        'itemTitle': _itemTitleController.text,
-        'itemName': _itemNameController.text,
-        'itemLostDate': _itemLostDateController.text,
-        'category': _categoryController.text,
-        'description': _descriptionController.text,
-      };
+      //takes the current user's ID
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
 
-      try {
-        await FirebaseFirestore.instance.collection('lost').add(data);
+      if (userId != null) {
+        Map<String, dynamic> data = {
+          'userId': userId,
+          'itemTitle': _itemTitleController.text,
+          'itemName': _itemNameController.text,
+          'itemLostDate': _itemLostDateController.text,
+          'category': _categoryController.text,
+          'description': _descriptionController.text,
+          'isPublic': isPublic, // Add the isPublic field
+        };
+
+        try {
+          await FirebaseFirestore.instance.collection('lost').add(data);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Form submitted successfully'),
+            ),
+          );
+          _itemTitleController.clear();
+          _itemNameController.clear();
+          _itemLostDateController.clear();
+          _categoryController.clear();
+          _descriptionController.clear();
+          _imageFile = null;
+          setState(() {
+            isPublic = true; // Reset the radio button to default value after submission
+          });
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to submit form. Please try again later.'),
+            ),
+          );
+        }
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Form submitted successfully'),
-          ),
-        );
-        _itemTitleController.clear();
-        _itemNameController.clear();
-        _itemLostDateController.clear();
-        _categoryController.clear();
-        _descriptionController.clear();
-        _imageFile = null;
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to submit form. Please try again later.'),
+            content: Text('User not authenticated. Please log in.'),
           ),
         );
       }
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +114,30 @@ class _LostItemState extends State<LostItem> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
           children: [
+            Row(
+              children: [
+                Radio(
+                  value: true,
+                  groupValue: isPublic,
+                  onChanged: (value) {
+                    setState(() {
+                      isPublic = value as bool;
+                    });
+                  },
+                ),
+                const Text('Public'),
+                Radio(
+                  value: false,
+                  groupValue: isPublic,
+                  onChanged: (value) {
+                    setState(() {
+                      isPublic = value as bool;
+                    });
+                  },
+                ),
+                const Text('Private'),
+              ],
+            ),
             Container(
               width: double.infinity,
               child: ToggleButton(),

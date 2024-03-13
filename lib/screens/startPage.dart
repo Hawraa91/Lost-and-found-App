@@ -58,7 +58,7 @@ class _startPageState extends State<startPage> {
               TextButton(
                 onPressed: () {
                   //navigate to login page
-                  Navigator.pushNamed(context, "/login");
+                  Navigator.pushNamed(context, "/captcha");
                 },
                 child: const Text(
                   'got an account? Log in',
