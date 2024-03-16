@@ -56,7 +56,6 @@ class CategoryItemPage extends StatelessWidget {
               return Column(
                 children: documents.map((doc) {
                   final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                  // TODO: Add the other details of the
                   final String title = data['itemTitle'] ?? '';
                   final String description = data['description'] ?? '';
                   final String category = data['category'] ?? '';
