@@ -20,7 +20,7 @@ class CategoryItemPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(category),
+        title: Text('$category Filter'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
