@@ -251,7 +251,7 @@ class _LostItemState extends State<LostItem> {
           }
           return null;
         },
-        items: <String>['devices', 'jewels', 'keys', 'personal document', 'others']
+        items: <String>['Devices', 'Jewels', 'Keys', 'Personal document', 'Others']
             .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,

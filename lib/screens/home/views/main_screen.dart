@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../../post/model/search.dart';
+import '../modelView/CategoryItemsPage.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key});
@@ -36,14 +36,14 @@ class MainScreen extends StatelessWidget {
             );
           } else {
             searchLostItemsForCurrentUser(currentUserID);
-            return buildMainScreen(currentUserID);
+            return buildMainScreen(context, currentUserID);
           }
         }
       },
     );
   }
 
-  Widget buildMainScreen(String currentUserID) {
+  Widget buildMainScreen(BuildContext context, String currentUserID) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -84,7 +84,6 @@ class MainScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-
                             ),
                           ),
                           Text(
@@ -92,7 +91,6 @@ class MainScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-
                             ),
                           ),
                         ],
@@ -128,14 +126,62 @@ class MainScreen extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          cardIcon(Icons.key,
-                              const Color.fromRGBO(237, 245, 246, 1.0), "Keys"),
-                          cardIcon(Icons.headset,
-                              const Color.fromRGBO(237, 245, 246, 1.0), "Devices"),
-                          cardIcon(Icons.diamond,
-                              const Color.fromRGBO(237, 245, 246, 1.0), "Jewels"),
-                          cardIcon(Icons.book,
-                              const Color.fromRGBO(237, 245, 246, 1.0), "Books"),
+                          CardIcon(
+                            Icons.key,
+                            const Color.fromRGBO(237, 245, 246, 1.0),
+                            "Keys",
+                            () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategoryItemPage(category: 'Keys'),
+                                ),
+                              );
+                            },
+                          ),
+                          CardIcon(
+                            Icons.headset,
+                            const Color.fromRGBO(237, 245, 246, 1.0),
+                            "Devices",
+                            () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategoryItemPage(category: 'Devices'),
+                                ),
+                              );
+                            },
+                          ),
+                          CardIcon(
+                            Icons.diamond,
+                            const Color.fromRGBO(237, 245, 246, 1.0),
+                            "Jewels",
+                            () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategoryItemPage(category: 'Jewels'),
+                                ),
+                              );
+                            },
+                          ),
+                          CardIcon(
+                            Icons.question_mark_rounded,
+                            const Color.fromRGBO(237, 245, 246, 1.0),
+                            "Others",
+                            () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategoryItemPage(category: 'Others'),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -158,8 +204,10 @@ class MainScreen extends StatelessWidget {
               //the blue container
               StreamBuilder<QuerySnapshot>(
                 //taking the data from the collection
-                stream: FirebaseFirestore.instance.collection('lost').snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                stream:
+                    FirebaseFirestore.instance.collection('lost').snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   }
@@ -171,23 +219,32 @@ class MainScreen extends StatelessWidget {
 
                   /* "snapshot.data": This retrieves the data snapshot from
                   the snapshot object. It represents the latest data snapshot of the stream.*/
-                  final List<DocumentSnapshot> documents = snapshot.data!.docs; //making sure the doc is not null by using data!
+                  final List<DocumentSnapshot> documents = snapshot.data!
+                      .docs; //making sure the doc is not null by using data!
                   return Column(
                     children: documents.map((doc) {
                       /*documents.map((doc) { ... }): This iterates over each DocumentSnapshot in
                       the documents list using the map method*/
-                      final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                      final Map<String, dynamic> data =
+                          doc.data() as Map<String, dynamic>;
                       //TODO: Add the other details of the
-                      final String title = data['itemTitle'] ?? ''; // Use default value if null
+                      final String title =
+                          data['itemTitle'] ?? ''; // Use default value if null
                       final String description = data['description'] ?? '';
-                      final String category = data['category'] ?? '';// Use default value if null
-                      final String dateStr = data['itemLostDate'] ?? ''; // Fetch date as string
-                      final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now(); // Convert string to DateTime, fallback to current time if conversion fails
-                      
+                      final String category =
+                          data['category'] ?? ''; // Use default value if null
+                      final String dateStr =
+                          data['itemLostDate'] ?? ''; // Fetch date as string
+                      final DateTime date = DateTime.tryParse(dateStr) ??
+                          DateTime
+                              .now(); // Convert string to DateTime, fallback to current time if conversion fails
+
                       return Column(
                         children: [
-                          const SizedBox(height: 20), // Add space before the container
-                          containerPost(context, title, description, category, date),
+                          const SizedBox(
+                              height: 20), // Add space before the container
+                          containerPost(
+                              context, title, description, category, date),
                         ],
                       );
                     }).toList(),
@@ -202,34 +259,39 @@ class MainScreen extends StatelessWidget {
   }
 
   //The category icons method
-  Widget cardIcon(IconData icon, Color backgroundColor,String type) {
-    return Container(
-      height: 65,
-      width: 100,
-      child: Card(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.5),
-              child: Container(
-                color: backgroundColor,
-                child: Icon(icon),
+  Widget CardIcon(
+      IconData icon, Color backgroundColor, String type, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 65,
+        width: 100,
+        child: Card(
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.5),
+                child: Container(
+                  color: backgroundColor,
+                  child: Icon(icon),
+                ),
               ),
-            ),
-            Text(
-              type, // Add your text here
-              style: const TextStyle(
-                fontSize: 12, // Set the font size as per your requirement
-                fontWeight: FontWeight.bold, // Set the font weight as per your requirement
+              Text(
+                type,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget containerPost(BuildContext context, String title, String desc, String category, DateTime date) {
+  Widget containerPost(BuildContext context, String title, String desc,
+      String category, DateTime date) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width / 2,
@@ -248,8 +310,10 @@ class MainScreen extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(20.0), // Adjust padding as needed
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // Center items vertically
-          crossAxisAlignment: CrossAxisAlignment.center, // Center items horizontally
+          mainAxisAlignment:
+              MainAxisAlignment.center, // Center items vertically
+          crossAxisAlignment:
+              CrossAxisAlignment.center, // Center items horizontally
           children: [
             Text(
               title,
