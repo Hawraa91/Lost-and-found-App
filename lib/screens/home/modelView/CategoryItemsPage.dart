@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
+import '../../../components/bottomNavBar.dart';
+
 class CategoryItemPage extends StatelessWidget {
   // Retrieving the category from the main_screen page
   final String category;
@@ -74,6 +76,7 @@ class CategoryItemPage extends StatelessWidget {
           },
         ),
       ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }
