@@ -156,7 +156,7 @@ class _LostItemState extends State<LostItem> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.image_outlined),
+                        icon: const Icon(Icons.image_outlined),
                         onPressed: _getImage,
                       ),
                       Text(_imageFile?.path ?? 'No image selected'),
@@ -182,7 +182,7 @@ class _LostItemState extends State<LostItem> {
         decoration: InputDecoration(
           labelText: label,
           hintText: 'Enter $label',
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -202,9 +202,9 @@ class _LostItemState extends State<LostItem> {
         decoration: InputDecoration(
           labelText: label,
           hintText: 'Select $label',
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           suffixIcon: IconButton(
-            icon: Icon(Icons.calendar_today),
+            icon: const Icon(Icons.calendar_today),
             onPressed: () async {
               final DateTime? picked = await showDatePicker(
                 context: context,
@@ -237,7 +237,7 @@ class _LostItemState extends State<LostItem> {
         decoration: InputDecoration(
           labelText: label,
           hintText: 'Select $label', // Add the hintText here
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
         value: controller.text.isNotEmpty ? controller.text : null, // Change default value to null
         onChanged: (String? value) {
@@ -277,7 +277,7 @@ class _LostItemState extends State<LostItem> {
           onPressed: onPressed,
           child: Text(
             label,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
         ),
       ),
@@ -294,8 +294,8 @@ const double width = 300.0;
 const double height = 60.0;
 const double loginAlign = -1;
 const double signInAlign = 1;
-final Color selectedColor = const Color.fromRGBO(96, 172, 182, 1.0);
-final Color normalColor = Colors.black54;
+const Color selectedColor = Color.fromRGBO(96, 172, 182, 1.0);
+const normalColor = Colors.black54;
 
 class _ToggleButtonState extends State<ToggleButton> {
   late double xAlign;
@@ -315,7 +315,7 @@ class _ToggleButtonState extends State<ToggleButton> {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.grey,
         borderRadius: BorderRadius.all(
           Radius.circular(50.0),
@@ -325,13 +325,13 @@ class _ToggleButtonState extends State<ToggleButton> {
         children: [
           AnimatedAlign(
             alignment: Alignment(xAlign, 0),
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             child: Container(
               width: width * 0.5,
               height: height,
               decoration: BoxDecoration(
                 color: selectedColor, // Change background color here
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(50.0),
                 ),
               ),
@@ -341,11 +341,11 @@ class _ToggleButtonState extends State<ToggleButton> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FoundItem()),
+                MaterialPageRoute(builder: (context) => const FoundItem()),
               );
             },
             child: Align(
-              alignment: Alignment(-1, 0),
+              alignment: const Alignment(-1, 0),
               child: Container(
                 width: width * 0.5,
                 color: Colors.transparent,
@@ -364,11 +364,11 @@ class _ToggleButtonState extends State<ToggleButton> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FoundItem()),
+                MaterialPageRoute(builder: (context) => const FoundItem()),
               );
             },
             child: Align(
-              alignment: Alignment(1, 0),
+              alignment: const Alignment(1, 0),
               child: Container(
                 width: width * 0.5,
                 color: Colors.transparent,
