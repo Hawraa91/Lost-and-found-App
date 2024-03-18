@@ -213,12 +213,10 @@ class MainScreen extends StatelessWidget {
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   }
-
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     //the loading icon
                     return const CircularProgressIndicator();
                   }
-
                   /* "snapshot.data": This retrieves the data snapshot from
                   the snapshot object. It represents the latest data snapshot of the stream.*/
                   final List<DocumentSnapshot> documents = snapshot.data!
