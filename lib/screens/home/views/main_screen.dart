@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import '../../../components/customContainer.dart';
 import '../../post/model/search.dart';
 import '../modelView/CategoryItemsPage.dart';
 
@@ -243,10 +243,13 @@ class MainScreen extends StatelessWidget {
 
                       return Column(
                         children: [
-                          const SizedBox(
-                              height: 20), // Add space before the container
-                          containerPost(
-                              context, title, description, category, date),
+                          const SizedBox(height: 20),
+                          //calling the container method from another class (customContainer.dart)
+                          CustomContainer(context,
+                              title: title,
+                              desc: description,
+                              category: category,
+                              date: date)
                         ],
                       );
                     }).toList(),
@@ -258,6 +261,17 @@ class MainScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  //a function to retrieve the current user's ID
+  Future<String?> getCurrentUserID() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    if (user != null) {
+      return user.uid;
+    } else {
+      return null; // User is not logged in
+    }
   }
 
   //The category icons method
@@ -287,106 +301,5 @@ class MainScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-
-  //the widget for displaying the details of lost item
-  Widget containerPost(BuildContext context, String title, String desc,
-      String category, DateTime date) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 4,
-            color: Colors.grey.shade300,
-            offset: const Offset(5, 5),
-          )
-        ],
-        // Dark blue
-        color: const Color.fromRGBO(46, 61, 95, 1.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0), // Adjust padding as needed
-        child: Column(
-          mainAxisAlignment:
-          MainAxisAlignment.center, // Center items vertically
-          crossAxisAlignment:
-          CrossAxisAlignment.start, // Center items horizontally
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.left,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Description: $desc',
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.left,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Category: $category',
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.left,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Date: ${DateFormat('yyyy-MM-dd').format(date)}',
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.left,
-            ),
-            // The Button
-            Padding(
-              //adjust the top padding
-                padding: const EdgeInsets.only(top: 115),
-                child: Container(
-                  width: 125,
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(246, 245, 243, 1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      // Navigate to another page to show the details
-                    },
-                    child: const Text(
-                      'More Details',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  //a function to retrieve the current user's ID
-  Future<String?> getCurrentUserID() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user = auth.currentUser;
-    if (user != null) {
-      return user.uid;
-    } else {
-      return null; // User is not logged in
-    }
   }
 }

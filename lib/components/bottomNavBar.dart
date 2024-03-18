@@ -10,7 +10,7 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomAppBar(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      height: 50,
+      height: 48,
       color: const Color.fromRGBO(237, 245, 246, 1.0),
       shape: const CircularNotchedRectangle(),
       notchMargin: 5,
@@ -52,7 +52,7 @@ class BottomNavBar extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
               );
             },
           ),
