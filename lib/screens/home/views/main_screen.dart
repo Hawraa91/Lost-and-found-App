@@ -10,6 +10,7 @@ class MainScreen extends StatelessWidget {
   const MainScreen({Key? key});
 
   @override
+  //fetching the current user's id
   Widget build(BuildContext context) {
     return FutureBuilder<String?>(
       future: getCurrentUserID(),
@@ -35,6 +36,7 @@ class MainScreen extends StatelessWidget {
               ),
             );
           } else {
+            //the matching algorithm
             searchLostItemsForCurrentUser(currentUserID);
             return buildMainScreen(context, currentUserID);
           }
@@ -128,7 +130,7 @@ class MainScreen extends StatelessWidget {
                         children: [
                           CardIcon(
                             Icons.key,
-                            const Color.fromRGBO(237, 245, 246, 1.0),
+                            const Color.fromRGBO(215, 225, 238, 1),
                             "Keys",
                             () {
                               Navigator.push(
@@ -142,7 +144,7 @@ class MainScreen extends StatelessWidget {
                           ),
                           CardIcon(
                             Icons.headset,
-                            const Color.fromRGBO(237, 245, 246, 1.0),
+                            const Color.fromRGBO(215, 225, 238, 1),
                             "Devices",
                             () {
                               Navigator.push(
@@ -156,7 +158,7 @@ class MainScreen extends StatelessWidget {
                           ),
                           CardIcon(
                             Icons.diamond,
-                            const Color.fromRGBO(237, 245, 246, 1.0),
+                            const Color.fromRGBO(215, 225, 238, 1),
                             "Jewels",
                             () {
                               Navigator.push(
@@ -170,7 +172,7 @@ class MainScreen extends StatelessWidget {
                           ),
                           CardIcon(
                             Icons.question_mark_rounded,
-                            const Color.fromRGBO(237, 245, 246, 1.0),
+                            const Color.fromRGBO(215, 225, 238, 1),
                             "Others",
                             () {
                               Navigator.push(
@@ -201,7 +203,7 @@ class MainScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 30),
-              //the blue container
+              //the blue container and fetching the data
               StreamBuilder<QuerySnapshot>(
                 //taking the data from the collection
                 stream:
@@ -267,15 +269,12 @@ class MainScreen extends StatelessWidget {
         height: 65,
         width: 100,
         child: Card(
+          color: backgroundColor,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.5),
-                child: Container(
-                  color: backgroundColor,
-                  child: Icon(icon),
-                ),
-              ),
+              Icon(icon),
+              const SizedBox(height: 5), // Added SizedBox for spacing
               Text(
                 type,
                 style: const TextStyle(
@@ -290,11 +289,13 @@ class MainScreen extends StatelessWidget {
     );
   }
 
+
+  //the widget for displaying the details of lost item
   Widget containerPost(BuildContext context, String title, String desc,
       String category, DateTime date) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width / 2,
+      height: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
@@ -305,33 +306,33 @@ class MainScreen extends StatelessWidget {
           )
         ],
         // Dark blue
-        color: const Color.fromRGBO(96, 173, 183, 1.0),
+        color: const Color.fromRGBO(46, 61, 95, 1.0),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0), // Adjust padding as needed
         child: Column(
           mainAxisAlignment:
-              MainAxisAlignment.center, // Center items vertically
+          MainAxisAlignment.center, // Center items vertically
           crossAxisAlignment:
-              CrossAxisAlignment.center, // Center items horizontally
+          CrossAxisAlignment.start, // Center items horizontally
           children: [
             Text(
               title,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
             ),
             const SizedBox(height: 10),
             Text(
-              desc,
+              'Description: $desc',
               style: const TextStyle(
                 fontSize: 14,
                 color: Colors.white,
               ),
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
             ),
             const SizedBox(height: 10),
             Text(
@@ -340,7 +341,7 @@ class MainScreen extends StatelessWidget {
                 fontSize: 14,
                 color: Colors.white,
               ),
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
             ),
             const SizedBox(height: 10),
             Text(
@@ -349,8 +350,29 @@ class MainScreen extends StatelessWidget {
                 fontSize: 14,
                 color: Colors.white,
               ),
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
             ),
+            // The Button
+            Padding(
+              //adjust the top padding
+                padding: const EdgeInsets.only(top: 115),
+                child: Container(
+                  width: 125,
+                  decoration: BoxDecoration(
+                    color: const Color.fromRGBO(246, 245, 243, 1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      // Navigate to another page to show the details
+                    },
+                    child: const Text(
+                      'More Details',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

@@ -20,7 +20,7 @@ Future<void> searchLostItemsForCurrentUser(String currentUserID) async
     //save all the fields of the lost item
     for (var lostDoc in lostItemsSnapshot.docs) {
       // Extract information from the lost document
-      String? lostTitle = (lostDoc.data() as Map<String, dynamic>?)?['itemTitle'];
+      //String? lostTitle = (lostDoc.data() as Map<String, dynamic>?)?['itemTitle'];
       String? lostName = (lostDoc.data() as Map<String, dynamic>?)?['itemName'];
       String? lostCateg = (lostDoc.data() as Map<String, dynamic>?)?['category'];
 
@@ -32,11 +32,11 @@ Future<void> searchLostItemsForCurrentUser(String currentUserID) async
         String? secondCateg = (foundDoc.data() as Map<String, dynamic>?)?['category'];
 
         // Check if the titles of the lost and found items match
-        if (lostTitle == foundTitle && lostName == foundName && lostCateg == secondCateg) {
+        if (lostName == foundName && lostCateg == secondCateg) {
           // Found a match, you can take further action here
           if (kDebugMode) {
             print(
-                'Match found! Lost item title: $lostTitle, Found item title: $foundTitle');
+                'Match found! Found item title: $foundTitle');
           }
           else {
             if (kDebugMode) {

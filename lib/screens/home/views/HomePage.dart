@@ -11,7 +11,7 @@ class Home extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromRGBO(22, 19, 85, 1.0),
+        backgroundColor: const Color.fromRGBO(36, 42, 61, 1),
         shape: const CircleBorder(),
         onPressed: () {
           Navigator.pushNamed(context, '/lost');
