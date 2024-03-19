@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -72,6 +72,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
+  Widget input(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,46 +95,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: _firstNameController,
-              decoration: const InputDecoration(
-                labelText: 'First Name',
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _lastNameController,
-              decoration: const InputDecoration(
-                labelText: 'Last Name',
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Phone Number',
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _addressController,
-              decoration: const InputDecoration(
-                labelText: 'Address',
-              ),
-            ),
+            input('First Name', _firstNameController),
+            input('Last Name', _lastNameController),
+            input('Email', _emailController),
+            input('Phone Number', _phoneController),
+            input('Address', _addressController),
             const SizedBox(height: 32.0),
             _isLoading
                 ? const CircularProgressIndicator()
-                : ElevatedButton(
-              onPressed: _updateUserData,
-              child: const Text('Save Changes'),
+                : Container(
+              width: 200,
+              decoration: BoxDecoration(
+                color: const Color.fromRGBO(96, 172, 182, 1.0),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextButton(
+                onPressed: _updateUserData,
+                child: const Text(
+                  'Save Changes',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ),
           ],
         ),

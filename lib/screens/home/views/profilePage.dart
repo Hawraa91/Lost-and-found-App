@@ -1,11 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lost_and_found/screens/login&signup/model/editProfile.dart';
 
-import '../../login&signup/model/editProfile.dart';
+import '../../login&signup/model/setting.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -107,16 +108,25 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           const SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => EditProfilePage()),
-              );
-            },
-            child: const Text('Edit Profile'),
+          Container(
+            width: 200,
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(96, 172, 182, 1.0),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EditProfilePage()),
+                );
+              },
+              child: const Text(
+                'Edit Profile',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ),
-
           const SizedBox(height: 40),
           Expanded(
             child: Center(
@@ -129,7 +139,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       leading: const Icon(Icons.settings),
                       title: const Text('Settings'),
                       trailing: const Icon(Icons.chevron_right),
-                      onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SettingsPage()),
+                          );
+                        },
                     ),
                   ),
                   const SizedBox(height: 16),
