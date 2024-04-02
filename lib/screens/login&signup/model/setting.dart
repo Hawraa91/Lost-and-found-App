@@ -30,7 +30,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings UI'),
+        title: Text('Settings'),
       ),
       body: ListView(
         children: [
@@ -74,22 +74,16 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          ListTile(
-            title: Text('Notifications'),
-            trailing: Icon(Icons.chevron_right),
-            onTap: () {
-              // Handle Notifications
-            },
-          ),
           SwitchListTile(
-            title: Text('Theme Dark'),
-            value: isDarkTheme,
+            title: Text('Notifications'),
+            value: isDarkTheme, // Corrected from isEnable to isDarkTheme
             onChanged: (value) {
               setState(() {
                 isDarkTheme = value;
               });
             },
           ),
+
           SwitchListTile(
             title: Text('Account Active'),
             value: isAccountActive,
