@@ -1,218 +1,205 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lost_and_found/screens/login&signup/model/editProfile.dart';
 
-import '../../../components/bottomNavBar.dart';
-import '../../startPage.dart';
+import '../../login&signup/model/setting.dart';
 
-class ProfilePage extends StatelessWidget {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Profile Page',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const ProfilePage(),
+    );
+  }
+}
+
+class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    return Scaffold(
-      body: Column(
-        children: [
-          _TopPortion(),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  // Display user's full name
-                  StreamBuilder<DocumentSnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(user?.uid)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Text("Loading...");
-                      }
-                      var userData = snapshot.data!.data() as Map<String, dynamic>?;
-                      var firstName = userData?['firstName'] ?? "Guest";
-                      var lastName = userData?['lastName'] ?? "";
-
-                      return Text(
-                        '$firstName $lastName',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline6
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      );
-                    },
-                  ),
-                  // Display user's display name
-                  Text(
-                    user?.displayName ?? "Guest",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  // Display user's email
-                  ListTile(
-                    leading: const Icon(Icons.email),
-                    title: Text(user?.email ?? "No email"),
-                  ),
-                  // Display user's phone number
-                  ListTile(
-                    leading: const Icon(Icons.phone),
-                    title: StreamBuilder<DocumentSnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(user?.uid)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Text("Loading...");
-                        }
-                        var userData = snapshot.data!.data() as Map<String, dynamic>?;
-                        var phoneNumber = userData?['phoneNumber'] ?? "No phone number";
-
-                        return Text(phoneNumber);
-                      },
-                    ),
-                  ),
-                  // Placeholder for user's address
-                  const ListTile(
-                    leading: Icon(Icons.home),
-                    title: Text("Address goes here"),
-                  ),
-                  // Edit Profile button
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditProfilePage(),
-                        ),
-                      );
-                    },
-                    child: const Text("Edit Profile"),
-                  ),
-                  const SizedBox(height: 16),
-                  // Logout button
-                  ElevatedButton(
-                    onPressed: () async {
-                      await FirebaseAuth.instance.signOut();
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const startPage()),
-                            (Route<dynamic> route) => false,
-                      );
-                    },
-                    child: const Text("Logout"),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: const BottomNavBar(),
-    );
-  }
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _TopPortion extends StatelessWidget {
-  const _TopPortion({Key? key}) : super(key: key);
+class _ProfilePageState extends State<ProfilePage> {
+  String? _firstName;
+  String? _lastName;
+  String? _email;
+  String? _phoneNumber;
+  String? _address;
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200, // Adjust the height as needed
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Background gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [Color(0xff0c066d), Color(0xff062144)],
-              ),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(50),
-                bottomRight: Radius.circular(50),
-              ),
-            ),
-          ),
-          // User profile image
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              width: 150,
-              height: 150,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.black,
-                      shape: BoxShape.circle,
-                    ),
-                    child: ClipOval(
-                      child: Image.network(
-                        'https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  void initState() {
+    super.initState();
+    _fetchUserData();
   }
-}
 
-class EditProfilePage extends StatelessWidget {
-  const EditProfilePage({Key? key}) : super(key: key);
+  Future<void> _fetchUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot<Map<String, dynamic>> snapshot =
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (snapshot.exists) {
+        Map<String, dynamic>? data = snapshot.data();
+        setState(() {
+          _firstName = data?['firstName'];
+          _lastName = data?['lastName'];
+          _email = data?['email'];
+          _phoneNumber = data?['phoneNumber'];
+          _address = data?['address'];
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Profile"),
+        title: const Text('Profile'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Edit your profile information:"),
-            const SizedBox(height: 16),
-            TextFormField(
-              decoration: const InputDecoration(labelText: "First Name"),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          Stack(
+            children: [
+              const CircleAvatar(
+                radius: 60,
+                backgroundImage: AssetImage('assets/images/new.png'),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.blueAccent,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.edit, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Text(
+            '${_firstName ?? ''} ${_lastName ?? ''}',
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              decoration: const InputDecoration(labelText: "Last Name"),
+          ),
+          Text(
+            _email ?? 'superAdmin@codingwitht.com',
+            style: const TextStyle(
+              fontSize: 18, // Increase the font size of the email
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              decoration: const InputDecoration(labelText: "Phone Number"),
+          ),
+          const SizedBox(height: 40),
+          Container(
+            width: 200,
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(96, 172, 182, 1.0),
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              decoration: const InputDecoration(labelText: "Address"),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
+            child: TextButton(
               onPressed: () {
-                // Implement update profile logic
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EditProfilePage()),
+                );
               },
-              child: const Text("Save"),
+              child: const Text(
+                'Edit Profile',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 40),
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ListTile(
+                      leading: const Icon(Icons.settings),
+                      title: const Text('Settings'),
+                      trailing: const Icon(Icons.chevron_right),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SettingsPage()),
+                          );
+                        },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ListTile(
+                      leading: const Icon(Icons.phone),
+                      title: Text(_phoneNumber ?? 'Phone Number'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {},
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ListTile(
+                      leading: const Icon(Icons.people),
+                      title: Text(_address ?? 'Address'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {},
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ListTile(
+                      leading: const Icon(Icons.info),
+                      title: const Text('Information'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {},
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ListTile(
+                      leading: const Icon(Icons.logout),
+                      title: const Text(
+                        'Logout',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        FirebaseAuth.instance.signOut();
+                        Navigator.pushReplacementNamed(context, '/start_page');
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
