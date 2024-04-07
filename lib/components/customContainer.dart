@@ -1,4 +1,4 @@
-//this is a cutom container for calling it over and over again
+//this is a custom container for calling it over and over again
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -86,7 +86,7 @@ class CustomContainer extends StatelessWidget {
                 ),
                 child: TextButton(
                   onPressed: () {
-                    // Navigate to another page to show the details
+                    // TODO: Navigate to another page to show the details
                   },
                   child: const Text(
                     'More Details',

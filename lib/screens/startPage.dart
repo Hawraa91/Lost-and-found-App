@@ -27,18 +27,18 @@ class _startPageState extends State<startPage> {
                     'Find what\'s lost, reunite what\'s found. Together, let\'s make lost things found',
               ),
               const ImageSection(
-                image: 'assets/images/pic.png',
-                width: 250, // Adjust the width as needed
+                image: 'assets/images/startup.png',
+                width: 250, 
                 height: 250,
               ),
               // Signup button
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Container(
-                  width: 200, // match parent width
+                  width: 300,
+                  height: 65,
                   decoration: BoxDecoration(
-                    color: const Color.fromRGBO(
-                        96, 172, 182, 1.0), // change color as needed
+                    color: const Color.fromRGBO(46, 61, 95, 1.0),
                     borderRadius:
                         BorderRadius.circular(8.0), // apply border radius
                   ),
@@ -49,19 +49,34 @@ class _startPageState extends State<startPage> {
                     },
                     child: const Text(
                       'Sign Up',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: 16,),
                     ),
                   ),
                 ),
               ),
-              //the login click
-              TextButton(
-                onPressed: () {
-                  //navigate to login page
-                  Navigator.pushNamed(context, "/captcha");
-                },
-                child: const Text(
-                  'got an account? Log in',
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 1.0),
+                child: Container(
+                  width: 300,
+                  height: 65,
+                  decoration: BoxDecoration(
+                    color: Colors.white, // change color as needed
+                    borderRadius:
+                    BorderRadius.circular(8.0),
+                    border: Border.all(
+                      color: const Color.fromRGBO(46, 61, 95, 1.0), // Border color
+                    ),
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      // Handle login button press
+                      Navigator.pushNamed(context, "/captcha");
+                    },
+                    child: const Text(
+                      'got an account? Log in',
+                      style: TextStyle(color: Color.fromRGBO(46, 61, 95, 1.0), fontSize: 16,),
+                    ),
+                  ),
                 ),
               ),
             ],

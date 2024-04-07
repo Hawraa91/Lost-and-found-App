@@ -135,10 +135,12 @@ class _LoginState extends State<Login> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Container(
-                  width: 200,
+                  width: 300,
+                  height: 65,
                   decoration: BoxDecoration(
-                    color: const Color.fromRGBO(96, 172, 182, 1.0),
-                    borderRadius: BorderRadius.circular(8.0),
+                    color: const Color.fromRGBO(46, 61, 95, 1.0),
+                    borderRadius:
+                    BorderRadius.circular(8.0), // apply border radius
                   ),
                   child: TextButton(
                     onPressed: () {
