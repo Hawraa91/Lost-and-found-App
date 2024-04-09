@@ -2,18 +2,11 @@ import 'package:flutter/material.dart';
 import 'components/routes.dart'; // Import routes from route.dart
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'firebase_options.dart'; // Import the firebase_options.dart file
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: const FirebaseOptions(
-      apiKey: "AIzaSyDtmIZXK524Gtjt8FDdTafoKD9lfmYlGso",
-      appId: "1:336882153933:android:16afdc1d5782301706ac84",
-      messagingSenderId: "336882153933",
-      projectId: "findmything-9663a",
-    ),
-  );
+  await Firebase.initializeApp(options: firebaseOptions);
 
   runApp(MyApp());
 }

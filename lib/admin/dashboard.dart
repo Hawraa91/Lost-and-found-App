@@ -27,6 +27,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0; // Set the initial selected index to 0
   int numberOfUsers = 0;
   int numberOfLostItems = 0;
   int numberOfFoundItems = 0;
@@ -61,17 +62,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'MSHWAR',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
+
             CircleAvatar(
               backgroundImage: AssetImage('assets/profile.jpg'),
               backgroundColor: Colors.white,
@@ -85,7 +79,7 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Colors.grey[200],
             unselectedIconTheme: IconThemeData(color: Colors.grey),
             selectedIconTheme: IconThemeData(color: Colors.blue),
-            destinations: [
+            destinations: const [
               NavigationRailDestination(
                 icon: Icon(Icons.home),
                 label: Text('Home'),
@@ -110,83 +104,103 @@ class _HomePageState extends State<HomePage> {
                 icon: Icon(Icons.person),
                 label: Text('Profile'),
               ),
-            ], selectedIndex: null,
+            ],
+            selectedIndex: _selectedIndex,
           ),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        StatisticCard(
-                          icon: Icons.store,
-                          value: numberOfFoundItems.toString(),
-                          label: 'Number of Found Item',
-                        ),
-                        StatisticCard(
-                          icon: Icons.person,
-                          value: numberOfLostItems.toString(),
-                          label: 'Number of Lost Item',
-                        ),
-                        StatisticCard(
-                          icon: Icons.shopping_cart,
-                          value: '2',
-                          label: 'Number of Claim this month',
-                        ),
-                        StatisticCard(
-                          icon: Icons.attach_money,
-                          value: numberOfUsers.toString(),
-                          label: 'Number of Users',
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 16),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 200,
-                            color: Colors.grey[300],
-                            child: Center(
-                              child: Text(
-                                'Monthly Summary Chart',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Expanded(
-                          child: Container(
-                            height: 200,
-                            color: Colors.grey[300],
-                            child: Center(
-                              child: Text(
-                                'Monthly Order Summary Chart',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                child: _buildDestinationContent(_selectedIndex),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildDestinationContent(int index) {
+    switch (index) {
+      case 0:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                StatisticCard(
+                  icon: Icons.store,
+                  value: numberOfFoundItems.toString(),
+                  label: 'Number of Found Item',
+                ),
+                StatisticCard(
+                  icon: Icons.person,
+                  value: numberOfLostItems.toString(),
+                  label: 'Number of Lost Item',
+                ),
+                StatisticCard(
+                  icon: Icons.shopping_cart,
+                  value: '2',
+                  label: 'Number of Claim this month',
+                ),
+                StatisticCard(
+                  icon: Icons.attach_money,
+                  value: numberOfUsers.toString(),
+                  label: 'Number of Users',
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 200,
+                    color: Colors.grey[300],
+                    child: Center(
+                      child: Text(
+                        'Monthly Summary Chart',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Container(
+                    height: 200,
+                    color: Colors.grey[300],
+                    child: Center(
+                      child: Text(
+                        'Monthly Order Summary Chart',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      case 1:
+        return Center(child: Text('Reports'));
+      case 2:
+        return Center(child: Text('Request'));
+      case 3:
+        return Center(child: Text('Users'));
+      case 4:
+        return Center(child: Text('Shops'));
+      case 5:
+        return Center(child: Text('Profile'));
+      default:
+        return Center(child: Text('No content selected'));
+    }
   }
 }
 
