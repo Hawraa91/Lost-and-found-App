@@ -1,7 +1,11 @@
+
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -28,13 +32,28 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> signIn() async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      // If sign-in is successful, navigate to the home page
+      Navigator.pushNamed(context, '/home');
+    } catch (e) {
+      // Handle sign-in error
+      print('Error signing in: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffe1f5fe), // Set the background color here
+      backgroundColor: const Color(0xffe1f5fe),
       body: Center(
         child: Container(
           width: 600,
@@ -70,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 16.0),
                       TextField(
-                        controller: usernameController,
+                        controller: _emailController,
                         decoration: const InputDecoration(
                           hintText: 'Username',
                           border: OutlineInputBorder(),
@@ -78,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 16.0),
                       TextField(
-                        controller: passwordController,
+                        controller: _passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
                           hintText: 'Password',
@@ -89,23 +108,10 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () async {
-                            try {
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                email: usernameController.text,
-                                password: passwordController.text,
-                              );
-                              // Navigate to the next screen upon successful login
-                            } catch (e) {
-                              // Handle login errors
-                              print(e.toString());
-                            }
-                          },
+                          onPressed: signIn,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.indigo[900],
-                            padding:
-                            const EdgeInsets.symmetric(vertical: 16.0),
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
                           ),
                           child: const Text('Login'),
                         ),
@@ -130,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                     width: 100.0,
                     height: 100.0,
                     child: Image.asset(
-                      'assets/images/login.png', // Replace with your image asset
+                      'assets/images/login.png',
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -146,8 +152,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 }

@@ -42,8 +42,14 @@ class BottomNavBar extends StatelessWidget {
               Icons.chat_rounded,
               color: Colors.black,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyApp()),
+              );
+            },
           ),
+
           IconButton(
             icon: const Icon(
               Icons.person,

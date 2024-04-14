@@ -21,6 +21,7 @@ final Map<String, WidgetBuilder> routes = {
   '/profile': (context) => ProfilePage(),
   '/lost': (context) => const LostItem(),
   '/found': (context) => const FoundItem(),
+  '/chat': (context) => const FoundItem(),
   '/forgetPassword': (context) => const ForgetPasswordPage(),
   '/categoryItem': (context) => CategoryItemPage(category: '',),
 };
