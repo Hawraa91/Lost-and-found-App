@@ -33,6 +33,8 @@ dependencies:
   fl_chart: ^0.67.0
   responsive_builder: ^0.7.0
   flutter_charts: ^0.5.2
+  flutter_speed_dial: ^7.0.0
+  location: ^6.0.1
 
 
 

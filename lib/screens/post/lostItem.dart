@@ -52,10 +52,8 @@ class _LostItemState extends State<LostItem> {
     });
   }
 
-  //TODO: add the public or private reports
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      //takes the current user's ID
       String? userId = FirebaseAuth.instance.currentUser?.uid;
 
       if (userId != null) {
@@ -66,7 +64,7 @@ class _LostItemState extends State<LostItem> {
           'itemLostDate': _itemLostDateController.text,
           'category': _categoryController.text,
           'description': _descriptionController.text,
-          'isPublic': isPublic, // Add the isPublic field
+          'isPublic': isPublic,
         };
 
         try {
@@ -83,7 +81,7 @@ class _LostItemState extends State<LostItem> {
           _descriptionController.clear();
           _imageFile = null;
           setState(() {
-            isPublic = true; // Reset the radio button to default value after submission
+            isPublic = true;
           });
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -102,8 +100,6 @@ class _LostItemState extends State<LostItem> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,33 +110,15 @@ class _LostItemState extends State<LostItem> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
           children: [
-            Row(
-              children: [
-                Radio(
-                  value: true,
-                  groupValue: isPublic,
-                  onChanged: (value) {
-                    setState(() {
-                      isPublic = value as bool;
-                    });
-                  },
-                ),
-                const Text('Public'),
-                Radio(
-                  value: false,
-                  groupValue: isPublic,
-                  onChanged: (value) {
-                    setState(() {
-                      isPublic = value as bool;
-                    });
-                  },
-                ),
-                const Text('Private'),
-              ],
-            ),
             Container(
               width: double.infinity,
-              child: ToggleButton(),
+              child: ToggleButton(
+                onToggle: (value) {
+                  setState(() {
+                    isPublic = value;
+                  });
+                },
+              ),
             ),
             const SizedBox(height: 10),
             Form(
@@ -239,10 +217,10 @@ class _LostItemState extends State<LostItem> {
           hintText: 'Select $label', // Add the hintText here
           border: const OutlineInputBorder(),
         ),
-        value: controller.text.isNotEmpty ? controller.text : null, // Change default value to null
+        value: controller.text.isNotEmpty ? controller.text : null,
         onChanged: (String? value) {
           setState(() {
-            controller.text = value ?? ''; // Use null-aware operator to handle null value
+            controller.text = value ?? '';
           });
         },
         validator: (value) {
@@ -262,8 +240,6 @@ class _LostItemState extends State<LostItem> {
     );
   }
 
-  //TODO: we want to add the searchLostItemsForCurrentUser function
-  //i want to see if the reported item is in the found collection
   Widget _buildButton(String label, Function() onPressed) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -286,6 +262,10 @@ class _LostItemState extends State<LostItem> {
 }
 
 class ToggleButton extends StatefulWidget {
+  final Function(bool) onToggle;
+
+  const ToggleButton({required this.onToggle, Key? key}) : super(key: key);
+
   @override
   _ToggleButtonState createState() => _ToggleButtonState();
 }
@@ -330,7 +310,7 @@ class _ToggleButtonState extends State<ToggleButton> {
               width: width * 0.5,
               height: height,
               decoration: BoxDecoration(
-                color: selectedColor, // Change background color here
+                color: selectedColor,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(50.0),
                 ),
@@ -339,10 +319,12 @@ class _ToggleButtonState extends State<ToggleButton> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FoundItem()),
-              );
+              setState(() {
+                xAlign = loginAlign;
+                loginColor = selectedColor;
+                signInColor = normalColor;
+              });
+              widget.onToggle(true); // Call callback with true for Public
             },
             child: Align(
               alignment: const Alignment(-1, 0),
@@ -351,7 +333,7 @@ class _ToggleButtonState extends State<ToggleButton> {
                 color: Colors.transparent,
                 alignment: Alignment.center,
                 child: const Text(
-                  'Lost',
+                  'Private',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -362,10 +344,12 @@ class _ToggleButtonState extends State<ToggleButton> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FoundItem()),
-              );
+              setState(() {
+                xAlign = signInAlign;
+                signInColor = selectedColor;
+                loginColor = normalColor;
+              });
+              widget.onToggle(false); // Call callback with false for Private
             },
             child: Align(
               alignment: const Alignment(1, 0),
@@ -374,7 +358,7 @@ class _ToggleButtonState extends State<ToggleButton> {
                 color: Colors.transparent,
                 alignment: Alignment.center,
                 child: Text(
-                  'Found',
+                  'Public',
                   style: TextStyle(
                     color: signInColor == selectedColor ? Colors.white : Colors.black,
                     fontWeight: FontWeight.bold,
@@ -383,7 +367,6 @@ class _ToggleButtonState extends State<ToggleButton> {
               ),
             ),
           ),
-
         ],
       ),
     );
