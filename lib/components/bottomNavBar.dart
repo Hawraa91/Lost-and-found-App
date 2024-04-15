@@ -43,10 +43,7 @@ class BottomNavBar extends StatelessWidget {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyApp()),
-              );
+
             },
           ),
 

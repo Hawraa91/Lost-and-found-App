@@ -34,10 +34,8 @@ dependencies:
   responsive_builder: ^0.7.0
   flutter_charts: ^0.5.2
   flutter_speed_dial: ^7.0.0
-  location: ^6.0.1
-  encrypt: ^5.0.3
-  crypto: ^3.0.3
-  velocity_x: ^4.1.1
+
+
 
 
 
