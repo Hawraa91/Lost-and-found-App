@@ -7,7 +7,6 @@ import 'firebase_options.dart'; // Import the firebase_options.dart file
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: firebaseOptions);
-
   runApp(MyApp());
 }
 
@@ -26,14 +25,14 @@ class MyApp extends StatelessWidget {
           // User is logged in
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            initialRoute: '/home', // Assuming '/home' is your home route
+            initialRoute: '/home',
             routes: routes, // Use routes defined in route.dart
           );
         } else {
           // User is not logged in
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            initialRoute: '/', // Assuming '/login' is your login route
+            initialRoute: '/', // startingPage
             routes: routes, // Use routes defined in route.dart
           );
         }

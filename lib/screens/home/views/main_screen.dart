@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../components/customContainer.dart';
 import '../../post/model/search.dart';
 import '../modelView/CategoryItemsPage.dart';
+import '../../../components/bottomSheetPopUp.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key});
@@ -36,8 +37,12 @@ class MainScreen extends StatelessWidget {
               ),
             );
           } else {
-            //the matching algorithm
-            searchLostItemsForCurrentUser(currentUserID);
+            final Future<List<String>> matchedTitles = searchLostItemsForCurrentUser(currentUserID) ;
+            // Show the bottom sheet with the matched titles
+            if (matchedTitles !=null){
+              bottomSheetPopUp.show(context, matchedTitles);
+            }
+
             return buildMainScreen(context, currentUserID);
           }
         }

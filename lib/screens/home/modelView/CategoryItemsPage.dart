@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 import '../../../components/bottomNavBar.dart';
 import '../../../components/customContainer.dart';
 
@@ -41,9 +40,7 @@ class CategoryItemPage extends StatelessWidget {
               // The loading icon
               return const CircularProgressIndicator();
             }
-
-            final List<DocumentSnapshot> documents = snapshot.data!.docs; // Making sure the doc is not null by using data!
-
+            final List<DocumentSnapshot> documents = snapshot.data!.docs; // Making sure the doc is not null by using data!S
             // Debugging
             if (kDebugMode) {
               print('Number of documents: ${documents.length}');
@@ -88,66 +85,3 @@ class CategoryItemPage extends StatelessWidget {
   }
 }
 
-Widget containerPost(BuildContext context, String title, String desc, String category, DateTime date) {
-  return Container(
-    width: MediaQuery.of(context).size.width,
-    height: MediaQuery.of(context).size.width / 2,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(30),
-      boxShadow: [
-        BoxShadow(
-          blurRadius: 4,
-          color: Colors.grey.shade300,
-          offset: const Offset(5, 5),
-        )
-      ],
-      // Dark blue
-      color: const Color.fromRGBO(96, 173, 183, 1.0),
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(20.0), // Adjust padding as needed
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center, // Center items vertically
-        crossAxisAlignment: CrossAxisAlignment.center, // Center items horizontally
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10),
-          Text(
-            desc,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'Category: $category',
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'Date: ${DateFormat('yyyy-MM-dd').format(date)}',
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    ),
-  );
-}
