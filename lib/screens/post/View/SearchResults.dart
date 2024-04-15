@@ -54,29 +54,32 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           // Extract data from document
           Map<String, dynamic>? data = _documents[index].data();
           // Display data in ListTile
-          return SingleChildScrollView(
-              child: Column(
-              children: _documents.map((doc) {
-            final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-            final String title = data['itemTitle'] ?? '';
-            final String description = data['description'] ?? '';
-            final String category = data['category'] ?? '';
-            final String dateStr = data['itemLostDate'] ?? ''; // Fetch date as string
-            final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now(); // Convert string to DateTime, fallback to current time if conversion fails
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
+            child: SingleChildScrollView(
+                child: Column(
+                children: _documents.map((doc) {
+              final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+              final String title = data['itemTitle'] ?? '';
+              final String description = data['description'] ?? '';
+              final String category = data['category'] ?? '';
+              final String dateStr = data['itemLostDate'] ?? ''; // Fetch date as string
+              final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now(); // Convert string to DateTime, fallback to current time if conversion fails
 
-            return Column(
-              children: [
-                const SizedBox(height: 20), // Add space before the container
-                //containerPost(context, title, description, category, date),
-                CustomContainer(context,
-                    title: title,
-                    desc: description,
-                    category: category,
-                    date: date)
-              ],
-            );
-          }).toList(),
-          ),
+              return Column(
+                children: [
+                  const SizedBox(height: 20), // Add space before the container
+                  //containerPost(context, title, description, category, date),
+                  CustomContainer(context,
+                      title: title,
+                      desc: description,
+                      category: category,
+                      date: date)
+                ],
+              );
+            }).toList(),
+            ),
+            ),
           );
         },
       ),
