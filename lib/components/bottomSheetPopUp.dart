@@ -5,7 +5,7 @@ class bottomSheetPopUp {
   bottomSheetPopUp._(); // Private constructor to prevent instantiation
 
   static void show(
-      BuildContext context, Future<List<String>> titlesFuture) async {
+      BuildContext context, List<String> titlesFuture) async {
     final List<String> matched = await titlesFuture;
     showModalBottomSheet(
       context: context,

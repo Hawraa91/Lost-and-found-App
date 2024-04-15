@@ -37,11 +37,16 @@ class MainScreen extends StatelessWidget {
               ),
             );
           } else {
-            final Future<List<String>> matchedTitles = searchLostItemsForCurrentUser(currentUserID) ;
-            // Show the bottom sheet with the matched titles
-            if (matchedTitles !=null){
-              bottomSheetPopUp.show(context, matchedTitles);
-            }
+            // final Future<List<String>> matchedTitles = searchLostItemsForCurrentUser(currentUserID) ;
+            // // Show the bottom sheet with the matched titles
+            // if (matchedTitles !=null){
+            //   bottomSheetPopUp.show(context, matchedTitles);
+            // }
+            searchLostItemsForCurrentUser(currentUserID).then((matchedTitles) {
+              if (matchedTitles.isNotEmpty) {
+                bottomSheetPopUp.show(context, matchedTitles);
+              }
+            });
 
             return buildMainScreen(context, currentUserID);
           }
