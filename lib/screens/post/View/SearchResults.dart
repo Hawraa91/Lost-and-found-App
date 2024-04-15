@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../components/bottomNavBar.dart';
 class SearchResultsPage extends StatelessWidget {
   final List<String> matchedTitles;
 
@@ -20,6 +21,7 @@ class SearchResultsPage extends StatelessWidget {
           );
         },
       ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../screens/post/View/SearchResults.dart';
 
 class bottomSheetPopUp {

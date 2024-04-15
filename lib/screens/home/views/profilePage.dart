@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lost_and_found/screens/login&signup/model/editProfile.dart';
-
+import '../../../components/bottomNavBar.dart';
 import '../../login&signup/model/setting.dart';
 
 void main() async {
@@ -130,77 +130,80 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 40),
           Expanded(
             child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ListTile(
-                      leading: const Icon(Icons.settings),
-                      title: const Text('Settings'),
-                      trailing: const Icon(Icons.chevron_right),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SettingsPage()),
-                          );
-                        },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ListTile(
-                      leading: const Icon(Icons.phone),
-                      title: Text(_phoneNumber ?? 'Phone Number'),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {},
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ListTile(
-                      leading: const Icon(Icons.people),
-                      title: Text(_address ?? 'Address'),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {},
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ListTile(
-                      leading: const Icon(Icons.info),
-                      title: const Text('Information'),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {},
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ListTile(
-                      leading: const Icon(Icons.logout),
-                      title: const Text(
-                        'Logout',
-                        style: TextStyle(
-                          color: Colors.red,
-                        ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ListTile(
+                        leading: const Icon(Icons.settings),
+                        title: const Text('Settings'),
+                        trailing: const Icon(Icons.chevron_right),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => SettingsPage()),
+                            );
+                          },
                       ),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        FirebaseAuth.instance.signOut();
-                        Navigator.pushReplacementNamed(context, '/start_page');
-                      },
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ListTile(
+                        leading: const Icon(Icons.phone),
+                        title: Text(_phoneNumber ?? 'Phone Number'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {},
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ListTile(
+                        leading: const Icon(Icons.people),
+                        title: Text(_address ?? 'Address'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {},
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ListTile(
+                        leading: const Icon(Icons.info),
+                        title: const Text('Information'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {},
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ListTile(
+                        leading: const Icon(Icons.logout),
+                        title: const Text(
+                          'Logout',
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {
+                          FirebaseAuth.instance.signOut();
+                          Navigator.pushReplacementNamed(context, '/start_page');
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ],
       ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }
