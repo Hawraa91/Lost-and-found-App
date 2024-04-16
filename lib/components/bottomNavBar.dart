@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:lost_and_found/screens/chat/chat_page.dart';
 import 'package:lost_and_found/screens/home/views/HomePage.dart';
 import 'package:lost_and_found/screens/home/views/profilePage.dart';
 
@@ -43,7 +44,10 @@ class BottomNavBar extends StatelessWidget {
               color: Colors.black,
             ),
             onPressed: () {
-
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChatPage(receiverUserEmail: '', receiverUserID: '',)),
+              );
             },
           ),
 

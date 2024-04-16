@@ -4,6 +4,7 @@ import 'package:lost_and_found/screens/startPage.dart';
 import 'package:lost_and_found/screens/home/views/HomePage.dart';
 import 'package:lost_and_found/screens/login&signup/view/signup.dart';
 import 'package:lost_and_found/screens/home/views/profilePage.dart';
+import '../screens/chat/chat_page.dart';
 import '../screens/home/modelView/CategoryItemsPage.dart';
 import '../screens/login&signup/view/captcha.dart';
 import '../screens/login&signup/view/forgetPassword.dart';
@@ -19,6 +20,7 @@ final Map<String, WidgetBuilder> routes = {
   '/signup': (context) => const Signup(),
   '/profile': (context) => ProfilePage(),
   '/lost': (context) => const LostItem(),
+  '/chat': (context) => const ChatPage(receiverUserEmail: '', receiverUserID: '',),
   '/forgetPassword': (context) => const ForgetPasswordPage(),
   '/categoryItem': (context) => CategoryItemPage(category: '',),
   '/searchResults': (context) => SearchResultsPage(matchedTitles: [ ],),
