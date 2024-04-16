@@ -20,7 +20,7 @@ class CustomContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.width*2/3,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
@@ -77,7 +77,7 @@ class CustomContainer extends StatelessWidget {
             ),
             // The Button
             Padding(
-              padding: const EdgeInsets.only(top: 115),
+              padding: const EdgeInsets.only(top: 30),
               child: Container(
                 width: 125,
                 decoration: BoxDecoration(
@@ -89,7 +89,7 @@ class CustomContainer extends StatelessWidget {
                     // TODO: Navigate to another page to show the details
                   },
                   child: const Text(
-                    'More Details',
+                    'Contact',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),

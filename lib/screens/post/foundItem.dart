@@ -105,63 +105,54 @@ class _FoundItemPageState extends State<FoundItem> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              child: ToggleButton(),
-            ),
-            const SizedBox(height: 10),
-            Form(
-              key: _formKey,
-              child: Column(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              _buildInputField('Item Title', _itemTitleController),
+              _buildInputField('Item Name', _itemNameController),
+              _buildDateTimePickerFormField('Item Found Date'),
+              _buildCategoryDropdown('Category', _categoryController),
+              _buildInputField('Description', _descriptionController),
+              Row(
                 children: [
-                  _buildInputField('Item Title', _itemTitleController),
-                  _buildInputField('Item Name', _itemNameController),
-                  _buildDateTimePickerFormField('Item Found Date'),
-                  _buildCategoryDropdown('Category', _categoryController),
-                  _buildInputField('Description', _descriptionController),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _locationController,
-                          readOnly: true, // Make the field read-only
-                          decoration: InputDecoration(
-                            labelText: 'Location Found',
-                            hintText: 'Tap to select location',
-                            border: OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.map),
-                              onPressed: _selectLocationOnMap, // Show map when icon is pressed
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select a location';
-                            }
-                            return null;
-                          },
+                  Expanded(
+                    child: TextFormField(
+                      controller: _locationController,
+                      readOnly: true, // Make the field read-only
+                      decoration: InputDecoration(
+                        labelText: 'Location Found',
+                        hintText: 'Tap to select location',
+                        border: OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.map),
+                          onPressed: _selectLocationOnMap, // Show map when icon is pressed
                         ),
                       ),
-                    ],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select a location';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.image_outlined),
-                        onPressed: _getImage,
-                      ),
-                      Text(_imageFile?.path ?? 'No image selected'),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  _buildButton('Submit', _submitForm),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.image_outlined),
+                    onPressed: _getImage,
+                  ),
+                  Text(_imageFile?.path ?? 'No image selected'),
+                ],
+              ),
+              const SizedBox(height: 10),
+              _buildButton('Submit', _submitForm),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: const BottomNavBar(),
@@ -273,112 +264,6 @@ class _FoundItemPageState extends State<FoundItem> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ToggleButton extends StatefulWidget {
-  @override
-  _ToggleButtonState createState() => _ToggleButtonState();
-}
-
-const double width = 300.0;
-const double height = 60.0;
-const double loginAlign = -1;
-const double signInAlign = 1;
-final Color selectedColor = const Color.fromRGBO(96, 172, 182, 1.0);
-final Color normalColor = Colors.black54;
-
-class _ToggleButtonState extends State<ToggleButton> {
-  late double xAlign;
-  late Color loginColor;
-  late Color signInColor;
-
-  @override
-  void initState() {
-    super.initState();
-    xAlign = signInAlign;
-    loginColor = normalColor;
-    signInColor = selectedColor;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.all(
-          Radius.circular(50.0),
-        ),
-      ),
-      child: Stack(
-        children: [
-          AnimatedAlign(
-            alignment: Alignment(xAlign, 0),
-            duration: Duration(milliseconds: 300),
-            child: Container(
-              width: width * 0.5,
-              height: height,
-              decoration: BoxDecoration(
-                color: selectedColor, // Change background color here
-                borderRadius: BorderRadius.all(
-                  Radius.circular(50.0),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LostItem()),
-              );
-            },
-            child: Align(
-              alignment: Alignment(-1, 0),
-              child: Container(
-                width: width * 0.5,
-                color: Colors.transparent,
-                alignment: Alignment.center,
-                child: const Text(
-                  'Lost',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                xAlign = signInAlign;
-                signInColor = selectedColor;
-                loginColor = normalColor;
-              });
-            },
-            child: Align(
-              alignment: Alignment(1, 0),
-              child: Container(
-                width: width * 0.5,
-                color: Colors.transparent,
-                alignment: Alignment.center,
-                child: Text(
-                  'Found',
-                  style: TextStyle(
-                    color: signInColor == selectedColor ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

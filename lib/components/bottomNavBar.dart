@@ -4,6 +4,8 @@ import 'package:lost_and_found/screens/chat/chat_page.dart';
 import 'package:lost_and_found/screens/home/views/HomePage.dart';
 import 'package:lost_and_found/screens/home/views/profilePage.dart';
 
+import '../screens/chat/contacts.dart';
+
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({Key? key}) : super(key: key);
 
@@ -46,7 +48,7 @@ class BottomNavBar extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ChatPage(receiverUserEmail: '', receiverUserID: '',)),
+                MaterialPageRoute(builder: (context) => ContactsPage()),
               );
             },
           ),
