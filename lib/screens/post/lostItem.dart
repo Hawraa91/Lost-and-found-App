@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../components/bottomNavBar.dart';
-import 'founditem.dart';
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,10 +29,8 @@ class _LostItemState extends State<LostItem> {
   final TextEditingController _itemLostDateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _locationFoundController = TextEditingController(); // Location found controller
   bool isPublic = true;
-  XFile? _imageFile;
-
-  final ImagePicker _picker = ImagePicker();
 
   @override
   void dispose() {
@@ -40,16 +39,8 @@ class _LostItemState extends State<LostItem> {
     _itemLostDateController.dispose();
     _categoryController.dispose();
     _descriptionController.dispose();
+    _locationFoundController.dispose(); // Dispose location found controller
     super.dispose();
-  }
-
-  Future<void> _getImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        _imageFile = pickedFile;
-      }
-    });
   }
 
   Future<void> _submitForm() async {
@@ -64,6 +55,7 @@ class _LostItemState extends State<LostItem> {
           'itemLostDate': _itemLostDateController.text,
           'category': _categoryController.text,
           'description': _descriptionController.text,
+          'locationFound': _locationFoundController.text, // Save location found
           'isPublic': isPublic,
         };
 
@@ -79,7 +71,7 @@ class _LostItemState extends State<LostItem> {
           _itemLostDateController.clear();
           _categoryController.clear();
           _descriptionController.clear();
-          _imageFile = null;
+          _locationFoundController.clear(); // Clear location found
           setState(() {
             isPublic = true;
           });
@@ -98,6 +90,29 @@ class _LostItemState extends State<LostItem> {
         );
       }
     }
+  }
+
+  void _selectLocationFoundOnMap() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 300,
+          child: GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(37.77483, -122.41942), // Default location (San Francisco)
+              zoom: 12,
+            ),
+            onTap: (LatLng latLng) {
+              setState(() {
+                _locationFoundController.text = '${latLng.latitude}, ${latLng.longitude}';
+              });
+              Navigator.pop(context); // Close the modal bottom sheet
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -130,14 +145,29 @@ class _LostItemState extends State<LostItem> {
                   _buildDateTimePickerFormField('Item Lost Date'),
                   _buildCategoryDropdown('Category', _categoryController),
                   _buildInputField('Description', _descriptionController),
-                  const SizedBox(height: 10),
                   Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.image_outlined),
-                        onPressed: _getImage,
+                      Expanded(
+                        child: TextFormField(
+                          controller: _locationFoundController,
+                          readOnly: true, // Make the field read-only
+                          decoration: InputDecoration(
+                            labelText: 'Location Found',
+                            hintText: 'Tap to select location',
+                            border: OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.map),
+                              onPressed: _selectLocationFoundOnMap, // Show map when icon is pressed
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a location';
+                            }
+                            return null;
+                          },
+                        ),
                       ),
-                      Text(_imageFile?.path ?? 'No image selected'),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -214,7 +244,7 @@ class _LostItemState extends State<LostItem> {
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           labelText: label,
-          hintText: 'Select $label', // Add the hintText here
+          hintText: 'Select $label',
           border: const OutlineInputBorder(),
         ),
         value: controller.text.isNotEmpty ? controller.text : null,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -31,9 +30,7 @@ class _FoundItemPageState extends State<FoundItem> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController(); // Location controller
 
-  XFile? _imageFile;
 
-  final ImagePicker _picker = ImagePicker();
 
   void _selectLocationOnMap() {
     showModalBottomSheet(
@@ -69,15 +66,6 @@ class _FoundItemPageState extends State<FoundItem> {
     super.dispose();
   }
 
-  Future<void> _getImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        _imageFile = pickedFile;
-      }
-    });
-  }
-
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -86,14 +74,13 @@ class _FoundItemPageState extends State<FoundItem> {
         ),
       );
 
-      // Clear form fields and image file
+      // Clear form fields
       _itemTitleController.clear();
       _itemNameController.clear();
       _itemFoundDateController.clear();
       _categoryController.clear();
       _descriptionController.clear();
       _locationController.clear();
-      _imageFile = null;
     }
   }
 
@@ -137,16 +124,6 @@ class _FoundItemPageState extends State<FoundItem> {
                       },
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.image_outlined),
-                    onPressed: _getImage,
-                  ),
-                  Text(_imageFile?.path ?? 'No image selected'),
                 ],
               ),
               const SizedBox(height: 10),
