@@ -61,16 +61,16 @@ class CategoryItemPage extends StatelessWidget {
                     final String category = data['category'] ?? '';
                     final String dateStr = data['itemLostDate'] ?? ''; // Fetch date as string
                     final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now(); // Convert string to DateTime, fallback to current time if conversion fails
-                
+
                     return Column(
                       children: [
                         const SizedBox(height: 20), // Add space before the container
-                        //containerPost(context, title, description, category, date),
-                        CustomContainer(context,
-                            title: title,
-                            desc: description,
-                            category: category,
-                            date: date)
+                        CustomContainer(
+                          title: title,
+                          desc: description,
+                          category: category,
+                          date: date,
+                        )
                       ],
                     );
                   }).toList(),
@@ -84,4 +84,3 @@ class CategoryItemPage extends StatelessWidget {
     );
   }
 }
-

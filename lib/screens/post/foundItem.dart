@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../components/bottomNavBar.dart';
@@ -28,9 +29,7 @@ class _FoundItemPageState extends State<FoundItem> {
   final TextEditingController _itemFoundDateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController(); // Location controller
-
-
+  final TextEditingController _locationController = TextEditingController();
 
   void _selectLocationOnMap() {
     showModalBottomSheet(
@@ -40,14 +39,14 @@ class _FoundItemPageState extends State<FoundItem> {
           height: 300,
           child: GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: LatLng(37.77483, -122.41942), // Default location (San Francisco)
+              target: LatLng(37.77483, -122.41942),
               zoom: 12,
             ),
             onTap: (LatLng latLng) {
               setState(() {
                 _locationController.text = '${latLng.latitude}, ${latLng.longitude}';
               });
-              Navigator.pop(context); // Close the modal bottom sheet
+              Navigator.pop(context);
             },
           ),
         );
@@ -62,25 +61,52 @@ class _FoundItemPageState extends State<FoundItem> {
     _itemFoundDateController.dispose();
     _categoryController.dispose();
     _descriptionController.dispose();
-    _locationController.dispose(); // Dispose location controller
+    _locationController.dispose();
     super.dispose();
   }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Form submitted successfully'),
-        ),
-      );
+      try {
+        final user = FirebaseAuth.instance.currentUser;
 
-      // Clear form fields
-      _itemTitleController.clear();
-      _itemNameController.clear();
-      _itemFoundDateController.clear();
-      _categoryController.clear();
-      _descriptionController.clear();
-      _locationController.clear();
+        if (user != null) {
+          await FirebaseFirestore.instance.collection('found').add({
+            'userId': user.uid,
+            'itemTitle': _itemTitleController.text,
+            'itemName': _itemNameController.text,
+            'itemFoundDate': _itemFoundDateController.text,
+            'category': _categoryController.text,
+            'description': _descriptionController.text,
+            'location': _locationController.text,
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Item details saved successfully'),
+            ),
+          );
+
+          _itemTitleController.clear();
+          _itemNameController.clear();
+          _itemFoundDateController.clear();
+          _categoryController.clear();
+          _descriptionController.clear();
+          _locationController.clear();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('User not logged in'),
+            ),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error saving item details'),
+          ),
+        );
+      }
     }
   }
 
@@ -106,14 +132,14 @@ class _FoundItemPageState extends State<FoundItem> {
                   Expanded(
                     child: TextFormField(
                       controller: _locationController,
-                      readOnly: true, // Make the field read-only
+                      readOnly: true,
                       decoration: InputDecoration(
                         labelText: 'Location Found',
                         hintText: 'Tap to select location',
                         border: OutlineInputBorder(),
                         suffixIcon: IconButton(
                           icon: Icon(Icons.map),
-                          onPressed: _selectLocationOnMap, // Show map when icon is pressed
+                          onPressed: _selectLocationOnMap,
                         ),
                       ),
                       validator: (value) {
@@ -133,7 +159,7 @@ class _FoundItemPageState extends State<FoundItem> {
         ),
       ),
       bottomNavigationBar: const BottomNavBar(),
-      resizeToAvoidBottomInset: false, // Prevent keyboard from resizing the screen
+      resizeToAvoidBottomInset: false,
     );
   }
 

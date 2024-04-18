@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../components/customContainer.dart';
 import '../../post/model/search.dart';
 import '../modelView/CategoryItemsPage.dart';
@@ -37,11 +37,6 @@ class MainScreen extends StatelessWidget {
               ),
             );
           } else {
-            // final Future<List<String>> matchedTitles = searchLostItemsForCurrentUser(currentUserID) ;
-            // // Show the bottom sheet with the matched titles
-            // if (matchedTitles !=null){
-            //   bottomSheetPopUp.show(context, matchedTitles);
-            // }
             searchLostItemsForCurrentUser(currentUserID).then((matchedTitles) {
               if (matchedTitles.isNotEmpty) {
                 bottomSheetPopUp.show(context, matchedTitles);
@@ -142,7 +137,7 @@ class MainScreen extends StatelessWidget {
                             Icons.key,
                             const Color.fromRGBO(215, 225, 238, 1),
                             "Keys",
-                            () {
+                                () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -156,7 +151,7 @@ class MainScreen extends StatelessWidget {
                             Icons.headset,
                             const Color.fromRGBO(215, 225, 238, 1),
                             "Devices",
-                            () {
+                                () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -170,7 +165,7 @@ class MainScreen extends StatelessWidget {
                             Icons.diamond,
                             const Color.fromRGBO(215, 225, 238, 1),
                             "Jewels",
-                            () {
+                                () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -184,7 +179,7 @@ class MainScreen extends StatelessWidget {
                             Icons.question_mark_rounded,
                             const Color.fromRGBO(215, 225, 238, 1),
                             "Others",
-                            () {
+                                () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -217,7 +212,7 @@ class MainScreen extends StatelessWidget {
               StreamBuilder<QuerySnapshot>(
                 //taking the data from the collection
                 stream:
-                    FirebaseFirestore.instance.collection('lost').snapshots(),
+                FirebaseFirestore.instance.collection('lost').snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
@@ -233,31 +228,22 @@ class MainScreen extends StatelessWidget {
                       .docs; //making sure the doc is not null by using data!
                   return Column(
                     children: documents.map((doc) {
-                      /*documents.map((doc) { ... }): This iterates over each DocumentSnapshot in
-                      the documents list using the map method*/
-                      final Map<String, dynamic> data =
-                          doc.data() as Map<String, dynamic>;
-                      //TODO: Add the other details of the
-                      final String title =
-                          data['itemTitle'] ?? ''; // Use default value if null
+                      final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                      final String title = data['itemTitle'] ?? '';
                       final String description = data['description'] ?? '';
-                      final String category =
-                          data['category'] ?? ''; // Use default value if null
-                      final String dateStr =
-                          data['itemLostDate'] ?? ''; // Fetch date as string
-                      final DateTime date = DateTime.tryParse(dateStr) ??
-                          DateTime
-                              .now(); // Convert string to DateTime, fallback to current time if conversion fails
+                      final String category = data['category'] ?? '';
+                      final String dateStr = data['itemLostDate'] ?? '';
+                      final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now();
 
                       return Column(
                         children: [
                           const SizedBox(height: 20),
-                          //calling the container method from another class (customContainer.dart)
-                          CustomContainer(context,
-                              title: title,
-                              desc: description,
-                              category: category,
-                              date: date)
+                          CustomContainer(
+                            title: title,
+                            desc: description,
+                            category: category,
+                            date: date,
+                          )
                         ],
                       );
                     }).toList(),

@@ -1,26 +1,30 @@
-//this is a custom container for calling it over and over again
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../screens/chat/chat_page.dart';
 
 class CustomContainer extends StatelessWidget {
   final String title;
   final String desc;
   final String category;
   final DateTime date;
+  final String receiverUserEmail;
+  final String receiverUserID;
 
-  const CustomContainer(BuildContext context, {
+  const CustomContainer({
     Key? key,
     required this.title,
     required this.desc,
     required this.category,
     required this.date,
+    required this.receiverUserEmail,
+    required this.receiverUserID,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width*2/3,
+      height: MediaQuery.of(context).size.width * 2 / 3,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
@@ -30,11 +34,10 @@ class CustomContainer extends StatelessWidget {
             offset: const Offset(5, 5),
           )
         ],
-        // Dark blue
         color: const Color.fromRGBO(46, 61, 95, 1.0),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20.0), // Adjust padding as needed
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +78,6 @@ class CustomContainer extends StatelessWidget {
               ),
               textAlign: TextAlign.left,
             ),
-            // The Button
             Padding(
               padding: const EdgeInsets.only(top: 30),
               child: Container(
@@ -86,7 +88,15 @@ class CustomContainer extends StatelessWidget {
                 ),
                 child: TextButton(
                   onPressed: () {
-                    // TODO: Navigate to another page to show the details
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                          receiverUserEmail: receiverUserEmail,
+                          receiverUserID: receiverUserID,
+                        ),
+                      ),
+                    );
                   },
                   child: const Text(
                     'Contact',
@@ -100,4 +110,34 @@ class CustomContainer extends StatelessWidget {
       ),
     );
   }
+}
+
+// Usage example
+Widget build(BuildContext context) {
+  final lostItems = [
+    {
+      'itemTitle': 'Keychain',
+      'description': 'small white bag keychain',
+      'category': 'Keys',
+      'itemLostDate': '2024-03-11 00:00:00.000',
+      'receiverUserEmail': 'finder@example.com',
+      'userId': 'cY3TSi5qgvhpTFbOp4nMeA7W1qui',
+    },
+    // Add more lost items here
+  ];
+
+  return ListView.builder(
+    itemCount: lostItems.length,
+    itemBuilder: (context, index) {
+      final item = lostItems[index];
+      return CustomContainer(
+        title: item['itemTitle']!,
+        desc: item['description']!,
+        category: item['category']!,
+        date: DateTime.parse(item['itemLostDate']!),
+        receiverUserEmail: item['receiverUserEmail']!,
+        receiverUserID: item['userId']!,
+      );
+    },
+  );
 }
