@@ -65,7 +65,8 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   final String category = data['category'] ?? '';
                   final String dateStr = data['itemLostDate'] ?? ''; // Fetch date as string
                   final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now(); // Convert string to DateTime, fallback to current time if conversion fails
-
+                  final String receiverUserEmail = data['receiverUserEmail'] ?? '';
+                  final String receiverUserID = data['userId'] ?? '';
                   return Column(
                     children: [
                       const SizedBox(height: 20), // Add space before the container
@@ -74,7 +75,10 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           title: title,
                           desc: description,
                           category: category,
-                          date: date)
+                          date: date,
+                        receiverUserEmail: receiverUserEmail,
+                        receiverUserID: receiverUserID,
+                      )
                     ],
                   );
                 }).toList(),

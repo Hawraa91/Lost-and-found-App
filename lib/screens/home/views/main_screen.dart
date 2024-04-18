@@ -234,6 +234,8 @@ class MainScreen extends StatelessWidget {
                       final String category = data['category'] ?? '';
                       final String dateStr = data['itemLostDate'] ?? '';
                       final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now();
+                      final String receiverUserEmail = data['receiverUserEmail'] ?? '';
+                      final String receiverUserID = data['userId'] ?? '';
 
                       return Column(
                         children: [
@@ -243,6 +245,8 @@ class MainScreen extends StatelessWidget {
                             desc: description,
                             category: category,
                             date: date,
+                            receiverUserEmail: receiverUserEmail,
+                            receiverUserID: receiverUserID,
                           )
                         ],
                       );
