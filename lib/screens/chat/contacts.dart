@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'chat_page.dart';
 
 class ContactsPage extends StatefulWidget {
   @override
@@ -8,11 +9,18 @@ class ContactsPage extends StatefulWidget {
 
 class _ContactsPageState extends State<ContactsPage> {
   final Stream<QuerySnapshot> _contactsStream =
-  FirebaseFirestore.instance.collection('contacts').snapshots();
+  FirebaseFirestore.instance.collection('users').snapshots();
 
-  navigateToChat(String userId) {
-    // Navigate to chat screen with the user ID
-    // You can pass the userId to the chat screen and use it to fetch the chat messages
+  void navigateToChat(String userId, String userEmail) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatPage(
+          receiverUserID: userId,
+          receiverUserEmail: userEmail,
+        ),
+      ),
+    );
   }
 
   @override
@@ -37,8 +45,8 @@ class _ContactsPageState extends State<ContactsPage> {
               Map<String, dynamic> data =
               document.data()! as Map<String, dynamic>;
               return ListTile(
-                title: Text(data['name']),
-                onTap: () => navigateToChat(document.id),
+                title: Text(data['email']),
+                onTap: () => navigateToChat(document.id, data['email']),
               );
             }).toList(),
           );

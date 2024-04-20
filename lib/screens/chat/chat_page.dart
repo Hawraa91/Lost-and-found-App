@@ -32,7 +32,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: _chatService.getMessages(widget.receiverUserID, firebaseAuth.currentUser!.uid),
+      stream: _chatService.getMessages(firebaseAuth.currentUser!.uid, widget.receiverUserID),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');

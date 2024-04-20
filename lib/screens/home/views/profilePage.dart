@@ -192,7 +192,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () {
                           FirebaseAuth.instance.signOut();
-                          Navigator.pushReplacementNamed(context, '/start_page');
+                          Navigator.pushReplacementNamed(context, '/startPage');
                         },
                       ),
                     ),
