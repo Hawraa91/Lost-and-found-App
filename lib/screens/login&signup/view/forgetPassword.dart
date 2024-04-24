@@ -10,6 +10,7 @@ class ForgetPasswordPage extends StatefulWidget {
 
 class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   final _emailController = TextEditingController();
+  bool _isEmailEmpty = false;
 
   @override
   void dispose() {
@@ -18,14 +19,27 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   }
 
   Future<void> passwordReset() async {
+    if (_emailController.text.trim().isEmpty) {
+      setState(() {
+        _isEmailEmpty = true;
+      });
+      return;
+    }
+
     try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: _emailController.text.trim());
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailController.text.trim());
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            content: Text('Password reset link sent! Check your email'),
+            title: const Text('Check Email'),
+            content: const Text('Email sent to reset password via link'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
           );
         },
       );
@@ -50,9 +64,10 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Enter Your Email and we will '),
-          Text('send you a password reset link'),
-          // email textfield
+          Text(
+            'Enter Your Email',
+            style: TextStyle(fontSize: 24),
+          ),
           SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -60,26 +75,35 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
               controller: _emailController,
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: _isEmailEmpty ? Colors.red : Colors.white),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: _isEmailEmpty ? Colors.red : Colors.white),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                hintText: 'Email',
+                hintText: 'Enter your email',
+                hintStyle: TextStyle(color: _isEmailEmpty ? Colors.red : Colors.grey),
                 fillColor: Colors.grey[200],
                 filled: true,
-              ), // InputDecoration
+              ),
             ),
-          ), // Padding
-
-          // MaterialButton
+          ),
           SizedBox(height: 20),
-          MaterialButton(
-            onPressed: () => passwordReset(),
-            child: Text('Reset Password'),
-            color: Colors.deepPurple[200],
+          Container(
+            width: 300,
+            height: 65,
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(46, 61, 95, 1.0),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: MaterialButton(
+              onPressed: () => passwordReset(),
+              child: Text(
+                'Reset Password',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
           ),
         ],
       ),

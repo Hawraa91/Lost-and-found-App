@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class CaptachaVerification extends StatefulWidget {
-  const CaptachaVerification({super.key});
+  const CaptachaVerification({Key? key}) : super(key: key);
 
   @override
   State<CaptachaVerification> createState() => _CaptachaVerificationState();
@@ -12,17 +12,11 @@ class _CaptachaVerificationState extends State<CaptachaVerification> {
   String randomString = "";
   bool isVerified = false;
   TextEditingController controller = TextEditingController();
-  // Logic for creating Captcha
+
   void buildCaptcha() {
-    // Letter from which we want to generate the captcha
-    // We have taken A to Z all small and caps letters along with numbers
-    // You can change this as per your convince
-    const letters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-    // Length of Captcha to be generated
+    const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     const length = 6;
 
-    // Select random letters from above list
     final random = Random();
 
     randomString = String.fromCharCodes(List.generate(
@@ -34,7 +28,6 @@ class _CaptachaVerificationState extends State<CaptachaVerification> {
   @override
   void initState() {
     super.initState();
-    // To generate number on loading of page
     buildCaptcha();
   }
 
@@ -42,86 +35,81 @@ class _CaptachaVerificationState extends State<CaptachaVerification> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 2,
         title: const Text("Flutter Captcha Verification"),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              "Enter Captacha Value",
+              "Enter Captcha Value",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(
-              width: 10,
-            ),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Shown Captcha value to user
                 Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 2),
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Text(
-                      randomString,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    )),
-                const SizedBox(
-                  width: 10,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    randomString,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
                 ),
-                // Regenerate captcha value
+                const SizedBox(width: 10),
                 IconButton(
-                    onPressed: () {
-                      buildCaptcha();
-                    },
-                    icon: const Icon(Icons.refresh)),
+                  onPressed: () {
+                    buildCaptcha();
+                  },
+                  icon: const Icon(Icons.refresh),
+                ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            // TextFormField to enter captcha value
+            const SizedBox(height: 10),
             TextFormField(
               onChanged: (value) {
                 setState(() {
                   isVerified = false;
                 });
               },
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Enter Captcha Value",
-                  labelText: "Enter Captcha Value"),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "Enter Captcha Value",
+                labelText: "Enter Captcha Value",
+                filled: true,
+                fillColor: Colors.grey[200],
+              ),
               controller: controller,
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            // To check captcha value and
-            // textediting controller value
+            const SizedBox(height: 10),
             ElevatedButton(
-                onPressed: () {
-                  isVerified = controller.text == randomString;
+              onPressed: () {
+                isVerified = controller.text == randomString;
 
-                  setState(() {
+                setState(() {
+                  if (isVerified) {
                     Navigator.pushNamed(context, "/login");
-                  });
-                },
-                child: const Text("Check")),
-            const SizedBox(
-              height: 10,
+                  }
+                });
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+              ),
+              child: Text("Check"),
             ),
-            // Output whether captcha is correctly entered or not
-            if (isVerified) //if verified, send to login page
-              const Row(
+            const SizedBox(height: 10),
+            if (isVerified)
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [Icon(Icons.verified), Text("Verified")],
+                children: const [Icon(Icons.verified), Text("Verified")],
               )
             else
-              const Text("Please enter value you see on screen"),
+              const Text("Please enter the value you see on the screen"),
           ],
         ),
       ),
