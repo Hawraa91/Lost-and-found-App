@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../components/ImageSection.dart';
 
@@ -17,7 +18,7 @@ class _LoginState extends State<Login> {
   final _passwordController = TextEditingController();
 
   //pop up dialog if the password is wrong
-  Future<void> _showMyDialog() async {
+  Future<void> _showMyDialogPass() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -28,6 +29,34 @@ class _LoginState extends State<Login> {
             child: ListBody(
               children: <Widget>[
                 Text('You have entered an invalid password.'),
+                Text('Please try again'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  //pop up dialog if the email is wrong
+  Future<void> _showMyDialogEmail() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('User not found'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('You have entered an invalid email.'),
                 Text('Please try again'),
               ],
             ),
@@ -60,15 +89,20 @@ class _LoginState extends State<Login> {
 
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        if (kDebugMode) {
+          print('No user found for that email.');
+        }
+        _showMyDialogEmail();
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      } else {
-        print('Error occurred: ${e.message}');
-        _showMyDialog();
+        if (kDebugMode) {
+          print('Wrong password provided for that user.');
+        }
+        _showMyDialogPass();
       }
     } catch (e) {
-      print('Unexpected error occurred: $e');
+      if (kDebugMode) {
+        print('Unexpected error occurred: $e');
+      }
     }
   }
 
@@ -81,7 +115,7 @@ class _LoginState extends State<Login> {
           child: Column(
             children: <Widget>[
               const ImageSection(
-                image: 'assets/images/login.png',
+                image: 'assets/images/login2.png',
                 width: 200,
                 height: 250,
               ),

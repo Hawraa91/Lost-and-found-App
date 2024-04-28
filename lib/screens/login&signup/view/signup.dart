@@ -146,7 +146,7 @@ class _SignupState extends State<Signup> {
                       TextButton(
                         onPressed: () {
                           print('Login button pressed');
-                          Navigator.pushNamed(context, '/login');
+                          Navigator.pushNamed(context, '/captcha');
                         },
                         child: const Text(
                           'Already have an account? Login',

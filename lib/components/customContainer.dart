@@ -24,7 +24,7 @@ class CustomContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width * 2 / 3,
+      height: MediaQuery.of(context).size.width *5/7,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
@@ -93,7 +93,7 @@ class CustomContainer extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => ChatPage(
                           receiverUserEmail: receiverUserEmail,
-                          receiverUserID: receiverUserID,
+                          receiverUserID: receiverUserID
                         ),
                       ),
                     );
