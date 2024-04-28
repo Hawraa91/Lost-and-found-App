@@ -189,6 +189,20 @@ class MainScreen extends StatelessWidget {
                               );
                             },
                           ),
+                          // Added "My Report" category icon
+                          CardIcon(
+                            Icons.report,
+                            const Color.fromRGBO(215, 225, 238, 1),
+                            "My Report",
+                                () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const UserReport(),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -224,11 +238,12 @@ class MainScreen extends StatelessWidget {
                   }
                   /* "snapshot.data": This retrieves the data snapshot from
                   the snapshot object. It represents the latest data snapshot of the stream.*/
-                  final List<DocumentSnapshot> documents = snapshot.data!
-                      .docs; //making sure the doc is not null by using data!
+                  final List<DocumentSnapshot> documents =
+                      snapshot.data!.docs; //making sure the doc is not null by using data!
                   return Column(
                     children: documents.map((doc) {
-                      final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                      final Map<String, dynamic> data =
+                      doc.data() as Map<String, dynamic>;
                       final String title = data['itemTitle'] ?? '';
                       final String description = data['description'] ?? '';
                       final String category = data['category'] ?? '';
