@@ -3,6 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lost_and_found/screens/login&signup/model/editProfile.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../../../components/bottomNavBar.dart';
 import '../../login&signup/model/setting.dart';
 
@@ -41,6 +44,9 @@ class _ProfilePageState extends State<ProfilePage> {
   String? _phoneNumber;
   String? _address;
 
+  File? _profileImage;
+  final picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
@@ -65,6 +71,43 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+
+      // Upload the image to Firebase Storage
+      await _uploadImageToFirebaseStorage();
+    }
+  }
+
+  Future<void> _uploadImageToFirebaseStorage() async {
+    if (_profileImage == null) return;
+
+    final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    final destination = 'profile_pictures/$fileName';
+
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance.ref(destination);
+      await ref.putFile(_profileImage!);
+      final imageUrl = await ref.getDownloadURL();
+
+      // Update the user's profile picture URL in Firestore
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'profilePictureUrl': imageUrl});
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,24 +117,32 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Column(
         children: [
           const SizedBox(height: 20),
-          Stack(
-            children: [
-              const CircleAvatar(
-                radius: 60,
-                backgroundImage: AssetImage('assets/images/new.png'),
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.blueAccent,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.edit, color: Colors.white),
+          GestureDetector(
+            onTap: _getImage,
+            child: Stack(
+              children: [
+                _profileImage != null
+                    ? CircleAvatar(
+                  radius: 60,
+                  backgroundImage: FileImage(_profileImage!),
+                )
+                    : const CircleAvatar(
+                  radius: 60,
+                  backgroundImage: AssetImage('assets/images/new.png'),
                 ),
-              ),
-            ],
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.blueAccent,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.edit, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 20),
           Text(
@@ -140,12 +191,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         leading: const Icon(Icons.settings),
                         title: const Text('Settings'),
                         trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => SettingsPage()),
-                            );
-                          },
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SettingsPage()),
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -192,7 +243,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () {
                           FirebaseAuth.instance.signOut();
-                          Navigator.pushReplacementNamed(context, '/startPage');
+                          Navigator.pushReplacementNamed(context, '/');
                         },
                       ),
                     ),
