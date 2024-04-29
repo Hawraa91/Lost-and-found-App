@@ -9,7 +9,6 @@ class CustomContainer extends StatelessWidget {
   final DateTime date;
   final String receiverUserEmail;
   final String receiverUserID;
-  final bool isResolved;
 
   const CustomContainer({
     Key? key,
@@ -19,14 +18,13 @@ class CustomContainer extends StatelessWidget {
     required this.date,
     required this.receiverUserEmail,
     required this.receiverUserID,
-    required this.isResolved,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (!isResolved) {
-      return const SizedBox.shrink(); // Don't render anything if isResolved is true
-    }
+    // if (!isResolved) {
+    //   return const SizedBox.shrink(); // Don't render anything if isResolved is true
+    // }
 
     return Container(
       width: MediaQuery.of(context).size.width,

@@ -207,7 +207,7 @@ class MainScreen extends StatelessWidget {
                   child: Container(
                     width: 350,
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(22, 19, 85, 1.0), // Dark blue color
+                      color: const Color.fromRGBO(22, 19, 85, 1.0), // Dark blue color
                       borderRadius: BorderRadius.circular(10),
                     ),
                     padding: const EdgeInsets.all(16),
@@ -267,20 +267,28 @@ class MainScreen extends StatelessWidget {
                       final String receiverUserEmail = data['receiverUserEmail'] ?? '';
                       final String receiverUserID = data['userId'] ?? '';
 
-                      return Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          CustomContainer(
-                            title: title,
-                            desc: description,
-                            category: category,
-                            date: date,
-                            receiverUserEmail: receiverUserEmail,
-                            receiverUserID: receiverUserID,
-                            isResolved: false,
-                          )
-                        ],
-                      );
+                      final bool isPublic = data['isPublic'] ?? ''; // Fetch the isPublic data
+
+                      final bool isResolved= data['isResolved'] ?? ''; // Fetch the isResolved data
+
+
+                      if (isPublic  && isResolved ) {
+                        return Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            CustomContainer(
+                              title: title,
+                              desc: description,
+                              category: category,
+                              date: date,
+                              receiverUserEmail: receiverUserEmail,
+                              receiverUserID: receiverUserID,
+                            )
+                          ],
+                        );
+                      } else {
+                        return Container(); // Return an empty Container if isPublic is false
+                      }
                     }).toList(),
                   );
                 },
