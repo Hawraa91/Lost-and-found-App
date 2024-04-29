@@ -6,6 +6,7 @@ import 'package:lost_and_found/screens/login&signup/view/signup.dart';
 import 'package:lost_and_found/screens/home/views/profilePage.dart';
 import '../screens/chat/contacts.dart';
 import '../screens/home/modelView/CategoryItemsPage.dart';
+import '../screens/login&signup/model/EditReportPage.dart';
 import '../screens/login&signup/view/captcha.dart';
 import '../screens/login&signup/view/forgetPassword.dart';
 import '../screens/post/View/SearchResults.dart';
