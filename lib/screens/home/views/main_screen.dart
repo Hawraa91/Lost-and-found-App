@@ -262,17 +262,14 @@ class MainScreen extends StatelessWidget {
                       final String title = data['itemTitle'] ?? '';
                       final String description = data['description'] ?? '';
                       final String category = data['category'] ?? '';
-                      final String dateStr = data['itemLostDate'] ?? '';
-                      final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now();
+                      final timestamp = data['itemLostDate'];
+                      final DateTime date = timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now();
                       final String receiverUserEmail = data['receiverUserEmail'] ?? '';
                       final String receiverUserID = data['userId'] ?? '';
+                      final bool isPublic = data['isPublic'] ?? false;
+                      final bool isResolved = data['isResolved'] ?? false;
 
-                      final bool isPublic = data['isPublic'] ?? ''; // Fetch the isPublic data
-
-                      final bool isResolved= data['isResolved'] ?? ''; // Fetch the isResolved data
-
-
-                      if (isPublic  && isResolved ) {
+                      if (isPublic  && !isResolved ) {
                         return Column(
                           children: [
                             const SizedBox(height: 20),

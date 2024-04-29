@@ -53,31 +53,37 @@ class CategoryItemPage extends StatelessWidget {
                 child: Column(
                   children: documents.map((doc) {
                     final Map<String, dynamic> data =
-                    doc.data() as Map<String, dynamic>;
+                        doc.data() as Map<String, dynamic>;
                     final String title = data['itemTitle'] ?? '';
                     final String description = data['description'] ?? '';
                     final String category = data['category'] ?? '';
-                    final String dateStr = data['itemLostDate'] ?? '';
-                    final DateTime date =
-                        DateTime.tryParse(dateStr) ?? DateTime.now();
-
+                    final timestamp = data['itemLostDate'];
+                    final DateTime date = timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now();
                     // Retrieve the receiverUserEmail and receiverUserID from the document
                     final String receiverUserEmail = data['receiverUserEmail'] ?? '';
                     final String receiverUserID = data['userId'] ?? '';
+                    final bool isPublic = data['isPublic'] ?? false;
+                    final bool isResolved = data['isResolved'] ?? false;
 
-                    return Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        CustomContainer(
-                          title: title,
-                          desc: description,
-                          category: category,
-                          date: date,
-                          receiverUserEmail: receiverUserEmail,
-                          receiverUserID: receiverUserID,
-                        )
-                      ],
-                    );
+                    if (isPublic && !isResolved ) {
+                      return Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          CustomContainer(
+                            title: title,
+                            desc: description,
+                            category: category,
+                            date: date,
+                            receiverUserEmail: receiverUserEmail,
+                            receiverUserID: receiverUserID,
+                          )
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: Text('No lost items for this category'),
+                      ); // Return an empty Container if isPublic is false
+                    }
                   }).toList(),
                 ),
               );
