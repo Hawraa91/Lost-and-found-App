@@ -36,19 +36,40 @@ class _UserReportState extends State<UserReport> {
   }
 
   void _markAsResolved(DocumentReference docRef, String collectionName) {
-    docRef.update({'isResolved': true}).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('$collectionName item marked as resolved'),
-        ),
-      );
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error marking as resolved: $error'),
-        ),
-      );
-    });
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Mark as Resolved'),
+          content: const Text('Are you sure you want to mark this item as resolved?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                docRef.update({'isResolved': true}).then((value) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('$collectionName item marked as resolved'),
+                    ),
+                  );
+                }).catchError((error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error marking as resolved: $error'),
+                    ),
+                  );
+                });
+              },
+              child: const Text('Resolve'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

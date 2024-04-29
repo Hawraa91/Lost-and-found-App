@@ -190,7 +190,6 @@ class MainScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          // Added "My Report" category icon
                           CardIcon(
                             Icons.report,
                             const Color.fromRGBO(215, 225, 238, 1),
@@ -209,6 +208,33 @@ class MainScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 30),
+              // User Report Container
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserReport(),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: const Text(
+                    'My Report',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 30),
               const Row(
