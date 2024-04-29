@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../components/customContainer.dart';
@@ -39,6 +40,9 @@ class MainScreen extends StatelessWidget {
             );
           } else {
             searchLostItemsForCurrentUser(currentUserID).then((matchedTitles) {
+              if (kDebugMode) {
+                print(matchedTitles);
+              }
               if (matchedTitles.isNotEmpty) {
                 bottomSheetPopUp.show(context, matchedTitles);
               }
@@ -104,13 +108,6 @@ class MainScreen extends StatelessWidget {
                         ],
                       ),
                     ],
-                  ),
-                  SizedBox(
-                    width: 40, // Adjust width as needed
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(CupertinoIcons.bell),
-                    ),
                   ),
                 ],
               ),
@@ -190,19 +187,6 @@ class MainScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          CardIcon(
-                            Icons.report,
-                            const Color.fromRGBO(215, 225, 238, 1),
-                            "My Report",
-                                () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const UserReport(),
-                                ),
-                              );
-                            },
-                          ),
                         ],
                       ),
                     ),
@@ -220,21 +204,25 @@ class MainScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: const Text(
-                    'My Report',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  child: Container(
+                    width: 350,
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(22, 19, 85, 1.0), // Dark blue color
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ),
-                ),
+                    padding: const EdgeInsets.all(16),
+                    child: const Center(  // Center the text horizontally and vertically
+                      child: Text(
+                        'My Report',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
+
               ),
               const SizedBox(height: 30),
               const Row(
