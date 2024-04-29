@@ -55,8 +55,9 @@ class _LostItemState extends State<LostItem> {
           'itemLostDate': _itemLostDateController.text,
           'category': _categoryController.text,
           'description': _descriptionController.text,
-          'locationFound': _locationFoundController.text, // Save location found
+          'locationFound': _locationFoundController.text,
           'isPublic': isPublic,
+          'isResolved': false, // Add the 'isResolved' field with a default value of false
         };
 
         try {
@@ -71,7 +72,7 @@ class _LostItemState extends State<LostItem> {
           _itemLostDateController.clear();
           _categoryController.clear();
           _descriptionController.clear();
-          _locationFoundController.clear(); // Clear location found
+          _locationFoundController.clear();
           setState(() {
             isPublic = true;
           });

@@ -79,6 +79,7 @@ class _FoundItemPageState extends State<FoundItem> {
             'category': _categoryController.text,
             'description': _descriptionController.text,
             'location': _locationController.text,
+            'isResolved': false, // Add the 'isResolved' field with a default value of false
           });
 
           ScaffoldMessenger.of(context).showSnackBar(

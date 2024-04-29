@@ -6,6 +6,7 @@ import '../../../components/customContainer.dart';
 import '../../post/model/search.dart';
 import '../modelView/CategoryItemsPage.dart';
 import '../../../components/bottomSheetPopUp.dart';
+import 'UserReport.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key});

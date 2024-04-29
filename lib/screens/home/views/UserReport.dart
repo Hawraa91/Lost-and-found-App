@@ -11,7 +11,8 @@ class UserReport extends StatefulWidget {
 
 class _UserReportState extends State<UserReport> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late Stream<QuerySnapshot> _userItemsStream;
+  late Stream<QuerySnapshot> _lostItemsStream;
+  late Stream<QuerySnapshot> _foundItemsStream;
 
   @override
   void initState() {
@@ -23,11 +24,31 @@ class _UserReportState extends State<UserReport> {
     User? user = _auth.currentUser;
     if (user != null) {
       String userID = user.uid;
-      _userItemsStream = FirebaseFirestore.instance
+      _lostItemsStream = FirebaseFirestore.instance
           .collection('lost')
           .where('userId', isEqualTo: userID)
           .snapshots();
+      _foundItemsStream = FirebaseFirestore.instance
+          .collection('found')
+          .where('userId', isEqualTo: userID)
+          .snapshots();
     }
+  }
+
+  void _markAsResolved(DocumentReference docRef, String collectionName) {
+    docRef.update({'isResolved': true}).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$collectionName item marked as resolved'),
+        ),
+      );
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error marking as resolved: $error'),
+        ),
+      );
+    });
   }
 
   @override
@@ -36,68 +57,110 @@ class _UserReportState extends State<UserReport> {
       appBar: AppBar(
         title: const Text('My Report'),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _userItemsStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          }
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _lostItemsStream,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-          if (snapshot.data?.docs.isEmpty ?? true) {
-            return const Center(
-              child: Text('No items found'),
-            );
-          }
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    return _buildItemCard(snapshot.data!.docs[index], 'lost');
+                  },
+                );
+              },
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _foundItemsStream,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                }
 
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot doc = snapshot.data!.docs[index];
-              Map<String, dynamic> data =
-              doc.data() as Map<String, dynamic>;
-              String title = data['itemTitle'] ?? '';
-              String description = data['description'] ?? '';
-              String category = data['category'] ?? '';
-              String dateStr = data['itemLostDate'] ?? '';
-              DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now();
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-              return Container(
-                margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text('Category: $category'),
-                    const SizedBox(height: 5),
-                    Text('Date: ${date.toString().split(' ')[0]}'),
-                    const SizedBox(height: 5),
-                    Text(description),
-                  ],
-                ),
-              );
-            },
-          );
-        },
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    return _buildItemCard(snapshot.data!.docs[index], 'found');
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItemCard(DocumentSnapshot doc, String collectionName) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    String title = data['itemTitle'] ?? '';
+    String description = data['description'] ?? '';
+    String category = data['category'] ?? '';
+    String dateStr = data['itemLostDate'] ?? '';
+    DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now();
+    bool isResolved = data['isResolved'] ?? false;
+
+    return Container(
+      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text('Category: $category'),
+          const SizedBox(height: 5),
+          Text('Date: ${date.toString().split(' ')[0]}'),
+          const SizedBox(height: 5),
+          Text(description),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                onPressed: isResolved
+                    ? null
+                    : () {
+                  _markAsResolved(doc.reference, collectionName);
+                },
+                child: Text(isResolved ? 'Resolved' : 'Resolve'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
