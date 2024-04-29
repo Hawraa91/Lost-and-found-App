@@ -9,6 +9,7 @@ class CustomContainer extends StatelessWidget {
   final DateTime date;
   final String receiverUserEmail;
   final String receiverUserID;
+  final bool isResolved;
 
   const CustomContainer({
     Key? key,
@@ -18,13 +19,18 @@ class CustomContainer extends StatelessWidget {
     required this.date,
     required this.receiverUserEmail,
     required this.receiverUserID,
+    required this.isResolved,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if (!isResolved) {
+      return const SizedBox.shrink(); // Don't render anything if isResolved is true
+    }
+
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width *5/7,
+      height: MediaQuery.of(context).size.width * 5 / 7,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
@@ -93,7 +99,7 @@ class CustomContainer extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => ChatPage(
                           receiverUserEmail: receiverUserEmail,
-                          receiverUserID: receiverUserID
+                          receiverUserID: receiverUserID,
                         ),
                       ),
                     );
@@ -110,34 +116,4 @@ class CustomContainer extends StatelessWidget {
       ),
     );
   }
-}
-
-// Usage example
-Widget build(BuildContext context) {
-  final lostItems = [
-    {
-      'itemTitle': 'Keychain',
-      'description': 'small white bag keychain',
-      'category': 'Keys',
-      'itemLostDate': '2024-03-11 00:00:00.000',
-      'receiverUserEmail': 'finder@example.com',
-      'userId': 'cY3TSi5qgvhpTFbOp4nMeA7W1qui',
-    },
-    // Add more lost items here
-  ];
-
-  return ListView.builder(
-    itemCount: lostItems.length,
-    itemBuilder: (context, index) {
-      final item = lostItems[index];
-      return CustomContainer(
-        title: item['itemTitle']!,
-        desc: item['description']!,
-        category: item['category']!,
-        date: DateTime.parse(item['itemLostDate']!),
-        receiverUserEmail: item['receiverUserEmail']!,
-        receiverUserID: item['userId']!,
-      );
-    },
-  );
 }

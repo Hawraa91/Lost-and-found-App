@@ -289,6 +289,7 @@ class MainScreen extends StatelessWidget {
                             date: date,
                             receiverUserEmail: receiverUserEmail,
                             receiverUserID: receiverUserID,
+                            isResolved: false,
                           )
                         ],
                       );

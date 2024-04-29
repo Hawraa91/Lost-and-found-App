@@ -78,6 +78,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           date: date,
                         receiverUserEmail: receiverUserEmail,
                         receiverUserID: receiverUserID,
+                        isResolved: false,
                       )
                     ],
                   );

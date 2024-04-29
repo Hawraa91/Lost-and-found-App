@@ -75,6 +75,7 @@ class CategoryItemPage extends StatelessWidget {
                           date: date,
                           receiverUserEmail: receiverUserEmail,
                           receiverUserID: receiverUserID,
+                          isResolved: false, // Assuming isResolved is false by default
                         )
                       ],
                     );
