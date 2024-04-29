@@ -140,8 +140,8 @@ class _UserReportState extends State<UserReport> {
     String title = data['itemTitle'] ?? '';
     String description = data['description'] ?? '';
     String category = data['category'] ?? '';
-    String dateStr = data['itemLostDate'] ?? '';
-    DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now();
+    final timestamp = data['itemLostDate'];
+    final DateTime date = timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now();
     bool isResolved = data['isResolved'] ?? false;
 
     return Container(
