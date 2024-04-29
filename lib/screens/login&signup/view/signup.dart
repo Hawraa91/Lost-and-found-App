@@ -123,10 +123,12 @@ class _SignupState extends State<Signup> {
                       Padding(
                         padding: const EdgeInsets.only(top: 16.0),
                         child: Container(
-                          width: 200,
+                          width: 350,
+                          height: 65,
                           decoration: BoxDecoration(
-                            color: const Color.fromRGBO(96, 172, 182, 1.0),
-                            borderRadius: BorderRadius.circular(8.0),
+                            color: const Color.fromRGBO(46, 61, 95, 1.0),
+                            borderRadius:
+                            BorderRadius.circular(8.0),
                           ),
                           child: TextButton(
                             onPressed:
@@ -137,7 +139,9 @@ class _SignupState extends State<Signup> {
                             },
                             child: const Text(
                               'Sign Up',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16),
                             ),
                           ),
                         ),
@@ -145,7 +149,6 @@ class _SignupState extends State<Signup> {
                       const SizedBox(height: 16.0),
                       TextButton(
                         onPressed: () {
-                          print('Login button pressed');
                           Navigator.pushNamed(context, '/captcha');
                         },
                         child: const Text(
