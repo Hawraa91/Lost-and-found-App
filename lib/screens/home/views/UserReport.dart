@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../login&signup/model/EditReportPage.dart';
+
 class UserReport extends StatefulWidget {
   const UserReport({Key? key}) : super(key: key);
 
@@ -178,6 +180,26 @@ class _UserReportState extends State<UserReport> {
                   _markAsResolved(doc.reference, collectionName);
                 },
                 child: Text(isResolved ? 'Resolved' : 'Resolve'),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to the EditReportPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditReportPage(
+                        documentId: doc.id,
+                        collectionName: collectionName,
+                        initialTitle: title,
+                        initialDescription: description,
+                        initialCategory: category,
+                        initialDate: date,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Edit'),
               ),
             ],
           ),
