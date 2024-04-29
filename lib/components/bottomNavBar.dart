@@ -5,6 +5,7 @@ import 'package:lost_and_found/screens/home/views/HomePage.dart';
 import 'package:lost_and_found/screens/home/views/profilePage.dart';
 
 import '../screens/chat/contacts.dart';
+import '../screens/post/model/SearchItem.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -38,7 +39,12 @@ class BottomNavBar extends StatelessWidget {
               Icons.search,
               color: Colors.black,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SearchPage()),
+            );
+              },
           ),
           IconButton(
             icon: const Icon(

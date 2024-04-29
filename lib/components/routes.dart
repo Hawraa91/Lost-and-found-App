@@ -11,6 +11,7 @@ import '../screens/login&signup/view/forgetPassword.dart';
 import '../screens/post/View/SearchResults.dart';
 import '../screens/post/foundItem.dart';
 import '../screens/post/lostItem.dart';
+import '../screens/post/model/SearchItem.dart';
 
 // Define routes
 final Map<String, WidgetBuilder> routes = {
@@ -23,6 +24,7 @@ final Map<String, WidgetBuilder> routes = {
   '/lost': (context) => const LostItem(),
   '/contact': (context) => ContactsPage(),
   '/found': (context) => const FoundItem(),
+  '/search': (context) => const SearchPage(),
   '/forgetPassword': (context) => const ForgetPasswordPage(),
   '/categoryItem': (context) => CategoryItemPage(category: '',),
   '/searchResults': (context) => const SearchResultsPage(matchedTitles: [ ],),

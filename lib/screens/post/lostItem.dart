@@ -6,7 +6,6 @@ import '../../components/bottomNavBar.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -30,7 +29,6 @@ class _LostItemState extends State<LostItem> {
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _locationFoundController = TextEditingController(); // Location found controller
-  bool isPublic = true;
 
   @override
   void dispose() {
@@ -43,7 +41,7 @@ class _LostItemState extends State<LostItem> {
     super.dispose();
   }
 
-  Future<void> _submitForm() async {
+  Future<void> _submitForm(bool isPublic) async {
     if (_formKey.currentState!.validate()) {
       String? userId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -52,12 +50,12 @@ class _LostItemState extends State<LostItem> {
           'userId': userId,
           'itemTitle': _itemTitleController.text,
           'itemName': _itemNameController.text,
-          'itemLostDate': _itemLostDateController.text,
+          'itemLostDate': Timestamp.fromDate(DateTime.parse(_itemLostDateController.text)), // Convert String to Timestamp
           'category': _categoryController.text,
           'description': _descriptionController.text,
           'locationFound': _locationFoundController.text,
           'isPublic': isPublic,
-          'isResolved': false, // Add the 'isResolved' field with a default value of false
+          'isResolved': false,
         };
 
         try {
@@ -73,9 +71,6 @@ class _LostItemState extends State<LostItem> {
           _categoryController.clear();
           _descriptionController.clear();
           _locationFoundController.clear();
-          setState(() {
-            isPublic = true;
-          });
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -130,9 +125,7 @@ class _LostItemState extends State<LostItem> {
               width: double.infinity,
               child: ToggleButton(
                 onToggle: (value) {
-                  setState(() {
-                    isPublic = value;
-                  });
+                  _submitForm(value);
                 },
               ),
             ),
@@ -172,7 +165,7 @@ class _LostItemState extends State<LostItem> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  _buildButton('Submit', _submitForm),
+                  _buildButton('Submit', () => _submitForm(true)),
                 ],
               ),
             ),
