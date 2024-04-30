@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart'; // Add this import statement
 
 class LocationTrackerPage extends StatefulWidget {
   @override
@@ -84,8 +84,21 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
             ),
             SizedBox(height: 10),
             ..._lastFiveLocations.map((position) {
-              return Text(
-                'Lat: ${position.latitude}, Lng: ${position.longitude}',
+              return FutureBuilder<List<Placemark>>(
+                future: placemarkFromCoordinates(
+                  position.latitude,
+                  position.longitude,
+                ),
+                builder: (BuildContext context, AsyncSnapshot<List<Placemark>> snapshot) {
+                  if (snapshot.hasData) {
+                    final address = snapshot.data?.first.name ?? 'Unknown';
+                    return Text(address);
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
               );
             }).toList(),
           ],
