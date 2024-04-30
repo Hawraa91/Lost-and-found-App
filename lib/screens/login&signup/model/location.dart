@@ -42,6 +42,13 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
   }
 
   void _updateLastFiveLocations(Position position) {
+    if (_lastFiveLocations.isNotEmpty &&
+        _lastFiveLocations.last.latitude == position.latitude &&
+        _lastFiveLocations.last.longitude == position.longitude) {
+      // The new position is the same as the last one, so we don't need to update
+      return;
+    }
+
     setState(() {
       _lastFiveLocations.add(position);
       if (_lastFiveLocations.length > 5) {
