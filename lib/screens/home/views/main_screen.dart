@@ -184,6 +184,20 @@ class MainScreen extends StatelessWidget {
                             },
                           ),
                           CardIcon(
+                            Icons.account_balance_wallet,
+                            const Color.fromRGBO(215, 225, 238, 1),
+                            "Wallet",
+                                () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategoryItemPage(category: 'Wallet'),
+                                ),
+                              );
+                            },
+                          ),
+                          CardIcon(
                             Icons.question_mark_rounded,
                             const Color.fromRGBO(215, 225, 238, 1),
                             "Others",
@@ -217,7 +231,7 @@ class MainScreen extends StatelessWidget {
                   child: Container(
                     width: 350,
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(22, 19, 85, 1.0), // Dark blue color
+                      color: const Color.fromRGBO(46, 61, 95, 1.0), // Dark blue color
                       borderRadius: BorderRadius.circular(10),
                     ),
                     padding: const EdgeInsets.all(16),
@@ -246,7 +260,7 @@ class MainScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 7),
               //the blue container and fetching the data
               StreamBuilder<QuerySnapshot>(
                 //taking the data from the collection
@@ -263,8 +277,7 @@ class MainScreen extends StatelessWidget {
                   }
                   /* "snapshot.data": This retrieves the data snapshot from
                   the snapshot object. It represents the latest data snapshot of the stream.*/
-                  final List<DocumentSnapshot> documents =
-                      snapshot.data!.docs; //making sure the doc is not null by using data!
+                  final List<DocumentSnapshot> documents = snapshot.data!.docs; //making sure the doc is not null by using data!
                   return Column(
                     children: documents.map((doc) {
                       final Map<String, dynamic> data =

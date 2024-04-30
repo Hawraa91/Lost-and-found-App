@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'chat_page.dart';
 
 class ContactsPage extends StatefulWidget {
+  const ContactsPage({super.key});
+
   @override
   _ContactsPageState createState() => _ContactsPageState();
 }
@@ -49,29 +51,21 @@ class _ContactsPageState extends State<ContactsPage> {
               if (senderIDsSnapshot.hasData) {
                 List<String> senderIDs = senderIDsSnapshot.data!;
 
-                return ListView(
-                  children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                    // fetching the user email
-                    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                    final String contactID = document.id;
-                    if(kDebugMode){
-                      for(var ids in senderIDs) {
-                        print(ids);
-                      }
-                    }
-                    List<String> matchingEmails = [];
+                for (var id in senderIDs){
+                  if (kDebugMode) {
+                    print(id);
+                  }
+                }
 
-                    // Check if the sender IDs list contains the current contact ID
-                    if (senderIDs.contains(contactID)) {
-                      // Add the email to the matchingEmails list
-                      // matchingEmails.add(data['email']);
-                    }
-
+                return ListView.builder(
+                  itemCount: senderIDs.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final String senderID = senderIDs[index];
                     return ListTile(
-                      title: Text(matchingEmails.isNotEmpty ? matchingEmails.join(', ') : data['email']), // Display matching emails or default email
-                      onTap: () => navigateToChat(contactID, data['email']),
+                      title: Text(senderID),
+                      onTap: () => navigateToChat(senderID, ""), // You can replace the empty string with the corresponding email if needed
                     );
-                  }).toList(),
+                  },
                 );
               } else if (senderIDsSnapshot.hasError) {
                 return Text('Error getting sender IDs: ${senderIDsSnapshot.error}');
@@ -92,32 +86,45 @@ Future<List<String>> _fetchSenderIDs(String currentUserID) async {
   List<String> senderIDs = [];
 
   // Get a reference to the chat_room collection
-  final chatRoomRef = FirebaseFirestore.instance.collection('chat_room');
+  final chatRoomRef = FirebaseFirestore.instance.collection('chat_rooms');
 
   try {
     // Get all documents in the chat_room collection (consider security rules)
     //this document is the chatroom , then i'm fetching the chat rooms
     final chatRoomSnapshot = await chatRoomRef.get();
 
+    if (kDebugMode) {
+      print('Chat room snapshot length: ${chatRoomSnapshot.docs.length}');
+    }
+
     //going through the documents (chat rooms)
     for (var chatDoc in chatRoomSnapshot.docs)
     {
+      if (kDebugMode) {
+        print('Chat document ID: ${chatDoc.id}');
+      }
       // Get a reference to the messages sub-collection within the current chat document
       final messagesRef = chatDoc.reference.collection('messages');
       // Query the messages sub-collection to find messages where receiverID matches currentID
       final messageSnapshot = await messagesRef.where('receiverId', isEqualTo: currentUserID).get();
 
+      if (kDebugMode) {
+        print('Message snapshot length: ${messageSnapshot.docs.length}');
+      }
+
       // Iterate through the message documents
       for (var messageDoc in messageSnapshot.docs)
       {
+        if (kDebugMode) {
+          print('Message document ID: ${messageDoc.id}');
+        }
         // Extract the sender ID from the message document
         final email = messageDoc.data()['senderEmail'];
-        //debugging
-        if (kDebugMode) {
-          print('$email');
-        }
         if (email != null) {
-          senderIDs.add(email); // Add the sender ID to the list
+          senderIDs.add(email);
+          if (kDebugMode) {
+            print(email);
+          }// Add the sender ID to the list
         }
       }
     }
