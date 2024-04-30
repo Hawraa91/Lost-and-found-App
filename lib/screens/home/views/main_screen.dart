@@ -75,7 +75,6 @@ class MainScreen extends StatelessWidget {
                             height: 50,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              // Blue green
                               color: Color.fromRGBO(22, 19, 85, 1.0),
                             ),
                           ),
@@ -88,22 +87,33 @@ class MainScreen extends StatelessWidget {
                       const SizedBox(
                         width: 8,
                       ),
-                      const Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             "Report your lost or found item",
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Text(
-                            "Welcome to FindMyThing",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            children: [
+                              const Text(
+                                "Welcome to FindMyThing",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 25), // Add spacing between text and icon
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, "/location");
+                                },
+                                icon: const Icon(Icons.location_on),
+                              ),
+                            ],
                           ),
                         ],
                       ),
