@@ -65,10 +65,11 @@ class _SearchPageState extends State<SearchPage> {
                   final description = data['description']?.toLowerCase() ?? '';
                   final category = data['category']?.toLowerCase() ?? '';
                   final searchLower = _searchQuery.toLowerCase();
+                  final isPublic = data['isPublic'] ?? true; // Assuming isPublic is true by default
 
-                  return title.contains(searchLower) ||
+                  return isPublic && (title.contains(searchLower) ||
                       description.contains(searchLower) ||
-                      category.contains(searchLower);
+                      category.contains(searchLower));
                 }).toList();
 
                 return ListView.builder(

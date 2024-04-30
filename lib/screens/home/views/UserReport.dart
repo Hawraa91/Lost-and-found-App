@@ -82,34 +82,41 @@ class _UserReportState extends State<UserReport> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Report'),
-        actions: [
-          ToggleButton(
-            onToggle: _toggleReportType,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: ToggleButton(
+              onToggle: _toggleReportType,
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _itemsStream,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    return _buildItemCard(snapshot.data!.docs[index], _showLost ? 'lost' : 'found');
+                  },
+                );
+              },
+            ),
           ),
         ],
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _itemsStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              return _buildItemCard(snapshot.data!.docs[index], _showLost ? 'lost' : 'found');
-            },
-          );
-        },
       ),
     );
   }
