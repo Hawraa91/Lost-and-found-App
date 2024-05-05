@@ -58,14 +58,16 @@ class CategoryItemPage extends StatelessWidget {
                     final String description = data['description'] ?? '';
                     final String category = data['category'] ?? '';
                     final timestamp = data['itemLostDate'];
-                    final DateTime date = timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now();
+                    final DateTime date = timestamp != null ? (timestamp as Timestamp).toDate()
+                        : DateTime.now();
                     // Retrieve the receiverUserEmail and receiverUserID from the document
                     final String receiverUserEmail = data['receiverUserEmail'] ?? '';
                     final String receiverUserID = data['userId'] ?? '';
                     final bool isPublic = data['isPublic'] ?? false;
                     final bool isResolved = data['isResolved'] ?? false;
 
-                    if (isPublic && !isResolved ) {
+                    //if it is public and not resolved then print
+                    if (isPublic && !isResolved) {
                       return Column(
                         children: [
                           const SizedBox(height: 20),
@@ -79,10 +81,11 @@ class CategoryItemPage extends StatelessWidget {
                           )
                         ],
                       );
-                    } else {
+                    }
+                    else {
                       return const Center(
                         child: Text('No lost items for this category'),
-                      ); // Return an empty Container if isPublic is false
+                      );
                     }
                   }).toList(),
                 ),

@@ -28,7 +28,9 @@ class _LostItemState extends State<LostItem> {
   final TextEditingController _itemLostDateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _locationFoundController = TextEditingController(); // Location found controller
+  final TextEditingController _locationFoundController =
+      TextEditingController(); // Location found controller
+  bool isPublic = true; // Hold the toggle state
 
   @override
   void dispose() {
@@ -41,7 +43,7 @@ class _LostItemState extends State<LostItem> {
     super.dispose();
   }
 
-  Future<void> _submitForm(bool isPublic) async {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       String? userId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -50,7 +52,8 @@ class _LostItemState extends State<LostItem> {
           'userId': userId,
           'itemTitle': _itemTitleController.text,
           'itemName': _itemNameController.text,
-          'itemLostDate': Timestamp.fromDate(DateTime.parse(_itemLostDateController.text)), // Convert String to Timestamp
+          'itemLostDate': Timestamp.fromDate(DateTime.parse(
+              _itemLostDateController.text)), // Convert String to Timestamp
           'category': _categoryController.text,
           'description': _descriptionController.text,
           'locationFound': _locationFoundController.text,
@@ -96,12 +99,14 @@ class _LostItemState extends State<LostItem> {
           height: 300,
           child: GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: LatLng(37.77483, -122.41942), // Default location (San Francisco)
+              target: LatLng(
+                  37.77483, -122.41942), // Default location (San Francisco)
               zoom: 12,
             ),
             onTap: (LatLng latLng) {
               setState(() {
-                _locationFoundController.text = '${latLng.latitude}, ${latLng.longitude}';
+                _locationFoundController.text =
+                    '${latLng.latitude}, ${latLng.longitude}';
               });
               Navigator.pop(context); // Close the modal bottom sheet
             },
@@ -123,9 +128,11 @@ class _LostItemState extends State<LostItem> {
           children: [
             Container(
               width: double.infinity,
-              child: ToggleButton(
-                onToggle: (value) {
-                  _submitForm(value);
+              child: CheckBoxWidget(
+                onCheckedChanged: (value) {
+                  setState(() {
+                    isPublic = value;
+                  });
                 },
               ),
             ),
@@ -151,7 +158,8 @@ class _LostItemState extends State<LostItem> {
                             border: OutlineInputBorder(),
                             suffixIcon: IconButton(
                               icon: Icon(Icons.map),
-                              onPressed: _selectLocationFoundOnMap, // Show map when icon is pressed
+                              onPressed:
+                                  _selectLocationFoundOnMap, // Show map when icon is pressed
                             ),
                           ),
                           validator: (value) {
@@ -165,7 +173,7 @@ class _LostItemState extends State<LostItem> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  _buildButton('Submit', () => _submitForm(true)),
+                  _buildButton('Submit', _submitForm),
                 ],
               ),
             ),
@@ -232,7 +240,8 @@ class _LostItemState extends State<LostItem> {
     );
   }
 
-  Widget _buildCategoryDropdown(String label, TextEditingController controller) {
+  Widget _buildCategoryDropdown(
+      String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: DropdownButtonFormField<String>(
@@ -253,8 +262,13 @@ class _LostItemState extends State<LostItem> {
           }
           return null;
         },
-        items: <String>['Devices', 'Jewels', 'Keys', 'Personal document', 'Others']
-            .map<DropdownMenuItem<String>>((String value) {
+        items: <String>[
+          'Devices',
+          'Jewels',
+          'Keys',
+          'Personal document',
+          'Others'
+        ].map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
@@ -268,10 +282,10 @@ class _LostItemState extends State<LostItem> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Container(
-        width: 200,
+        width: 350,
         decoration: BoxDecoration(
-          color: const Color.fromRGBO(96, 172, 182, 1.0),
-          borderRadius: BorderRadius.circular(8.0),
+          color: const Color.fromRGBO(46, 61, 95, 1.0), // Dark blue color
+          borderRadius: BorderRadius.circular(10),
         ),
         child: TextButton(
           onPressed: onPressed,
@@ -285,114 +299,41 @@ class _LostItemState extends State<LostItem> {
   }
 }
 
-class ToggleButton extends StatefulWidget {
-  final Function(bool) onToggle;
+class CheckBoxWidget extends StatefulWidget {
+  final Function(bool) onCheckedChanged;
 
-  const ToggleButton({required this.onToggle, Key? key}) : super(key: key);
+  const CheckBoxWidget({required this.onCheckedChanged, Key? key}) : super(key: key);
 
   @override
-  _ToggleButtonState createState() => _ToggleButtonState();
+  _CheckBoxWidgetState createState() => _CheckBoxWidgetState();
 }
 
-const double width = 300.0;
-const double height = 60.0;
-const double loginAlign = -1;
-const double signInAlign = 1;
-const Color selectedColor = Color.fromRGBO(96, 172, 182, 1.0);
-const normalColor = Colors.black54;
-
-class _ToggleButtonState extends State<ToggleButton> {
-  late double xAlign;
-  late Color loginColor;
-  late Color signInColor;
-
-  @override
-  void initState() {
-    super.initState();
-    xAlign = loginAlign;
-    loginColor = selectedColor;
-    signInColor = normalColor;
-  }
+class _CheckBoxWidgetState extends State<CheckBoxWidget> {
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: const BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.all(
-          Radius.circular(50.0),
+    return Row(
+      children: [
+        const Expanded(
+          child: Text(
+            'Make your post public?',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
         ),
-      ),
-      child: Stack(
-        children: [
-          AnimatedAlign(
-            alignment: Alignment(xAlign, 0),
-            duration: const Duration(milliseconds: 300),
-            child: Container(
-              width: width * 0.5,
-              height: height,
-              decoration: BoxDecoration(
-                color: selectedColor,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(50.0),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                xAlign = loginAlign;
-                loginColor = selectedColor;
-                signInColor = normalColor;
-              });
-              widget.onToggle(true); // Call callback with true for Public
-            },
-            child: Align(
-              alignment: const Alignment(-1, 0),
-              child: Container(
-                width: width * 0.5,
-                color: Colors.transparent,
-                alignment: Alignment.center,
-                child: const Text(
-                  'Private',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                xAlign = signInAlign;
-                signInColor = selectedColor;
-                loginColor = normalColor;
-              });
-              widget.onToggle(false); // Call callback with false for Private
-            },
-            child: Align(
-              alignment: const Alignment(1, 0),
-              child: Container(
-                width: width * 0.5,
-                color: Colors.transparent,
-                alignment: Alignment.center,
-                child: Text(
-                  'Public',
-                  style: TextStyle(
-                    color: signInColor == selectedColor ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        Checkbox(
+          value: isChecked,
+          onChanged: (bool? value) {
+            setState(() {
+              isChecked = value ?? false;
+            });
+            widget.onCheckedChanged(isChecked);
+          },
+        ),
+      ],
     );
   }
 }

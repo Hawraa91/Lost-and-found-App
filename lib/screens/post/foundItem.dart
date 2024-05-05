@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../components/bottomNavBar.dart';
-import 'lostItem.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -241,7 +241,7 @@ class _FoundItemPageState extends State<FoundItem> {
           }
           return null;
         },
-        items: <String>['devices', 'jewels', 'keys', 'personal document', 'others']
+        items: <String>['Devices', 'Jewels', 'Keys', 'Cards', 'Others']
             .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
@@ -256,10 +256,10 @@ class _FoundItemPageState extends State<FoundItem> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Container(
-        width: 200,
+        width: 350,
         decoration: BoxDecoration(
-          color: const Color.fromRGBO(96, 172, 182, 1.0),
-          borderRadius: BorderRadius.circular(8.0),
+          color: const Color.fromRGBO(46, 61, 95, 1.0), // Dark blue color
+          borderRadius: BorderRadius.circular(10),
         ),
         child: TextButton(
           onPressed: onPressed,
