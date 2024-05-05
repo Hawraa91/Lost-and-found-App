@@ -13,8 +13,8 @@ class UserReport extends StatefulWidget {
 
 class _UserReportState extends State<UserReport> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late Stream<QuerySnapshot> _lostItemsStream;
-  late Stream<QuerySnapshot> _foundItemsStream;
+  late Stream<QuerySnapshot> _itemsStream;
+  bool _showLost = true;
 
   @override
   void initState() {
@@ -26,15 +26,18 @@ class _UserReportState extends State<UserReport> {
     User? user = _auth.currentUser;
     if (user != null) {
       String userID = user.uid;
-      _lostItemsStream = FirebaseFirestore.instance
-          .collection('lost')
-          .where('userId', isEqualTo: userID)
-          .snapshots();
-      _foundItemsStream = FirebaseFirestore.instance
-          .collection('found')
+      _itemsStream = FirebaseFirestore.instance
+          .collection(_showLost ? 'lost' : 'found')
           .where('userId', isEqualTo: userID)
           .snapshots();
     }
+  }
+
+  void _toggleReportType(bool isLost) {
+    setState(() {
+      _showLost = isLost;
+      _getUserItemsStream();
+    });
   }
 
   void _markAsResolved(DocumentReference docRef, String collectionName) {
@@ -79,60 +82,34 @@ class _UserReportState extends State<UserReport> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Report'),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _lostItemsStream,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${snapshot.error}'),
-                  );
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    return _buildItemCard(snapshot.data!.docs[index], 'lost');
-                  },
-                );
-              },
-            ),
-          ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _foundItemsStream,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${snapshot.error}'),
-                  );
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    return _buildItemCard(snapshot.data!.docs[index], 'found');
-                  },
-                );
-              },
-            ),
+        actions: [
+          ToggleButton(
+            onToggle: _toggleReportType,
           ),
         ],
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _itemsStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              return _buildItemCard(snapshot.data!.docs[index], _showLost ? 'lost' : 'found');
+            },
+          );
+        },
       ),
     );
   }
@@ -202,6 +179,120 @@ class _UserReportState extends State<UserReport> {
                 child: const Text('Edit'),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ToggleButton extends StatefulWidget {
+  final Function(bool) onToggle;
+
+  const ToggleButton({required this.onToggle, Key? key}) : super(key: key);
+
+  @override
+  _ToggleButtonState createState() => _ToggleButtonState();
+}
+
+const double width = 300.0;
+const double height = 60.0;
+const double lostAlign = -1;
+const double foundAlign = 1;
+const Color selectedColor = Color.fromRGBO(96, 172, 182, 1.0);
+const normalColor = Colors.black54;
+
+class _ToggleButtonState extends State<ToggleButton> {
+  late double xAlign;
+  late Color lostColor;
+  late Color foundColor;
+
+  @override
+  void initState() {
+    super.initState();
+    xAlign = lostAlign;
+    lostColor = selectedColor;
+    foundColor = normalColor;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: const BoxDecoration(
+        color: Colors.grey,
+        borderRadius: BorderRadius.all(
+          Radius.circular(50.0),
+        ),
+      ),
+      child: Stack(
+        children: [
+          AnimatedAlign(
+            alignment: Alignment(xAlign, 0),
+            duration: const Duration(milliseconds: 300),
+            child: Container(
+              width: width * 0.5,
+              height: height,
+              decoration: BoxDecoration(
+                color: selectedColor,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(50.0),
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                xAlign = lostAlign;
+                lostColor = selectedColor;
+                foundColor = normalColor;
+              });
+              widget.onToggle(true); // Call callback with true for Lost
+            },
+            child: Align(
+              alignment: const Alignment(-1, 0),
+              child: Container(
+                width: width * 0.5,
+                color: lostColor,
+                child: const Center(
+                  child: Text(
+                    'Lost',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                xAlign = foundAlign;
+                lostColor = normalColor;
+                foundColor = selectedColor;
+              });
+              widget.onToggle(false); // Call callback with false for Found
+            },
+            child: Align(
+              alignment: const Alignment(1, 0),
+              child: Container(
+                width: width * 0.5,
+                color: foundColor,
+                child: const Center(
+                  child: Text(
+                    'Found',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
