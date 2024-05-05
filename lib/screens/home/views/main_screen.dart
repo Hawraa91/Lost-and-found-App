@@ -87,7 +87,7 @@ class MainScreen extends StatelessWidget {
                       const SizedBox(
                         width: 8,
                       ),
-                      Column(
+                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
@@ -106,13 +106,11 @@ class MainScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(width: 25), // Add spacing between text and icon
+                              const SizedBox(width: 5), // Add spacing between text and icon
                               IconButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, "/location");
-                                },
+                                onPressed: () => Navigator.pushNamed(context, "/location"),
                                 icon: const Icon(Icons.location_on),
-                              ),
+                              )
                             ],
                           ),
                         ],
@@ -145,7 +143,7 @@ class MainScreen extends StatelessWidget {
                             Icons.key,
                             const Color.fromRGBO(215, 225, 238, 1),
                             "Keys",
-                                () {
+                            () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -159,7 +157,7 @@ class MainScreen extends StatelessWidget {
                             Icons.headset,
                             const Color.fromRGBO(215, 225, 238, 1),
                             "Devices",
-                                () {
+                            () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -173,7 +171,7 @@ class MainScreen extends StatelessWidget {
                             Icons.diamond,
                             const Color.fromRGBO(215, 225, 238, 1),
                             "Jewels",
-                                () {
+                            () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -187,7 +185,7 @@ class MainScreen extends StatelessWidget {
                             Icons.account_balance_wallet,
                             const Color.fromRGBO(215, 225, 238, 1),
                             "Wallet",
-                                () {
+                            () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -201,7 +199,7 @@ class MainScreen extends StatelessWidget {
                             Icons.question_mark_rounded,
                             const Color.fromRGBO(215, 225, 238, 1),
                             "Others",
-                                () {
+                            () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -211,6 +209,62 @@ class MainScreen extends StatelessWidget {
                               );
                             },
                           ),
+                          StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('categories')
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              }
+
+                              final List<DocumentSnapshot> documents =
+                                  snapshot.data!.docs;
+
+                              // Debugging print statement
+                              if (kDebugMode) {
+                                print(
+                                    'Number of documents: ${documents.length}');
+                              }
+
+                              return Container(
+                                width: 100,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: documents.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final Map<String, dynamic> data =
+                                        documents[index].data()
+                                            as Map<String, dynamic>;
+                                    final String category =
+                                        data['name'] as String;
+
+                                    return CardIcon(
+                                      Icons.category, // Set your desired icon
+                                      const Color.fromRGBO(215, 225, 238, 1),
+                                      category,
+                                      () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                CategoryItemPage(
+                                                    category: category),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          )
                         ],
                       ),
                     ),
@@ -220,22 +274,24 @@ class MainScreen extends StatelessWidget {
               const SizedBox(height: 30),
               // User Report Container
               GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const UserReport(),
-                    ),
-                  );
-                },
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const UserReport(),
+                      ),
+                    );
+                  },
                   child: Container(
                     width: 350,
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(46, 61, 95, 1.0), // Dark blue color
+                      color: const Color.fromRGBO(
+                          46, 61, 95, 1.0), // Dark blue color
                       borderRadius: BorderRadius.circular(10),
                     ),
                     padding: const EdgeInsets.all(16),
-                    child: const Center(  // Center the text horizontally and vertically
+                    child: const Center(
+                      // Center the text horizontally and vertically
                       child: Text(
                         'My Report',
                         style: TextStyle(
@@ -245,9 +301,7 @@ class MainScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )
-
-              ),
+                  )),
               const SizedBox(height: 30),
               const Row(
                 children: [
@@ -264,10 +318,8 @@ class MainScreen extends StatelessWidget {
               //the blue container and fetching the data
               StreamBuilder<QuerySnapshot>(
                 //taking the data from the collection
-                stream:
-                FirebaseFirestore.instance.collection('lost').snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                stream: FirebaseFirestore.instance.collection('lost').snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   }
@@ -277,22 +329,26 @@ class MainScreen extends StatelessWidget {
                   }
                   /* "snapshot.data": This retrieves the data snapshot from
                   the snapshot object. It represents the latest data snapshot of the stream.*/
-                  final List<DocumentSnapshot> documents = snapshot.data!.docs; //making sure the doc is not null by using data!
+                  final List<DocumentSnapshot> documents = snapshot.data!
+                      .docs; //making sure the doc is not null by using data!
                   return Column(
                     children: documents.map((doc) {
                       final Map<String, dynamic> data =
-                      doc.data() as Map<String, dynamic>;
+                          doc.data() as Map<String, dynamic>;
                       final String title = data['itemTitle'] ?? '';
                       final String description = data['description'] ?? '';
                       final String category = data['category'] ?? '';
                       final timestamp = data['itemLostDate'];
-                      final DateTime date = timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now();
-                      final String receiverUserEmail = data['receiverUserEmail'] ?? '';
+                      final DateTime date = timestamp != null
+                          ? (timestamp as Timestamp).toDate()
+                          : DateTime.now();
+                      final String receiverUserEmail =
+                          data['receiverUserEmail'] ?? '';
                       final String receiverUserID = data['userId'] ?? '';
                       final bool isPublic = data['isPublic'] ?? false;
                       final bool isResolved = data['isResolved'] ?? false;
 
-                      if (isPublic  && !isResolved ) {
+                      if (isPublic && !isResolved) {
                         return Column(
                           children: [
                             const SizedBox(height: 20),

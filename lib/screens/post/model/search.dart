@@ -29,6 +29,10 @@ Future<List<String>> searchLostItemsForCurrentUser(String currentUserID) async {
       // Extract information from the lost document
       //String? lostTitle = (lostDoc.data() as Map<String, dynamic>?)?['itemTitle'];
       String? lostName = (lostDoc.data() as Map<String, dynamic>?)?['itemName'];
+      String? lostName2 = lostName?.toLowerCase();
+      if (kDebugMode) {
+        print('object in lower case --> $lostName2');
+      }
       String? lostCateg =
           (lostDoc.data() as Map<String, dynamic>?)?['category'];
       bool? lostResolved =
@@ -41,13 +45,14 @@ Future<List<String>> searchLostItemsForCurrentUser(String currentUserID) async {
             (foundDoc.data() as Map<String, dynamic>?)?['itemTitle'];
         String? foundName =
             (foundDoc.data() as Map<String, dynamic>?)?['itemName'];
+        String? foundName2 = foundName?.toLowerCase();
         String? secondCateg =
             (foundDoc.data() as Map<String, dynamic>?)?['category'];
         String? foundItemId = foundDoc.id;
 
         // Check if the titles of the lost and found items match (only if it was not resolved)
         if (lostResolved != true) {
-          if (lostName == foundName && lostCateg == secondCateg) {
+          if (lostName2 == foundName2 && lostCateg == secondCateg) {
             // Found a match, you can take further action here
             if (kDebugMode) {
               matchedTitles.add(foundItemId);

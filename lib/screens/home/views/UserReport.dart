@@ -163,7 +163,7 @@ class _UserReportState extends State<UserReport> {
                     : () {
                   _markAsResolved(doc.reference, collectionName);
                 },
-                child: Text(isResolved ? 'Resolved' : 'Resolve'),
+                child: Text(isResolved ? 'Close Case' : 'Close Case'),
               ),
               const SizedBox(width: 10),
               ElevatedButton(

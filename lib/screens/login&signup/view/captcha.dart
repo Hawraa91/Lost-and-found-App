@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class CaptachaVerification extends StatefulWidget {
-  const CaptachaVerification({Key? key}) : super(key: key);
+  const CaptachaVerification({super.key});
 
   @override
   State<CaptachaVerification> createState() => _CaptachaVerificationState();
@@ -78,7 +78,7 @@ class _CaptachaVerificationState extends State<CaptachaVerification> {
                 });
               },
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 hintText: "Enter Captcha Value",
                 labelText: "Enter Captcha Value",
                 filled: true,
@@ -98,15 +98,17 @@ class _CaptachaVerificationState extends State<CaptachaVerification> {
                 });
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                backgroundColor: MaterialStateProperty.all<Color>(const Color.fromRGBO(46, 61, 95, 1.0)),
               ),
-              child: Text("Check"),
+              child: const Text("Check", style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16),),
             ),
             const SizedBox(height: 10),
             if (isVerified)
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [Icon(Icons.verified), Text("Verified")],
+                children: [Icon(Icons.verified), Text("Verified")],
               )
             else
               const Text("Please enter the value you see on the screen"),
