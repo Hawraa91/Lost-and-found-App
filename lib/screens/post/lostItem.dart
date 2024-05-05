@@ -4,8 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../components/bottomNavBar.dart';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -29,7 +27,7 @@ class _LostItemState extends State<LostItem> {
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _locationFoundController =
-      TextEditingController(); // Location found controller
+  TextEditingController(); // Location found controller
   bool isPublic = true; // Hold the toggle state
 
   @override
@@ -91,31 +89,6 @@ class _LostItemState extends State<LostItem> {
     }
   }
 
-  void _selectLocationFoundOnMap() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 300,
-          child: GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(
-                  37.77483, -122.41942), // Default location (San Francisco)
-              zoom: 12,
-            ),
-            onTap: (LatLng latLng) {
-              setState(() {
-                _locationFoundController.text =
-                    '${latLng.latitude}, ${latLng.longitude}';
-              });
-              Navigator.pop(context); // Close the modal bottom sheet
-            },
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,32 +119,7 @@ class _LostItemState extends State<LostItem> {
                   _buildDateTimePickerFormField('Item Lost Date'),
                   _buildCategoryDropdown('Category', _categoryController),
                   _buildInputField('Description', _descriptionController),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _locationFoundController,
-                          readOnly: true, // Make the field read-only
-                          decoration: InputDecoration(
-                            labelText: 'Location Found',
-                            hintText: 'Tap to select location',
-                            border: OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.map),
-                              onPressed:
-                                  _selectLocationFoundOnMap, // Show map when icon is pressed
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select a location';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  _buildInputField('Location Found', _locationFoundController),
                   const SizedBox(height: 10),
                   _buildButton('Submit', _submitForm),
                 ],
@@ -240,43 +188,48 @@ class _LostItemState extends State<LostItem> {
     );
   }
 
-  Widget _buildCategoryDropdown(
-      String label, TextEditingController controller) {
+  Widget _buildCategoryDropdown(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: 'Select $label',
-          border: const OutlineInputBorder(),
-        ),
-        value: controller.text.isNotEmpty ? controller.text : null,
-        onChanged: (String? value) {
-          setState(() {
-            controller.text = value ?? '';
-          });
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please select $label';
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('categories').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return const Text('Loading...');
           }
-          return null;
-        },
-        items: <String>[
-          'Devices',
-          'Jewels',
-          'Keys',
-          'Personal document',
-          'Others'
-        ].map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
+          List<String> categories = snapshot.data!.docs.map((DocumentSnapshot document) {
+            return document['name'] as String;
+          }).toList();
+          return DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              labelText: label,
+              hintText: 'Select $label',
+              border: const OutlineInputBorder(),
+            ),
+            value: controller.text.isNotEmpty ? controller.text : null,
+            onChanged: (String? value) {
+              setState(() {
+                controller.text = value ?? '';
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select $label';
+              }
+              return null;
+            },
+            items: categories.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
           );
-        }).toList(),
+        },
       ),
     );
   }
+
 
   Widget _buildButton(String label, Function() onPressed) {
     return Padding(

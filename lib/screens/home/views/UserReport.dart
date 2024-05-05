@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import '../../../components/bottomNavBar.dart';
 import '../../login&signup/model/EditReportPage.dart';
 
 class UserReport extends StatefulWidget {
@@ -45,8 +46,8 @@ class _UserReportState extends State<UserReport> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Mark as Resolved'),
-          content: const Text('Are you sure you want to mark this item as resolved?'),
+          title: const Text('Mark as Closed'),
+          content: const Text('Are you sure you want to mark this Report as Closed?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -58,18 +59,18 @@ class _UserReportState extends State<UserReport> {
                 docRef.update({'isResolved': true}).then((value) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('$collectionName item marked as resolved'),
+                      content: Text('$collectionName Report Marked as Closed'),
                     ),
                   );
                 }).catchError((error) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Error marking as resolved: $error'),
+                      content: Text('Error marking as Closed: $error'),
                     ),
                   );
                 });
               },
-              child: const Text('Resolve'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -118,6 +119,7 @@ class _UserReportState extends State<UserReport> {
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavBar(), // Use the BottomNavBar widget
     );
   }
 
@@ -134,7 +136,7 @@ class _UserReportState extends State<UserReport> {
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: const Color.fromRGBO(46, 61, 95, 1.0), // Use the same color as CustomContainer
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -145,45 +147,62 @@ class _UserReportState extends State<UserReport> {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
+              color: Colors.white, // Text color
             ),
           ),
           const SizedBox(height: 5),
-          Text('Category: $category'),
+          Text('Category: $category', style: const TextStyle(color: Colors.white)),
           const SizedBox(height: 5),
-          Text('Date: ${date.toString().split(' ')[0]}'),
+          Text('Date: ${date.toString().split(' ')[0]}', style: const TextStyle(color: Colors.white)),
           const SizedBox(height: 5),
-          Text(description),
+          Text(description, style: const TextStyle(color: Colors.white)),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ElevatedButton(
-                onPressed: isResolved
-                    ? null
-                    : () {
-                  _markAsResolved(doc.reference, collectionName);
-                },
-                child: Text(isResolved ? 'Close Case' : 'Close Case'),
+              Theme(
+                data: ThemeData(
+                  buttonTheme: ButtonThemeData(
+                    buttonColor: Colors.white, // background color
+                    textTheme: ButtonTextTheme.primary, // text color
+                  ),
+                ),
+                child: ElevatedButton(
+                  onPressed: isResolved
+                      ? null
+                      : () {
+                    _markAsResolved(doc.reference, collectionName);
+                  },
+                  child: Text(isResolved ? 'Closed' : 'Close '),
+                ),
               ),
               const SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to the EditReportPage
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditReportPage(
-                        documentId: doc.id,
-                        collectionName: collectionName,
-                        initialTitle: title,
-                        initialDescription: description,
-                        initialCategory: category,
-                        initialDate: date,
+              Theme(
+                data: ThemeData(
+                  buttonTheme: ButtonThemeData(
+                    buttonColor: Colors.white, // background color
+                    textTheme: ButtonTextTheme.primary, // text color
+                  ),
+                ),
+                child: ElevatedButton(
+                  onPressed: isResolved ? null : () {
+                    // Navigate to the EditReportPage
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditReportPage(
+                          documentId: doc.id,
+                          collectionName: collectionName,
+                          initialTitle: title,
+                          initialDescription: description,
+                          initialCategory: category,
+                          initialDate: date,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                child: const Text('Edit'),
+                    );
+                  },
+                  child: const Text('Edit'),
+                ),
               ),
             ],
           ),
@@ -206,7 +225,7 @@ const double width = 300.0;
 const double height = 60.0;
 const double lostAlign = -1;
 const double foundAlign = 1;
-const Color selectedColor = Color.fromRGBO(96, 172, 182, 1.0);
+const Color selectedColor = Color.fromRGBO(6, 33, 68, 1.0);
 const normalColor = Colors.black54;
 
 class _ToggleButtonState extends State<ToggleButton> {

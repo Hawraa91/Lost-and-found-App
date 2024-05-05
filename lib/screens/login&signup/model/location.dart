@@ -37,7 +37,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
     }
 
     // Listen for location updates
-    _positionStream = Geolocator.getPositionStream(distanceFilter: 1.0).listen((Position position) {
+    _positionStream = Geolocator.getPositionStream().listen((Position position) {
       _handleLocationUpdate(position);
     });
   }
