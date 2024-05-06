@@ -39,23 +39,49 @@ class MainScreen extends StatelessWidget {
               ),
             );
           } else {
-            searchLostItemsForCurrentUser(currentUserID).then((matchedTitles) {
-              if (kDebugMode) {
-                print(matchedTitles);
-              }
-              if (matchedTitles.isNotEmpty) {
-                bottomSheetPopUp.show(context, matchedTitles);
-              }
-            });
+            return StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(currentUserID) // Fetch the document corresponding to the current user ID
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
 
-            return buildMainScreen(context, currentUserID);
+                final Map<String, dynamic>? userData =
+                snapshot.data?.data() as Map<String, dynamic>?;
+
+                // Extract imageUrl from userData
+                final String? imageUrl = userData?['imageUrl'];
+
+                //Searching for items and pop up message
+                searchLostItemsForCurrentUser(currentUserID).then((matchedTitles) {
+                  if (kDebugMode) {
+                    print(matchedTitles);
+                  }
+                  if (matchedTitles.isNotEmpty) {
+                    bottomSheetPopUp.show(context, matchedTitles);
+                  }
+                });
+
+                return buildMainScreen(context, currentUserID, imageUrl!);
+              },
+            );
           }
         }
       },
     );
   }
+}
 
-  Widget buildMainScreen(BuildContext context, String currentUserID) {
+
+
+Widget buildMainScreen(BuildContext context, String currentUserID, String imageUrl) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -78,9 +104,28 @@ class MainScreen extends StatelessWidget {
                               color: Color.fromRGBO(22, 19, 85, 1.0),
                             ),
                           ),
-                          const Icon(
-                            CupertinoIcons.person_fill,
-                            color: Colors.white,
+                          Container(
+                            height: 60, // Adjust the height as per your requirement
+                            width: 60, // Adjust the width as per your requirement
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.black, // You can change the border color if needed
+                                width: 2, // You can adjust the border width if needed
+                              ),
+                            ),
+                            child: ClipOval(
+                              child: imageUrl != null
+                                  ? Image.network(
+                                imageUrl!,
+                                fit: BoxFit.cover,
+                              )
+                                  : const Icon(
+                                Icons.person, // Placeholder icon in case image URL is null
+                                size: 60, // Size of the placeholder icon
+                                color: Colors.grey, // Color of the placeholder icon
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -415,4 +460,4 @@ class MainScreen extends StatelessWidget {
       ),
     );
   }
-}
+

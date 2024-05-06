@@ -1,3 +1,5 @@
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,14 +40,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  String imageUrl = '';
   String? _firstName;
   String? _lastName;
   String? _email;
   String? _phoneNumber;
   String? _address;
-
-  File? _profileImage;
-  final picker = ImagePicker();
+  String? _imageUrl;
 
   @override
   void initState() {
@@ -66,45 +67,9 @@ class _ProfilePageState extends State<ProfilePage> {
           _email = data?['email'];
           _phoneNumber = data?['phoneNumber'];
           _address = data?['address'];
+          _imageUrl = data?['imageUrl'];
         });
       }
-    }
-  }
-
-  Future<void> _getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
-
-      // Upload the image to Firebase Storage
-      await _uploadImageToFirebaseStorage();
-    }
-  }
-
-  Future<void> _uploadImageToFirebaseStorage() async {
-    if (_profileImage == null) return;
-
-    final fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    final destination = 'profile_pictures/$fileName';
-
-    try {
-      final ref = firebase_storage.FirebaseStorage.instance.ref(destination);
-      await ref.putFile(_profileImage!);
-      final imageUrl = await ref.getDownloadURL();
-
-      // Update the user's profile picture URL in Firestore
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({'profilePictureUrl': imageUrl});
-      }
-    } catch (e) {
-      print('Error uploading image: $e');
     }
   }
 
@@ -117,33 +82,82 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Column(
         children: [
           const SizedBox(height: 20),
-          GestureDetector(
-            onTap: _getImage,
-            child: Stack(
-              children: [
-                _profileImage != null
-                    ? CircleAvatar(
-                  radius: 60,
-                  backgroundImage: FileImage(_profileImage!),
-                )
-                    : const CircleAvatar(
-                  radius: 60,
-                  backgroundImage: AssetImage('assets/images/new.png'),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.blueAccent,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.edit, color: Colors.white),
-                  ),
-                ),
-              ],
+          //Show image
+          Container(
+            height: 120, // Adjust the height as per your requirement
+            width: 120, // Adjust the width as per your requirement
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.black, // You can change the border color if needed
+                width: 2, // You can adjust the border width if needed
+              ),
+            ),
+            child: ClipOval(
+              child: _imageUrl != null
+                  ? Image.network(
+                _imageUrl!,
+                fit: BoxFit.cover,
+              )
+                  : const Icon(
+                Icons.person, // Placeholder icon in case image URL is null
+                size: 60, // Size of the placeholder icon
+                color: Colors.grey, // Color of the placeholder icon
+              ),
             ),
           ),
+          //Uploading image
+        IconButton(onPressed: () async {
+
+          /* Step 1. Pick an image */
+          ImagePicker imagePicker = ImagePicker();
+          XFile? file = await imagePicker.pickImage(
+              source: ImageSource.gallery);
+          if (kDebugMode) {
+            print('path is ${file?.path}');
+          }
+
+          if (file == null) return;
+
+          String uniqueFileName = DateTime
+              .now()
+              .microsecondsSinceEpoch
+              .toString();
+
+          /* Step 2. Upload the image to Firebase Storage*/
+          //Get a reference  to storage root
+          Reference referenceRoot = FirebaseStorage.instance.ref();
+          Reference referenceDirImages = referenceRoot.child('images');
+
+          //Create a reference for the image to be stored
+          Reference referenceImageToUpload = referenceDirImages.child(
+              uniqueFileName);
+
+          //Handle errors/success
+          try {
+            //Store the file
+            await referenceImageToUpload.putFile(File(file!.path));
+            //Success: get the download URL
+            imageUrl = await referenceImageToUpload.getDownloadURL();
+
+            //Adding the imageUrl in database for the current logged in user
+            String? userId = FirebaseAuth.instance.currentUser?.uid;
+            if (userId != null) {
+              CollectionReference users = FirebaseFirestore.instance.collection(
+                  'users');
+              await users.doc(userId).update({'imageUrl': imageUrl});
+            }
+          }
+          catch (error) {
+            //Some error occurred
+            if (kDebugMode) {
+              print('Error uploading image: $error');
+            }
+          }
+        }
+        , icon: const Icon(Icons.camera_alt)),
+
+
           const SizedBox(height: 20),
           Text(
             '${_firstName ?? ''} ${_lastName ?? ''}',
