@@ -193,13 +193,12 @@ class _LostItemState extends State<LostItem> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('categories').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Text('Loading...');
+            return const Center(child: CircularProgressIndicator());
           }
-          List<String> categories = snapshot.data!.docs.map((DocumentSnapshot document) {
-            return document['name'] as String;
-          }).toList();
+          List categories = snapshot.data!.docs.map((doc) => doc['name']).toList();
+          categories.addAll(['Devices', 'Personal documents', 'Wallet', 'Keys', 'Jewels']);
           return DropdownButtonFormField<String>(
             decoration: InputDecoration(
               labelText: label,
@@ -218,7 +217,7 @@ class _LostItemState extends State<LostItem> {
               }
               return null;
             },
-            items: categories.map<DropdownMenuItem<String>>((String value) {
+            items: categories.map<DropdownMenuItem<String>>((value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value),
