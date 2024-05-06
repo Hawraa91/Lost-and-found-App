@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lost_and_found/screens/login&signup/model/editProfile.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../../../components/bottomNavBar.dart';
+import '../../login&signup/model/editProfile.dart';
 import '../../login&signup/model/setting.dart';
 
 void main() async {
@@ -102,11 +102,16 @@ class _ProfilePageState extends State<ProfilePage> {
             .collection('users')
             .doc(user.uid)
             .update({'profilePictureUrl': imageUrl});
+
+        // Fetch the updated user data to update the UI
+        await _fetchUserData();
       }
     } catch (e) {
       print('Error uploading image: $e');
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const EditProfilePage()),
+                  MaterialPageRoute(builder: (context) => EditProfilePage()),
                 );
               },
               child: const Text(
@@ -185,20 +190,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: ListTile(
-                        leading: const Icon(Icons.settings),
-                        title: const Text('Settings'),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SettingsPage()),
-                          );
-                        },
-                      ),
-                    ),
                     const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),

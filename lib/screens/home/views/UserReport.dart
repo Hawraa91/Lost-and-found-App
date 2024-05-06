@@ -185,7 +185,7 @@ class _UserReportState extends State<UserReport> {
                   ),
                 ),
                 child: ElevatedButton(
-                  onPressed: isResolved ? null : () {
+                  onPressed: () {
                     // Navigate to the EditReportPage
                     Navigator.push(
                       context,
