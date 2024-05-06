@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../components/bottomNavBar.dart';
 
@@ -29,29 +28,6 @@ class _FoundItemPageState extends State<FoundItem> {
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-
-  void _selectLocationOnMap() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 300,
-          child: GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(37.77483, -122.41942),
-              zoom: 12,
-            ),
-            onTap: (LatLng latLng) {
-              setState(() {
-                _locationController.text = '${latLng.latitude}, ${latLng.longitude}';
-              });
-              Navigator.pop(context);
-            },
-          ),
-        );
-      },
-    );
-  }
 
   @override
   void dispose() {
@@ -257,31 +233,7 @@ class _FoundItemPageState extends State<FoundItem> {
                 },
               ),
               _buildInputField('Description', _descriptionController),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _locationController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: 'Location Found',
-                        hintText: 'Tap to select location',
-                        border: OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.map),
-                          onPressed: _selectLocationOnMap,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select a location';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              _buildInputField('Location Found', _locationController),
               const SizedBox(height: 10),
               _buildButton('Submit', _submitForm),
             ],
