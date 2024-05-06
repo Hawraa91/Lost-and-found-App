@@ -101,7 +101,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
           children: [
             Text(
               'Last 5 Locations:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
             StreamBuilder<QuerySnapshot>(
@@ -129,7 +129,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'Latitude',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                           ),
                         ),
@@ -138,7 +138,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'Longitude',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                           ),
                         ),
@@ -147,7 +147,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'Timestamp',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                           ),
                         ),
@@ -159,19 +159,19 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                           TableCell(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(doc['latitude'].toString()),
+                              child: Text(doc['latitude'].toString(), style: TextStyle(fontSize: 16)),
                             ),
                           ),
                           TableCell(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(doc['longitude'].toString()),
+                              child: Text(doc['longitude'].toString(), style: TextStyle(fontSize: 16)),
                             ),
                           ),
                           TableCell(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(doc['timestamp'].toDate().toString()),
+                              child: Text(doc['timestamp'].toDate().toString(), style: TextStyle(fontSize: 16)),
                             ),
                           ),
                         ],
