@@ -152,7 +152,7 @@ class _FoundItemPageState extends State<FoundItem> {
   }
 
   Widget _buildCategoryDropdown(String label, TextEditingController controller, List<String> categories) {
-    List<String> allCategories = ['Personal Document', 'Devices', 'Jewels', 'Keys', 'Others'];
+    List<String> allCategories = [ 'Devices', 'Jewels', 'Keys', 'Wallet','Others'];
     allCategories.addAll(categories);
 
     return Padding(

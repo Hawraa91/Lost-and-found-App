@@ -198,7 +198,7 @@ class _LostItemState extends State<LostItem> {
             return const Center(child: CircularProgressIndicator());
           }
           List categories = snapshot.data!.docs.map((doc) => doc['name']).toList();
-          categories.addAll(['Devices', 'Personal documents', 'Wallet', 'Keys', 'Jewels']);
+          categories.addAll(['Devices', 'Wallet', 'Keys', 'Jewels', 'Others']);
           return DropdownButtonFormField<String>(
             decoration: InputDecoration(
               labelText: label,

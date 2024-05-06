@@ -45,19 +45,31 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
   void _handleLocationUpdate(Position position) {
     final currentTime = DateTime.now();
     if (_lastLocationTimestamp == null || currentTime.difference(_lastLocationTimestamp!).inMinutes >= 3) {
-      _updateLastFiveLocations(position);
-      _lastLocationTimestamp = currentTime;
+      if (_shouldRecordLocation(position)) {
+        _updateLastFiveLocations(position);
+        _lastLocationTimestamp = currentTime;
+      }
     }
   }
 
-  void _updateLastFiveLocations(Position position) {
-    if (_lastFiveLocations.isNotEmpty &&
-        _lastFiveLocations.last.latitude == position.latitude &&
-        _lastFiveLocations.last.longitude == position.longitude) {
-      // The new position is the same as the last one, so we don't need to update
-      return;
+  bool _shouldRecordLocation(Position newPosition) {
+    if (_lastFiveLocations.isEmpty) {
+      return true;
     }
 
+    // Calculate the distance between the last recorded location and the new location
+    double distanceInMeters = Geolocator.distanceBetween(
+      _lastFiveLocations.last.latitude,
+      _lastFiveLocations.last.longitude,
+      newPosition.latitude,
+      newPosition.longitude,
+    );
+
+    // Record the location if the distance is greater than 100 meters
+    return distanceInMeters >= 100;
+  }
+
+  void _updateLastFiveLocations(Position position) {
     setState(() {
       _lastFiveLocations.add(position);
       if (_lastFiveLocations.length > 5) {
@@ -102,17 +114,69 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                 final documents = snapshot.data!.docs.reversed.toList();
                 final lastFiveDocuments = documents.take(5).toList();
 
-                return Column(
-                  children: lastFiveDocuments.map((doc) {
-                    final data = doc.data() as Map<String, dynamic>;
-                    final latitude = data['latitude'] as double;
-                    final longitude = data['longitude'] as double;
-                    final timestamp = data['timestamp'] as Timestamp;
-
-                    return Text(
-                      'Lat: $latitude, Lng: $longitude, Timestamp: ${timestamp.toDate()}',
-                    );
-                  }).toList(),
+                return Table(
+                  border: TableBorder.all(),
+                  columnWidths: const {
+                    0: FlexColumnWidth(2),
+                    1: FlexColumnWidth(2),
+                    2: FlexColumnWidth(4),
+                  },
+                  children: [
+                    TableRow(
+                      children: [
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Latitude',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Longitude',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Timestamp',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    for (final doc in lastFiveDocuments)
+                      TableRow(
+                        children: [
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(doc['latitude'].toString()),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(doc['longitude'].toString()),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(doc['timestamp'].toDate().toString()),
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
                 );
               },
             ),

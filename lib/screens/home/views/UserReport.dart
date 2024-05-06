@@ -82,7 +82,8 @@ class _UserReportState extends State<UserReport> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Report'),
+        title: const Text('My Reports'),
+
       ),
       body: Column(
         children: [
@@ -185,7 +186,7 @@ class _UserReportState extends State<UserReport> {
                   ),
                 ),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: isResolved ? null : () {
                     // Navigate to the EditReportPage
                     Navigator.push(
                       context,
