@@ -61,7 +61,6 @@ class CategoryItemPage extends StatelessWidget {
                     final DateTime date = timestamp != null ? (timestamp as Timestamp).toDate()
                         : DateTime.now();
                     // Retrieve the receiverUserEmail and receiverUserID from the document
-                    final String receiverUserEmail = data['receiverUserEmail'] ?? '';
                     final String receiverUserID = data['userId'] ?? '';
                     final bool isPublic = data['isPublic'] ?? false;
                     final bool isResolved = data['isResolved'] ?? false;
@@ -76,7 +75,6 @@ class CategoryItemPage extends StatelessWidget {
                             desc: description,
                             category: category,
                             date: date,
-                            receiverUserEmail: receiverUserEmail,
                             receiverUserID: receiverUserID,
                           )
                         ],

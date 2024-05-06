@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../screens/chat/chat_page.dart';
 
 class CustomContainer extends StatelessWidget {
@@ -7,7 +8,6 @@ class CustomContainer extends StatelessWidget {
   final String desc;
   final String category;
   final DateTime date;
-  final String receiverUserEmail;
   final String receiverUserID;
 
   const CustomContainer({
@@ -16,16 +16,33 @@ class CustomContainer extends StatelessWidget {
     required this.desc,
     required this.category,
     required this.date,
-    required this.receiverUserEmail,
     required this.receiverUserID,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // if (!isResolved) {
-    //   return const SizedBox.shrink(); // Don't render anything if isResolved is true
-    // }
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance.collection('users').doc(receiverUserID).get(),
+      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
 
+        // Extract user data from the snapshot
+        final userData = snapshot.data!.data() as Map<String, dynamic>;
+
+        // Extract the receiverUserEmail from userData
+        final String receiverUserEmail = userData['email'];
+
+        return buildContainer(context, receiverUserEmail);
+      },
+    );
+  }
+
+  Widget buildContainer(BuildContext context, String receiverUserEmail) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width * 5 / 7,

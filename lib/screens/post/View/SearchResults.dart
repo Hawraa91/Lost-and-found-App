@@ -65,7 +65,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   final String category = data['category'] ?? '';
                   final String dateStr = data['itemLostDate'] ?? ''; // Fetch date as string
                   final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now(); // Convert string to DateTime, fallback to current time if conversion fails
-                  final String receiverUserEmail = data['receiverUserEmail'] ?? '';
                   final String receiverUserID = data['userId'] ?? '';
                   return Column(
                     children: [
@@ -76,7 +75,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           desc: description,
                           category: category,
                           date: date,
-                        receiverUserEmail: receiverUserEmail,
                         receiverUserID: receiverUserID,
                       )
                     ],

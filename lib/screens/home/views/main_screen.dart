@@ -147,7 +147,7 @@ Widget buildMainScreen(BuildContext context, String currentUserID, String imageU
                               const Text(
                                 "Welcome to FindMyThing",
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -387,8 +387,6 @@ Widget buildMainScreen(BuildContext context, String currentUserID, String imageU
                       final DateTime date = timestamp != null
                           ? (timestamp as Timestamp).toDate()
                           : DateTime.now();
-                      final String receiverUserEmail =
-                          data['receiverUserEmail'] ?? '';
                       final String receiverUserID = data['userId'] ?? '';
                       final bool isPublic = data['isPublic'] ?? false;
                       final bool isResolved = data['isResolved'] ?? false;
@@ -402,7 +400,6 @@ Widget buildMainScreen(BuildContext context, String currentUserID, String imageU
                               desc: description,
                               category: category,
                               date: date,
-                              receiverUserEmail: receiverUserEmail,
                               receiverUserID: receiverUserID,
                             )
                           ],
