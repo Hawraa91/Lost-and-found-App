@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../components/bottomNavBar.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,29 +28,6 @@ class _FoundItemPageState extends State<FoundItem> {
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-
-  void _selectLocationOnMap() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 300,
-          child: GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(37.77483, -122.41942),
-              zoom: 12,
-            ),
-            onTap: (LatLng latLng) {
-              setState(() {
-                _locationController.text = '${latLng.latitude}, ${latLng.longitude}';
-              });
-              Navigator.pop(context);
-            },
-          ),
-        );
-      },
-    );
-  }
 
   @override
   void dispose() {
@@ -111,59 +86,6 @@ class _FoundItemPageState extends State<FoundItem> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Found Item Form'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              _buildInputField('Item Title', _itemTitleController),
-              _buildInputField('Item Name', _itemNameController),
-              _buildDateTimePickerFormField('Item Found Date'),
-              _buildCategoryDropdown('Category', _categoryController),
-              _buildInputField('Description', _descriptionController),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _locationController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: 'Location Found',
-                        hintText: 'Tap to select location',
-                        border: OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.map),
-                          onPressed: _selectLocationOnMap,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select a location';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              _buildButton('Submit', _submitForm),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: const BottomNavBar(),
-      resizeToAvoidBottomInset: false,
-    );
-  }
-
   Widget _buildInputField(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -220,7 +142,19 @@ class _FoundItemPageState extends State<FoundItem> {
     );
   }
 
-  Widget _buildCategoryDropdown(String label, TextEditingController controller) {
+  Future<List<String>> _fetchCategories() async {
+    List<String> categories = [];
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('categories').get();
+    snapshot.docs.forEach((DocumentSnapshot<Map<String, dynamic>> doc) {
+      categories.add(doc.data()?['name']);
+    });
+    return categories;
+  }
+
+  Widget _buildCategoryDropdown(String label, TextEditingController controller, List<String> categories) {
+    List<String> allCategories = ['Personal Document', 'Devices', 'Jewels', 'Keys', 'Others'];
+    allCategories.addAll(categories);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: DropdownButtonFormField<String>(
@@ -241,8 +175,7 @@ class _FoundItemPageState extends State<FoundItem> {
           }
           return null;
         },
-        items: <String>['Devices', 'Jewels', 'Keys', 'Cards', 'Others']
-            .map<DropdownMenuItem<String>>((String value) {
+        items: allCategories.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
@@ -269,6 +202,46 @@ class _FoundItemPageState extends State<FoundItem> {
           ),
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Found Item Form'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              _buildInputField('Item Title', _itemTitleController),
+              _buildInputField('Item Name', _itemNameController),
+              _buildDateTimePickerFormField('Item Found Date'),
+              FutureBuilder<List<String>>(
+                future: _fetchCategories(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error loading categories: ${snapshot.error}');
+                  } else {
+                    return _buildCategoryDropdown('Category', _categoryController, snapshot.data ?? []);
+                  }
+                },
+              ),
+              _buildInputField('Description', _descriptionController),
+              _buildInputField('Location Found', _locationController),
+              const SizedBox(height: 10),
+              _buildButton('Submit', _submitForm),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: const BottomNavBar(),
+      resizeToAvoidBottomInset: false,
     );
   }
 }

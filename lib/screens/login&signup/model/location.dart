@@ -1,8 +1,8 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart'; // Add this import statement
+import 'package:geolocator/geolocator.dart';
 
 class LocationTrackerPage extends StatefulWidget {
   @override
@@ -13,6 +13,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Position> _lastFiveLocations = [];
   StreamSubscription<Position>? _positionStream;
+  DateTime? _lastLocationTimestamp;
 
   @override
   void initState() {
@@ -37,8 +38,16 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
 
     // Listen for location updates
     _positionStream = Geolocator.getPositionStream().listen((Position position) {
-      _updateLastFiveLocations(position);
+      _handleLocationUpdate(position);
     });
+  }
+
+  void _handleLocationUpdate(Position position) {
+    final currentTime = DateTime.now();
+    if (_lastLocationTimestamp == null || currentTime.difference(_lastLocationTimestamp!).inMinutes >= 3) {
+      _updateLastFiveLocations(position);
+      _lastLocationTimestamp = currentTime;
+    }
   }
 
   void _updateLastFiveLocations(Position position) {
@@ -83,24 +92,30 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-            ..._lastFiveLocations.map((position) {
-              return FutureBuilder<List<Placemark>>(
-                future: placemarkFromCoordinates(
-                  position.latitude,
-                  position.longitude,
-                ),
-                builder: (BuildContext context, AsyncSnapshot<List<Placemark>> snapshot) {
-                  if (snapshot.hasData) {
-                    final address = snapshot.data?.first.name ?? 'Unknown';
-                    return Text(address);
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-              );
-            }).toList(),
+            StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection('locations').snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+
+                final documents = snapshot.data!.docs.reversed.toList();
+                final lastFiveDocuments = documents.take(5).toList();
+
+                return Column(
+                  children: lastFiveDocuments.map((doc) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    final latitude = data['latitude'] as double;
+                    final longitude = data['longitude'] as double;
+                    final timestamp = data['timestamp'] as Timestamp;
+
+                    return Text(
+                      'Lat: $latitude, Lng: $longitude, Timestamp: ${timestamp.toDate()}',
+                    );
+                  }).toList(),
+                );
+              },
+            ),
           ],
         ),
       ),
