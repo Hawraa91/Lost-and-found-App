@@ -66,6 +66,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   final String dateStr = data['itemLostDate'] ?? ''; // Fetch date as string
                   final DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now(); // Convert string to DateTime, fallback to current time if conversion fails
                   final String receiverUserID = data['userId'] ?? '';
+                  final String imageUrl = data['imageUrl'] ?? '';
                   return Column(
                     children: [
                       const SizedBox(height: 20), // Add space before the container
@@ -76,6 +77,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           category: category,
                           date: date,
                         receiverUserID: receiverUserID,
+                          imageUrl: imageUrl,
                       )
                     ],
                   );

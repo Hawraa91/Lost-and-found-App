@@ -61,6 +61,9 @@ class _SignupState extends State<Signup> {
         'lastName': lastNameController.text,
         'email': emailController.text,
         'phoneNumber': phoneNumberController.text,
+        'imageUrl': "https://firebasestorage.googleapis.com/"
+            "v0/b/findmything-9663a.appspot.com/o/"
+            "images%2F1715060427112746?alt=media&token=4b71b2ef-abb2-4662-9a68-0d421c2510b7"
       });
 
       // Navigate to the login screen only after successful sign-up

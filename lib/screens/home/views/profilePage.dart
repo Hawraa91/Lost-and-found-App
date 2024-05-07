@@ -99,10 +99,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 _imageUrl!,
                 fit: BoxFit.cover,
               )
-                  : const Icon(
-                Icons.person, // Placeholder icon in case image URL is null
-                size: 60, // Size of the placeholder icon
-                color: Colors.grey, // Color of the placeholder icon
+                  : Image.asset(
+                'assets/images/new.png', // Path to your default image asset
+                fit: BoxFit.cover,
+                width: 60, // Adjust width as needed
+                height: 60, // Adjust height as needed
               ),
             ),
           ),

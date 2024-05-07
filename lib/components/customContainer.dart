@@ -9,6 +9,7 @@ class CustomContainer extends StatelessWidget {
   final String category;
   final DateTime date;
   final String receiverUserID;
+  final String imageUrl;
 
   const CustomContainer({
     Key? key,
@@ -17,6 +18,7 @@ class CustomContainer extends StatelessWidget {
     required this.category,
     required this.date,
     required this.receiverUserID,
+    required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -45,7 +47,7 @@ class CustomContainer extends StatelessWidget {
   Widget buildContainer(BuildContext context, String receiverUserEmail) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width * 5 / 7,
+      // height: MediaQuery.of(context).size.width * 6/5,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
@@ -99,8 +101,23 @@ class CustomContainer extends StatelessWidget {
               ),
               textAlign: TextAlign.left,
             ),
+            // Display the image
+            // Display the image
+            FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 200, // Adjust the height as needed
+                child: imageUrl.isNotEmpty
+                    ? Image.network(
+                  imageUrl,
+                )
+                    : Container(), // Placeholder if no image is available
+              ),
+            ),
+
             Padding(
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 15),
               child: Container(
                 width: 125,
                 decoration: BoxDecoration(

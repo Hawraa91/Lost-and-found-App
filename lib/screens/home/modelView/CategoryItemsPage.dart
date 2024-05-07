@@ -64,6 +64,7 @@ class CategoryItemPage extends StatelessWidget {
                     final String receiverUserID = data['userId'] ?? '';
                     final bool isPublic = data['isPublic'] ?? false;
                     final bool isResolved = data['isResolved'] ?? false;
+                    final String imageUrl = data['imageUrl'] ?? '';
 
                     //if it is public and not resolved then print
                     if (isPublic && !isResolved) {
@@ -76,6 +77,7 @@ class CategoryItemPage extends StatelessWidget {
                             category: category,
                             date: date,
                             receiverUserID: receiverUserID,
+                            imageUrl: imageUrl,
                           )
                         ],
                       );

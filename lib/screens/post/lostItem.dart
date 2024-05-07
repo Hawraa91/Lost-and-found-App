@@ -1,7 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import '../../components/bottomNavBar.dart';
 
 void main() async {
@@ -20,6 +24,7 @@ class LostItem extends StatefulWidget {
 }
 
 class _LostItemState extends State<LostItem> {
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _itemTitleController = TextEditingController();
   final TextEditingController _itemNameController = TextEditingController();
@@ -29,6 +34,7 @@ class _LostItemState extends State<LostItem> {
   final TextEditingController _locationFoundController =
   TextEditingController(); // Location found controller
   bool isPublic = true; // Hold the toggle state
+  String imageUrl = '';
 
   @override
   void dispose() {
@@ -57,6 +63,7 @@ class _LostItemState extends State<LostItem> {
           'locationFound': _locationFoundController.text,
           'isPublic': isPublic,
           'isResolved': false,
+          'imageUrl': imageUrl,
         };
 
         try {
@@ -120,6 +127,52 @@ class _LostItemState extends State<LostItem> {
                   _buildCategoryDropdown('Category', _categoryController),
                   _buildInputField('Description', _descriptionController),
                   _buildInputField('Location Found', _locationFoundController),
+                  //Uploading image
+                  IconButton(onPressed: () async {
+                    /* Step 1. Pick an image */
+                    ImagePicker imagePicker = ImagePicker();
+                    XFile? file = await imagePicker.pickImage(
+                        source: ImageSource.camera);
+                    if (kDebugMode) {
+                      print('path is ${file?.path}');
+                    }
+
+                    if (file == null) return;
+
+                    String uniqueFileName = DateTime
+                        .now()
+                        .microsecondsSinceEpoch
+                        .toString();
+
+                    /* Step 2. Upload the image to Firebase Storage*/
+                    //Get a reference  to storage root
+                    Reference referenceRoot = FirebaseStorage.instance.ref();
+                    Reference referenceDirImages = referenceRoot.child('lostItemsImages');
+
+                    //Create a reference for the image to be stored
+                    Reference referenceImageToUpload = referenceDirImages.child(
+                        uniqueFileName);
+
+                    //Handle errors/success
+                    try {
+                      //Store the file
+                      await referenceImageToUpload.putFile(File(file!.path));
+                      //Success: get the download URL
+                      imageUrl = await referenceImageToUpload.getDownloadURL();
+
+                      if (kDebugMode) {
+                        print(imageUrl);
+                      }
+
+                    }
+                    catch (error) {
+                      //Some error occurred
+                      if (kDebugMode) {
+                        print('Error uploading image: $error');
+                      }
+                    }
+                  }
+                      , icon: const Icon(Icons.camera_alt)),
                   const SizedBox(height: 10),
                   _buildButton('Submit', _submitForm),
                 ],
