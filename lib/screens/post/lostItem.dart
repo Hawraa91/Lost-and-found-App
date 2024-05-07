@@ -127,12 +127,13 @@ class _LostItemState extends State<LostItem> {
                   _buildCategoryDropdown('Category', _categoryController),
                   _buildInputField('Description', _descriptionController),
                   _buildInputField('Location Found', _locationFoundController),
-                  //Uploading image
+                  //Uploading image,
+                  const Text('(Optional) Add an image'),
                   IconButton(onPressed: () async {
                     /* Step 1. Pick an image */
                     ImagePicker imagePicker = ImagePicker();
                     XFile? file = await imagePicker.pickImage(
-                        source: ImageSource.camera);
+                        source: ImageSource.gallery);
                     if (kDebugMode) {
                       print('path is ${file?.path}');
                     }
