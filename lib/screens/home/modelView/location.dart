@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../components/bottomNavBar.dart';
+
 class LocationTrackerPage extends StatefulWidget {
   @override
   _LocationTrackerPageState createState() => _LocationTrackerPageState();
@@ -122,11 +124,11 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                     2: FlexColumnWidth(4),
                   },
                   children: [
-                    TableRow(
+                    const TableRow(
                       children: [
                         TableCell(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text(
                               'Latitude',
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -135,7 +137,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text(
                               'Longitude',
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -144,7 +146,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                         ),
                         TableCell(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text(
                               'Timestamp',
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -183,6 +185,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
           ],
         ),
       ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }

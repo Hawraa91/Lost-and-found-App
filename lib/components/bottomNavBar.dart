@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lost_and_found/screens/chat/chat_page.dart';
 import 'package:lost_and_found/screens/home/views/HomePage.dart';
-import 'package:lost_and_found/screens/home/views/profilePage.dart';
+import 'package:lost_and_found/screens/Profile/profilePage.dart';
 
 import '../screens/chat/contacts.dart';
 import '../screens/post/model/SearchItem.dart';

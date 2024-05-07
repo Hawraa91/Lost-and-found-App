@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../../components/bottomNavBar.dart';
 import '../../chat/chat_page.dart';
 
 class SearchPage extends StatefulWidget {
@@ -112,6 +113,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }
