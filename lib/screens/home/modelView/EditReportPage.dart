@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EditReportPage extends StatefulWidget {
   final String documentId;
@@ -94,50 +94,66 @@ class _EditReportPageState extends State<EditReportPage> {
     }
   }
 
+  Widget _buildInputField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter $label';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildDateTimePickerFormField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: TextFormField(
+        controller: TextEditingController(text: _selectedDate.toString()),
+        decoration: InputDecoration(
+          labelText: 'Date',
+          border: OutlineInputBorder(),
+        ),
+        readOnly: true,
+        onTap: () => _selectDate(context),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Report'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _categoryController,
-              decoration: const InputDecoration(
-                labelText: 'Category',
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            ListTile(
-              title: Text(
-                  'Date: ${_selectedDate.toString().split(' ')[0]}'),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context),
-            ),
-            const SizedBox(height: 16.0),
+            _buildInputField('Title', _titleController),
+            _buildInputField('Description', _descriptionController),
+            _buildInputField('Category', _categoryController),
+            _buildDateTimePickerFormField(),
             ElevatedButton(
               onPressed: _updateReport,
-              child: const Text('Update Report'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(46, 61, 95, 1.0), // Dark blue color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Text('Update Report', style: TextStyle(color: Colors.white)),
             ),
+
           ],
         ),
       ),
