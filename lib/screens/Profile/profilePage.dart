@@ -9,7 +9,8 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../../components/bottomNavBar.dart';
-import '../login&signup/model/setting.dart';
+import 'information.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -202,17 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: ListTile(
-                        leading: const Icon(Icons.settings),
-                        title: const Text('Settings'),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SettingsPage()),
-                          );
-                        },
-                      ),
+
                     ),
                     const SizedBox(height: 16),
                     Padding(
@@ -241,7 +232,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         leading: const Icon(Icons.info),
                         title: const Text('Information'),
                         trailing: const Icon(Icons.chevron_right),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const InformationPage()),
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 16),
