@@ -27,7 +27,8 @@ class _SignupState extends State<Signup> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController(); // New controller
+  final TextEditingController confirmPasswordController =
+      TextEditingController(); // New controller
 
   @override
   void initState() {
@@ -44,7 +45,8 @@ class _SignupState extends State<Signup> {
 
   Future<void> signUp() async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
@@ -61,7 +63,9 @@ class _SignupState extends State<Signup> {
         'lastName': lastNameController.text,
         'email': emailController.text,
         'phoneNumber': phoneNumberController.text,
-        'imageUrl':" gs://findmything-9663a.appspot.com/images/1715060427112746"
+        'imageUrl':
+            " https://firebasestorage.googleapis.com/v0/b/findmything-9663a.appspot.com/o/images%2F1715154848056560?alt=media&token=81710ae0-043a-4aef-954b-6b259e27a287",
+        'role': "user",
       });
 
       // Navigate to the login screen only after successful sign-up
@@ -73,7 +77,8 @@ class _SignupState extends State<Signup> {
     }
   }
 
-  Widget input(String label, IconData icon, bool obscureText, TextEditingController controller) {
+  Widget input(String label, IconData icon, bool obscureText,
+      TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: TextFormField(
@@ -110,17 +115,22 @@ class _SignupState extends State<Signup> {
                   child: Column(
                     children: <Widget>[
                       TitleSection(desc: 'Signup'),
-                      input('First Name', Icons.person, false, firstNameController),
+                      input('First Name', Icons.person, false,
+                          firstNameController),
                       const SizedBox(height: 10),
-                      input('Last Name', Icons.person, false, lastNameController),
+                      input(
+                          'Last Name', Icons.person, false, lastNameController),
                       const SizedBox(height: 10),
                       input('Email', Icons.email, false, emailController),
                       const SizedBox(height: 10),
-                      input('Phone Number', Icons.phone, false, phoneNumberController),
+                      input('Phone Number', Icons.phone, false,
+                          phoneNumberController),
                       const SizedBox(height: 10),
-                      input('Password', Icons.security, true, passwordController),
+                      input(
+                          'Password', Icons.security, true, passwordController),
                       const SizedBox(height: 10),
-                      input('Confirm Password', Icons.security, true, confirmPasswordController),
+                      input('Confirm Password', Icons.security, true,
+                          confirmPasswordController),
                       Padding(
                         padding: const EdgeInsets.only(top: 16.0),
                         child: Container(
@@ -128,21 +138,18 @@ class _SignupState extends State<Signup> {
                           height: 65,
                           decoration: BoxDecoration(
                             color: const Color.fromRGBO(46, 61, 95, 1.0),
-                            borderRadius:
-                            BorderRadius.circular(8.0),
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: TextButton(
-                            onPressed:
-                                () async {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 await signUp();
                               }
                             },
                             child: const Text(
                               'Sign Up',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
                             ),
                           ),
                         ),
