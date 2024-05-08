@@ -33,36 +33,48 @@ Future<List<String>> searchLostItemsForCurrentUser(String currentUserID) async {
       if (kDebugMode) {
         print('object in lower case --> $lostName2');
       }
-      String? lostCateg =
-          (lostDoc.data() as Map<String, dynamic>?)?['category'];
-      bool? lostResolved =
-          (lostDoc.data() as Map<String, dynamic>?)?['isResolved'];
+      String? lostCateg = (lostDoc.data() as Map<String, dynamic>?)?['category'];
+      bool? lostResolved = (lostDoc.data() as Map<String, dynamic>?)?['isResolved'];
+      String? lostLocation = (lostDoc.data() as Map<String, dynamic>?)?['locationFound'];
+      List<String>? lostLoc = lostLocation?.split(',');
 
       // Iterate through the found items
       for (var foundDoc in foundItemsSnapshot.docs) {
         // Extract information from the found document
-        String? foundTitle =
-            (foundDoc.data() as Map<String, dynamic>?)?['itemTitle'];
-        String? foundName =
-            (foundDoc.data() as Map<String, dynamic>?)?['itemName'];
+        String? foundTitle = (foundDoc.data() as Map<String, dynamic>?)?['itemTitle'];
+        String? foundName = (foundDoc.data() as Map<String, dynamic>?)?['itemName'];
         String? foundName2 = foundName?.toLowerCase();
-        String? secondCateg =
-            (foundDoc.data() as Map<String, dynamic>?)?['category'];
+        String? secondCateg = (foundDoc.data() as Map<String, dynamic>?)?['category'];
         String? foundItemId = foundDoc.id;
+        String? foundLocation = (foundDoc.data() as Map<String, dynamic>?)?['location'];
+        List<String>? foundloc = foundLocation?.split(',');
+
+        // Extract country from location strings
+        String? lostCountry = lostLoc?.first.trim().toLowerCase();
+        String? foundCountry = foundloc?.first.trim().toLowerCase();
+
+        if(kDebugMode){
+          print(lostCountry);
+          print(foundCountry);
+        }
 
         // Check if the titles of the lost and found items match (only if it was not resolved)
         if (lostResolved != true) {
-          if (lostName2 == foundName2 && lostCateg == secondCateg) {
-            // Found a match, you can take further action here
-            if (kDebugMode) {
-              matchedTitles.add(foundItemId);
-              print('Match found! Found item title: $foundTitle');
-            } else {
+          //check if they are in the same country
+          if(lostCountry == foundCountry) {
+            if (lostName2 == foundName2 && lostCateg == secondCateg) {
+              // Found a match, you can take further action here
               if (kDebugMode) {
-                print('No Match Found Yet! ');
+                matchedTitles.add(foundItemId);
+                print('Match found! Found item title: $foundTitle');
+              } else {
+                if (kDebugMode) {
+                  print('No Match Found Yet! ');
+                }
               }
             }
           }
+
         }
       }
     }
