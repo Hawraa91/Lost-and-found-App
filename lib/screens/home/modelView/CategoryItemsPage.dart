@@ -53,20 +53,17 @@ class CategoryItemPage extends StatelessWidget {
                 child: Column(
                   children: documents.map((doc) {
                     final Map<String, dynamic> data =
-                        doc.data() as Map<String, dynamic>;
+                    doc.data() as Map<String, dynamic>;
                     final String title = data['itemTitle'] ?? '';
                     final String description = data['description'] ?? '';
                     final String category = data['category'] ?? '';
-                    final timestamp = data['itemLostDate'];
-                    final DateTime date = timestamp != null ? (timestamp as Timestamp).toDate()
-                        : DateTime.now();
-                    // Retrieve the receiverUserEmail and receiverUserID from the document
+                    final Timestamp timestamp = data['itemLostDate'] as Timestamp;
+                    final DateTime date = timestamp.toDate();
                     final String receiverUserID = data['userId'] ?? '';
                     final bool isPublic = data['isPublic'] ?? false;
                     final bool isResolved = data['isResolved'] ?? false;
                     final String imageUrl = data['imageUrl'] ?? '';
 
-                    //if it is public and not resolved then print
                     if (isPublic && !isResolved) {
                       return Column(
                         children: [
@@ -82,11 +79,7 @@ class CategoryItemPage extends StatelessWidget {
                         ],
                       );
                     }
-                    else {
-                      return const Center(
-                        child: Text('No lost items for this category'),
-                      );
-                    }
+                    return Container(); // Return an empty container if conditions are not met
                   }).toList(),
                 ),
               );
