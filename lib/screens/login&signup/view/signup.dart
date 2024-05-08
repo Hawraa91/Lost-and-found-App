@@ -28,7 +28,11 @@ class _SignupState extends State<Signup> {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
-      TextEditingController(); // New controller
+  TextEditingController(); // New controller
+
+  final RegExp passwordRegex = RegExp(
+    r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
+  );
 
   @override
   void initState() {
@@ -46,7 +50,7 @@ class _SignupState extends State<Signup> {
   Future<void> signUp() async {
     try {
       UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
@@ -64,7 +68,7 @@ class _SignupState extends State<Signup> {
         'email': emailController.text,
         'phoneNumber': phoneNumberController.text,
         'imageUrl':
-            " https://firebasestorage.googleapis.com/v0/b/findmything-9663a.appspot.com/o/images%2F1715154848056560?alt=media&token=81710ae0-043a-4aef-954b-6b259e27a287",
+        " https://firebasestorage.googleapis.com/v0/b/findmything-9663a.appspot.com/o/images%2F1715154848056560?alt=media&token=81710ae0-043a-4aef-954b-6b259e27a287",
         'role': "user",
       });
 
@@ -92,6 +96,12 @@ class _SignupState extends State<Signup> {
         validator: (value) {
           if (value == null || value.isEmpty) {
             return '$label is required';
+          }
+          if (label == 'Password' && !passwordRegex.hasMatch(value)) {
+            return 'Password must be at least 8 characters long and contain at least one letter and one number';
+          }
+          if (label == 'Confirm Password' && value != passwordController.text) {
+            return 'Passwords do not match';
           }
           return null;
         },
@@ -149,7 +159,7 @@ class _SignupState extends State<Signup> {
                             child: const Text(
                               'Sign Up',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
+                              TextStyle(color: Colors.white, fontSize: 16),
                             ),
                           ),
                         ),
