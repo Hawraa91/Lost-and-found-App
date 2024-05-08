@@ -150,9 +150,11 @@ class _EditReportPageState extends State<EditReportPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
+                minimumSize: Size(double.infinity, 50), // Set the height to 50
               ),
               child: const Text('Update Report', style: TextStyle(color: Colors.white)),
             ),
+
 
           ],
         ),
