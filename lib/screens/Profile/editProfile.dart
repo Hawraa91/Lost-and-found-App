@@ -106,7 +106,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 : Container(
               width: 200,
               decoration: BoxDecoration(
-                color: const Color.fromRGBO(96, 172, 182, 1.0),
+                color: const Color.fromRGBO(46, 61, 95, 1.0),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: TextButton(
