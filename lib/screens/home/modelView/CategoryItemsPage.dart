@@ -48,7 +48,7 @@ class CategoryItemPage extends StatelessWidget {
               return const Center(
                 child: Text('No lost items for this category'),
               );
-            } else {
+            }
               return SingleChildScrollView(
                 child: Column(
                   children: documents.map((doc) {
@@ -64,26 +64,62 @@ class CategoryItemPage extends StatelessWidget {
                     final bool isResolved = data['isResolved'] ?? false;
                     final String imageUrl = data['imageUrl'] ?? '';
 
-                    if (isPublic && !isResolved) {
-                      return Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          CustomContainer(
-                            title: title,
-                            desc: description,
-                            category: category,
-                            date: date,
-                            receiverUserID: receiverUserID,
-                            imageUrl: imageUrl,
-                          )
-                        ],
+                    /*case where there is only one document and it
+                    * did not apply to the rules (one document, public, resolved*/
+                    if(documents.length == 1){
+                      if (isPublic) {
+                        if(!isResolved) {
+                          return Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              CustomContainer(
+                                title: title,
+                                desc: description,
+                                category: category,
+                                date: date,
+                                receiverUserID: receiverUserID,
+                                imageUrl: imageUrl,
+                              )
+                            ],
+                          );
+                        }
+                        else{
+                          return const Center(
+                            child: Text('No lost items for this category'),
+                          );
+                        }
+                      }
+                    }
+
+                    //if more than one document
+                    if (isPublic) {
+                      if(!isResolved) {
+                        return Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            CustomContainer(
+                              title: title,
+                              desc: description,
+                              category: category,
+                              date: date,
+                              receiverUserID: receiverUserID,
+                              imageUrl: imageUrl,
+                            )
+                          ],
+                        );
+                      }
+                      else{
+                        return Container();
+                      }
+                    }
+                    else{
+                      return const Center(
+                        child: Text('No lost items for this category'),
                       );
                     }
-                    return Container(); // Return an empty container if conditions are not met
                   }).toList(),
                 ),
               );
-            }
           },
         ),
       ),
