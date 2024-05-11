@@ -94,7 +94,7 @@ class _FoundItemPageState extends State<FoundItem> {
         decoration: InputDecoration(
           labelText: label,
           hintText: 'Enter $label',
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -233,7 +233,7 @@ class _FoundItemPageState extends State<FoundItem> {
                 },
               ),
               _buildInputField('Description', _descriptionController),
-              _buildInputField('Location Found', _locationController),
+              _buildInputField('Country, city', _locationController),
               const SizedBox(height: 10),
               _buildButton('Submit', _submitForm),
             ],

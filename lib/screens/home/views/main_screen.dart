@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../components/customContainer.dart';
-import '../../post/model/search.dart';
+import '../../post/model/searchAlgo.dart';
 import '../modelView/CategoryItemsPage.dart';
 import '../../../components/bottomSheetPopUp.dart';
 import 'UserReport.dart';

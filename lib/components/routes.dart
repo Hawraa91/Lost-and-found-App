@@ -3,10 +3,9 @@ import 'package:lost_and_found/screens/login&signup/view/login_page.dart';
 import 'package:lost_and_found/screens/startPage.dart';
 import 'package:lost_and_found/screens/home/views/HomePage.dart';
 import 'package:lost_and_found/screens/login&signup/view/signup.dart';
-import 'package:lost_and_found/screens/Profile/profilePage.dart';
+import 'package:lost_and_found/screens/Profile/view/profilePage.dart';
 import '../screens/chat/contacts.dart';
 import '../screens/home/modelView/CategoryItemsPage.dart';
-import '../screens/home/modelView/EditReportPage.dart';
 import '../screens/home/modelView/location.dart';
 import '../screens/login&signup/view/captcha.dart';
 import '../screens/login&signup/view/forgetPassword.dart';
@@ -29,6 +28,11 @@ final Map<String, WidgetBuilder> routes = {
   '/search': (context) => const SearchPage(),
   '/forgetPassword': (context) => const ForgetPasswordPage(),
   '/location': (context) => LocationTrackerPage(),
-  '/categoryItem': (context) => CategoryItemPage(category: '',),
-  '/searchResults': (context) => const SearchResultsPage(matchedTitles: [ ],),
+  '/categoryItem': (context) => CategoryItemPage(
+        category: '',
+      ),
+  '/searchResults': (context) => const SearchResultsPage(
+        matchedTitles: [],
+      ),
+
 };

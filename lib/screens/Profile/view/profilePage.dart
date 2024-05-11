@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lost_and_found/screens/Profile/editProfile.dart';
+import 'package:lost_and_found/screens/Profile/modelView/editProfile.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import '../../components/bottomNavBar.dart';
+import '../../../components/bottomNavBar.dart';
 import 'information.dart';
 
 

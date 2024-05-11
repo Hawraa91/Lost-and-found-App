@@ -126,7 +126,7 @@ class _LostItemState extends State<LostItem> {
                   _buildDateTimePickerFormField('Item Lost Date'),
                   _buildCategoryDropdown('Category', _categoryController),
                   _buildInputField('Description', _descriptionController),
-                  _buildInputField('Location Found', _locationFoundController),
+                  _buildInputField('Country, city', _locationFoundController),
                   //Uploading image,
                   const Text('(Optional) Add an image'),
                   IconButton(onPressed: () async {
