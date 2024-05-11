@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../components/bottomNavBar.dart';
 import '../../../components/customContainer.dart';
 import '../../chat/chat_page.dart';
+import 'SearchResultsPage.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -28,7 +29,7 @@ class _SearchPageState extends State<SearchPage> {
             child: TextField(
               onChanged: (value) {
                 setState(() {
-                  _searchQuery = value;
+                  _searchQuery = value.toLowerCase(); // Convert to lowercase for case-insensitive search
                 });
               },
               decoration: const InputDecoration(
@@ -40,41 +41,27 @@ class _SearchPageState extends State<SearchPage> {
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('lost')
-                  .snapshots()
-                  .handleError((error) {
-                print('Error fetching data: $error');
-                return null;
-              }),
-              builder: (context, snapshot) {
+              stream: FirebaseFirestore.instance.collection('lost').snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return const Center(
-                    child: Text('Error fetching data'),
-                  );
+                  return Text('Error: ${snapshot.error}');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
                 }
 
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                final documents = snapshot.data!.docs;
+                final List<DocumentSnapshot> documents = snapshot.data!.docs;
                 final filteredDocuments = documents.where((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  final title = data['itemTitle']?.toLowerCase() ?? '';
-                  final description = data['description']?.toLowerCase() ?? '';
-                  final category = data['category']?.toLowerCase() ?? '';
-                  final searchLower = _searchQuery.toLowerCase();
-                  final isPublic = data['isPublic'] ?? true; // Assuming isPublic is true by default
-                  final isResolved = data['isResolved'] ?? false; // Assuming isResolved is false by default
+                  final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                  final String title = data['itemTitle']?.toString().toLowerCase() ?? '';
+                  final String description = data['description']?.toString().toLowerCase() ?? '';
+                  final String category = data['category']?.toString().toLowerCase() ?? '';
 
-                  return isPublic &&
-                      !isResolved &&
-                      (title.contains(searchLower) ||
-                          description.contains(searchLower) ||
-                          category.contains(searchLower));
+                  return data['isPublic'] == true &&
+                      data['isResolved'] == false &&
+                      (title.contains(_searchQuery) ||
+                          description.contains(_searchQuery) ||
+                          category.contains(_searchQuery));
                 }).toList();
 
                 return ListView.builder(
@@ -85,17 +72,17 @@ class _SearchPageState extends State<SearchPage> {
                     final title = data['itemTitle'] ?? '';
                     final description = data['description'] ?? '';
                     final category = data['category'] ?? '';
-                    final date = data['date'] != null
-                        ? data['date'].toDate()
+                    final date = data['itemLostDate'] != null
+                        ? (data['itemLostDate'] as Timestamp).toDate()
                         : DateTime.now();
                     final receiverUserEmail = data['receiverUserEmail'] ?? '';
-                    final receiverUserID = data['receiverUserID'] ?? '';
+                    final receiverUserID = data['userId'] ?? '';
                     final String imageUrl = data['imageUrl'] ?? '';
 
                     return ListTile(
                       title: GestureDetector(
                         onTap: () {
-                          print('i was clicked');
+                          print('I was clicked');
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -114,57 +101,12 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                       subtitle: Text('$category - $description'),
                     );
-
                   },
                 );
               },
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: const BottomNavBar(),
-    );
-  }
-}
-
-class SearchItemResultPage extends StatelessWidget {
-  final String title;
-  final String desc;
-  final String category;
-  final DateTime date;
-  final String receiverUserID;
-  final String imageUrl;
-
-  SearchItemResultPage({
-    Key? key,
-    required this.category,
-    required this.title,
-    required this.desc,
-    required this.date,
-    required this.receiverUserID,
-    required this.imageUrl,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search Results'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            CustomContainer(
-              title: title,
-              desc: desc, // Corrected variable name from 'description' to 'desc'
-              category: category,
-              date: date,
-              receiverUserID: receiverUserID,
-              imageUrl: imageUrl,
-            ),
-          ],
-        ),
       ),
       bottomNavigationBar: const BottomNavBar(),
     );
