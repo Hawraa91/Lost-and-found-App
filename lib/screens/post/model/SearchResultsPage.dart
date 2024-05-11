@@ -29,19 +29,22 @@ class SearchItemResultPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Search Results'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            CustomContainer(
-              title: title,
-              desc: desc, // Corrected variable name from 'description' to 'desc'
-              category: category,
-              date: date,
-              receiverUserID: receiverUserID,
-              imageUrl: imageUrl,
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              CustomContainer(
+                title: title,
+                desc: desc, // Corrected variable name from 'description' to 'desc'
+                category: category,
+                date: date,
+                receiverUserID: receiverUserID,
+                imageUrl: imageUrl,
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: const BottomNavBar(),
