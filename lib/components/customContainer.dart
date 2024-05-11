@@ -27,7 +27,7 @@ class CustomContainer extends StatelessWidget {
       future: FirebaseFirestore.instance.collection('users').doc(receiverUserID).get(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
