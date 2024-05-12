@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart'; // Import the url_launcher package
 
 import '../../../components/bottomNavBar.dart';
 
@@ -21,6 +22,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
   void initState() {
     super.initState();
     _initLocationTracking();
+    _scheduleLocationDeletion();
   }
 
   @override
@@ -43,10 +45,10 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
       _handleLocationUpdate(position);
     });
   }
-
+//location updated every 15min
   void _handleLocationUpdate(Position position) {
     final currentTime = DateTime.now();
-    if (_lastLocationTimestamp == null || currentTime.difference(_lastLocationTimestamp!).inMinutes >= 3) {
+    if (_lastLocationTimestamp == null || currentTime.difference(_lastLocationTimestamp!).inMinutes >= 15) {
       if (_shouldRecordLocation(position)) {
         _updateLastFiveLocations(position);
         _lastLocationTimestamp = currentTime;
@@ -91,6 +93,30 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
     }
   }
 
+  void _scheduleLocationDeletion() {
+    Timer.periodic(Duration(minutes: 30), (timer) async {
+      final tenMinutesAgo = DateTime.now().subtract(Duration(minutes: 30));
+      final expiredLocations = await _firestore
+          .collection('locations')
+          .where('timestamp', isLessThan: tenMinutesAgo)
+          .get();
+
+      for (final doc in expiredLocations.docs) {
+        await doc.reference.delete();
+      }
+    });
+  }
+
+  Future<void> _openGoogleMaps(double latitude, double longitude) async {
+    final googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+
+    if (await canLaunch(googleMapsUrl)) {
+      await launch(googleMapsUrl);
+    } else {
+      throw 'Could not launch $googleMapsUrl';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +133,10 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
             ),
             SizedBox(height: 10),
             StreamBuilder<QuerySnapshot>(
-              stream: _firestore.collection('locations').snapshots(),
+              stream: _firestore
+                  .collection('locations')
+                  .where('timestamp', isGreaterThan: DateTime.now().subtract(Duration(minutes: 10)))
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return CircularProgressIndicator();
@@ -122,6 +151,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                     0: FlexColumnWidth(2),
                     1: FlexColumnWidth(2),
                     2: FlexColumnWidth(4),
+                    3: FlexColumnWidth(2),
                   },
                   children: [
                     const TableRow(
@@ -153,6 +183,15 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                             ),
                           ),
                         ),
+                        TableCell(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Google Maps',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     for (final doc in lastFiveDocuments)
@@ -174,6 +213,18 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(doc['timestamp'].toDate().toString(), style: TextStyle(fontSize: 16)),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                onTap: () => _openGoogleMaps(doc['latitude'], doc['longitude']),
+                                child: const Text(
+                                  'Open',
+                                  style: TextStyle(fontSize: 16, color: Colors.blue, decoration: TextDecoration.underline),
+                                ),
+                              ),
                             ),
                           ),
                         ],
