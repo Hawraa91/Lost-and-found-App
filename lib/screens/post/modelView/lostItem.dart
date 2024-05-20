@@ -52,12 +52,14 @@ class _LostItemState extends State<LostItem> {
       String? userId = FirebaseAuth.instance.currentUser?.uid;
 
       if (userId != null) {
+        // Remove spaces from the item name
+        String itemNameWithoutSpaces = _itemNameController.text.replaceAll(' ', '');
+
         Map<String, dynamic> data = {
           'userId': userId,
           'itemTitle': _itemTitleController.text,
-          'itemName': _itemNameController.text,
-          'itemLostDate': Timestamp.fromDate(DateTime.parse(
-              _itemLostDateController.text)), // Convert String to Timestamp
+          'itemName': itemNameWithoutSpaces,
+          'itemLostDate': Timestamp.fromDate(DateTime.parse(_itemLostDateController.text)), // Convert String to Timestamp
           'category': _categoryController.text,
           'description': _descriptionController.text,
           'locationFound': _locationFoundController.text,
@@ -222,11 +224,12 @@ class _LostItemState extends State<LostItem> {
                 context: context,
                 initialDate: DateTime.now(),
                 firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
+                lastDate: DateTime.now(),
               );
               if (picked != null) {
                 setState(() {
-                  _itemLostDateController.text = picked.toString();
+                  // Format the date to exclude time and set it to the controller
+                  _itemLostDateController.text = "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
                 });
               }
             },

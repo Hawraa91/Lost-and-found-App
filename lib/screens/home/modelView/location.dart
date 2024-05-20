@@ -123,117 +123,122 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
       appBar: AppBar(
         title: Text('Location Tracker'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Last 5 Locations:',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            StreamBuilder<QuerySnapshot>(
-              stream: _firestore
-                  .collection('locations')
-                  .where('timestamp', isGreaterThan: DateTime.now().subtract(Duration(minutes: 10)))
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
-                }
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Last 5 Locations:',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                StreamBuilder<QuerySnapshot>(
+                  stream: _firestore
+                      .collection('locations')
+                      .where('timestamp', isGreaterThan: DateTime.now().subtract(Duration(minutes: 10)))
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const CircularProgressIndicator();
+                    }
 
-                final documents = snapshot.data!.docs.reversed.toList();
-                final lastFiveDocuments = documents.take(5).toList();
+                    final documents = snapshot.data!.docs.reversed.toList();
+                    final lastFiveDocuments = documents.take(5).toList();
 
-                return Table(
-                  border: TableBorder.all(),
-                  columnWidths: const {
-                    0: FlexColumnWidth(2),
-                    1: FlexColumnWidth(2),
-                    2: FlexColumnWidth(4),
-                    3: FlexColumnWidth(2),
-                  },
-                  children: [
-                    const TableRow(
-                      children: [
-                        TableCell(
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Latitude',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        TableCell(
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Longitude',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        TableCell(
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Timestamp',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        TableCell(
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Google Maps',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    for (final doc in lastFiveDocuments)
-                      TableRow(
+                    return Table(
+                        border: TableBorder.all(),
+                        columnWidths: const {
+                          0: FlexColumnWidth(2),
+                          1: FlexColumnWidth(2),
+                          2: FlexColumnWidth(4),
+                          3: FlexColumnWidth(2),
+                        },
                         children: [
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(doc['latitude'].toString(), style: TextStyle(fontSize: 16)),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(doc['longitude'].toString(), style: TextStyle(fontSize: 16)),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(doc['timestamp'].toDate().toString(), style: TextStyle(fontSize: 16)),
-                            ),
-                          ),
-                          TableCell(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: InkWell(
-                                onTap: () => _openGoogleMaps(doc['latitude'], doc['longitude']),
-                                child: const Text(
-                                  'Open',
-                                  style: TextStyle(fontSize: 16, color: Colors.blue, decoration: TextDecoration.underline),
+                          const TableRow(
+                            children: [
+                              TableCell(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Lat',
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                  ),
                                 ),
                               ),
-                            ),
+                              TableCell(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Long',
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Date&Time',
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Google Maps',
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          for (final doc in lastFiveDocuments)
+                            TableRow(
+                              children: [
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(doc['latitude'].toString(), style: TextStyle(fontSize: 16)),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(doc['longitude'].toString(), style: TextStyle(fontSize: 16)),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(doc['timestamp'].toDate().toString(), style: TextStyle(fontSize: 16)),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: InkWell(
+                                      onTap: () => _openGoogleMaps(doc['latitude'], doc['longitude']),
+                                      child: const Text(
+                                        'Open',
+                                        style: TextStyle(fontSize: 16, color: Colors.blue, decoration: TextDecoration.underline),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                         ],
-                      ),
-                  ],
-                );
-              },
+                    );
+                  },
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
       bottomNavigationBar: const BottomNavBar(),

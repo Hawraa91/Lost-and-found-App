@@ -46,10 +46,13 @@ class _FoundItemPageState extends State<FoundItem> {
         final user = FirebaseAuth.instance.currentUser;
 
         if (user != null) {
+          // Remove spaces from the item name
+          String itemNameWithoutSpaces = _itemNameController.text.replaceAll(' ', '');
+
           await FirebaseFirestore.instance.collection('found').add({
             'userId': user.uid,
             'itemTitle': _itemTitleController.text,
-            'itemName': _itemNameController.text,
+            'itemName': itemNameWithoutSpaces, // Save item name without spaces
             'itemFoundDate': _itemFoundDateController.text,
             'category': _categoryController.text,
             'description': _descriptionController.text,
@@ -122,7 +125,7 @@ class _FoundItemPageState extends State<FoundItem> {
                 context: context,
                 initialDate: DateTime.now(),
                 firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
+                lastDate: DateTime.now(),
               );
               if (picked != null) {
                 setState(() {

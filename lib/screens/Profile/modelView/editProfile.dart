@@ -34,7 +34,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         setState(() {
           _firstNameController.text = data?['firstName'] ?? '';
           _lastNameController.text = data?['lastName'] ?? '';
-          _emailController.text = data?['email'] ?? '';
           _phoneController.text = data?['phoneNumber'] ?? '';
           _addressController.text = data?['address'] ?? '';
         });
@@ -53,7 +52,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
           'firstName': _firstNameController.text,
           'lastName': _lastNameController.text,
-          'email': _emailController.text,
           'phoneNumber': _phoneController.text,
           'address': _addressController.text,
         });
@@ -97,7 +95,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
           children: [
             input('First Name', _firstNameController),
             input('Last Name', _lastNameController),
-            input('Email', _emailController),
             input('Phone Number', _phoneController),
             input('Address', _addressController),
             const SizedBox(height: 32.0),
@@ -127,7 +124,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _emailController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
     super.dispose();
