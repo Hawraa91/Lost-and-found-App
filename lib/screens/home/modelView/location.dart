@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -45,42 +44,25 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
       _handleLocationUpdate(position);
     });
   }
-//location updated every 15min
+
+  // Location updated every 3 minutes
   void _handleLocationUpdate(Position position) {
-    final currentTime = DateTime.now();
-    if (_lastLocationTimestamp == null || currentTime.difference(_lastLocationTimestamp!).inMinutes >= 15) {
-      if (_shouldRecordLocation(position)) {
-        _updateLastFiveLocations(position);
-        _lastLocationTimestamp = currentTime;
-      }
-    }
-  }
-
-  bool _shouldRecordLocation(Position newPosition) {
-    if (_lastFiveLocations.isEmpty) {
-      return true;
-    }
-
-    // Calculate the distance between the last recorded location and the new location
-    double distanceInMeters = Geolocator.distanceBetween(
-      _lastFiveLocations.last.latitude,
-      _lastFiveLocations.last.longitude,
-      newPosition.latitude,
-      newPosition.longitude,
-    );
-
-    // Record the location if the distance is greater than 100 meters
-    return distanceInMeters >= 100;
+    _updateLastFiveLocations(position);
   }
 
   void _updateLastFiveLocations(Position position) {
-    setState(() {
-      _lastFiveLocations.add(position);
-      if (_lastFiveLocations.length > 5) {
-        _lastFiveLocations.removeAt(0);
-      }
-      _saveLocationsToFirebase();
-    });
+    final currentTime = DateTime.now();
+    if (_lastLocationTimestamp == null &&
+        currentTime.difference(_lastLocationTimestamp!).inMinutes >= 4) {
+      setState(() {
+        _lastFiveLocations.add(position);
+        if (_lastFiveLocations.length > 5) {
+          _lastFiveLocations.removeAt(0);
+        }
+        _saveLocationsToFirebase();
+        _lastLocationTimestamp = currentTime; // Update the last recorded timestamp
+      });
+    }
   }
 
   Future<void> _saveLocationsToFirebase() async {
@@ -149,90 +131,90 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                     final lastFiveDocuments = documents.take(5).toList();
 
                     return Table(
-                        border: TableBorder.all(),
-                        columnWidths: const {
-                          0: FlexColumnWidth(2),
-                          1: FlexColumnWidth(2),
-                          2: FlexColumnWidth(4),
-                          3: FlexColumnWidth(2),
-                        },
-                        children: [
-                          const TableRow(
+                      border: TableBorder.all(),
+                      columnWidths: const {
+                        0: FlexColumnWidth(2),
+                        1: FlexColumnWidth(2),
+                        2: FlexColumnWidth(4),
+                        3: FlexColumnWidth(2),
+                      },
+                      children: [
+                        const TableRow(
+                          children: [
+                            TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Lat',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Long',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Date&Time',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Google Maps',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        for (final doc in lastFiveDocuments)
+                          TableRow(
                             children: [
                               TableCell(
                                 child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Lat',
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                                  ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(doc['latitude'].toString(), style: TextStyle(fontSize: 16)),
                                 ),
                               ),
                               TableCell(
                                 child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Long',
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                                  ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(doc['longitude'].toString(), style: TextStyle(fontSize: 16)),
                                 ),
                               ),
                               TableCell(
                                 child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Date&Time',
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                                  ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(doc['timestamp'].toDate().toString(), style: TextStyle(fontSize: 16)),
                                 ),
                               ),
                               TableCell(
                                 child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Google Maps',
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () => _openGoogleMaps(doc['latitude'], doc['longitude']),
+                                    child: const Text(
+                                      'Open',
+                                      style: TextStyle(fontSize: 16, color: Colors.blue, decoration: TextDecoration.underline),
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          for (final doc in lastFiveDocuments)
-                            TableRow(
-                              children: [
-                                TableCell(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(doc['latitude'].toString(), style: TextStyle(fontSize: 16)),
-                                  ),
-                                ),
-                                TableCell(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(doc['longitude'].toString(), style: TextStyle(fontSize: 16)),
-                                  ),
-                                ),
-                                TableCell(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(doc['timestamp'].toDate().toString(), style: TextStyle(fontSize: 16)),
-                                  ),
-                                ),
-                                TableCell(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: InkWell(
-                                      onTap: () => _openGoogleMaps(doc['latitude'], doc['longitude']),
-                                      child: const Text(
-                                        'Open',
-                                        style: TextStyle(fontSize: 16, color: Colors.blue, decoration: TextDecoration.underline),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ],
+                      ],
                     );
                   },
                 ),
