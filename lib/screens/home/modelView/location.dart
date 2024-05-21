@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:url_launcher/url_launcher.dart'; // Import the url_launcher package
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../components/bottomNavBar.dart';
 
@@ -13,6 +14,7 @@ class LocationTrackerPage extends StatefulWidget {
 
 class _LocationTrackerPageState extends State<LocationTrackerPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
   List<Position> _lastFiveLocations = [];
   StreamSubscription<Position>? _positionStream;
   DateTime? _lastLocationTimestamp;
@@ -31,21 +33,17 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
   }
 
   Future<void> _initLocationTracking() async {
-    // Request permission to access the user's location
     LocationPermission permission = await Geolocator.requestPermission();
 
     if (permission == LocationPermission.denied) {
-      // Handle the case where the user denies location permission
       return;
     }
 
-    // Listen for location updates
     _positionStream = Geolocator.getPositionStream().listen((Position position) {
       _handleLocationUpdate(position);
     });
   }
 
-  // Location updated every 3 minutes
   void _handleLocationUpdate(Position position) {
     _updateLastFiveLocations(position);
   }
@@ -60,17 +58,19 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
           _lastFiveLocations.removeAt(0);
         }
         _saveLocationsToFirebase();
-        _lastLocationTimestamp = currentTime; // Update the last recorded timestamp
+        _lastLocationTimestamp = currentTime;
       });
     }
   }
 
   Future<void> _saveLocationsToFirebase() async {
     for (Position position in _lastFiveLocations) {
+      final dateString = DateTime.now().toString(); // Convert DateTime to string
       await _firestore.collection('locations').add({
+        'userId': currentUserId,
         'latitude': position.latitude,
         'longitude': position.longitude,
-        'timestamp': FieldValue.serverTimestamp(),
+        'timestamp': dateString,
       });
     }
   }
@@ -80,7 +80,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
       final tenMinutesAgo = DateTime.now().subtract(Duration(minutes: 30));
       final expiredLocations = await _firestore
           .collection('locations')
-          .where('timestamp', isLessThan: tenMinutesAgo)
+          .where('timestamp', isLessThan: tenMinutesAgo.toString())
           .get();
 
       for (final doc in expiredLocations.docs) {
@@ -120,15 +120,16 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                 StreamBuilder<QuerySnapshot>(
                   stream: _firestore
                       .collection('locations')
-                      .where('timestamp', isGreaterThan: DateTime.now().subtract(Duration(minutes: 10)))
+                      .where('userId', isEqualTo: currentUserId)
+                      .orderBy('timestamp', descending: true)
+                      .limit(5)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return const CircularProgressIndicator();
                     }
 
-                    final documents = snapshot.data!.docs.reversed.toList();
-                    final lastFiveDocuments = documents.take(5).toList();
+                    final documents = snapshot.data!.docs;
 
                     return Table(
                       border: TableBorder.all(),
@@ -179,7 +180,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                             ),
                           ],
                         ),
-                        for (final doc in lastFiveDocuments)
+                        for (final doc in documents)
                           TableRow(
                             children: [
                               TableCell(
@@ -197,7 +198,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(doc['timestamp'].toDate().toString(), style: TextStyle(fontSize: 16)),
+                                  child: Text(doc['timestamp'].toString(), style: TextStyle(fontSize: 16)),
                                 ),
                               ),
                               TableCell(
