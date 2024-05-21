@@ -39,11 +39,9 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
       return;
     }
 
-    // Add a delay before starting to listen for location updates
-    await Future.delayed(Duration(minutes: 3), () {
-      _positionStream = Geolocator.getPositionStream().listen((Position position) {
-        _handleLocationUpdate(position);
-      });
+    // Listen for location updates
+    _positionStream = Geolocator.getPositionStream().listen((Position position) {
+      _handleLocationUpdate(position);
     });
   }
 
@@ -54,7 +52,7 @@ class _LocationTrackerPageState extends State<LocationTrackerPage> {
 
   void _updateLastFiveLocations(Position position) {
     final currentTime = DateTime.now();
-    if (_lastLocationTimestamp == null ||
+    if (_lastLocationTimestamp == null &&
         currentTime.difference(_lastLocationTimestamp!).inMinutes >= 4) {
       setState(() {
         _lastFiveLocations.add(position);
