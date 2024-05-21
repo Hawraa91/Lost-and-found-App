@@ -31,9 +31,8 @@ class _LostItemState extends State<LostItem> {
   final TextEditingController _itemLostDateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _locationFoundController =
-  TextEditingController(); // Location found controller
-  bool isPublic = true; // Hold the toggle state
+  final TextEditingController _locationFoundController = TextEditingController(); // Location found controller
+  bool isPublic = false; // Initialize to false
   String imageUrl = '';
 
   @override
@@ -286,7 +285,6 @@ class _LostItemState extends State<LostItem> {
     );
   }
 
-
   Widget _buildButton(String label, Function() onPressed) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -322,27 +320,15 @@ class _CheckBoxWidgetState extends State<CheckBoxWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Expanded(
-          child: Text(
-            'Make your post public?',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-        ),
-        Checkbox(
-          value: isChecked,
-          onChanged: (bool? value) {
-            setState(() {
-              isChecked = value ?? false;
-            });
-            widget.onCheckedChanged(isChecked);
-          },
-        ),
-      ],
+    return CheckboxListTile(
+      title: const Text('Make this post public'),
+      value: isChecked,
+      onChanged: (bool? value) {
+        setState(() {
+          isChecked = value ?? false;
+        });
+        widget.onCheckedChanged(isChecked);
+      },
     );
   }
 }
