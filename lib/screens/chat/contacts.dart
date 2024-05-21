@@ -15,30 +15,36 @@ class ContactsPage extends StatelessWidget {
         title: const Text('Chat Messages'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        //taking the data from the collection
+        // Fetch users whose role is not 'admin'
         stream: FirebaseFirestore.instance
             .collection("users")
-            .where(FieldPath.documentId, isNotEqualTo: currentUserID)
+            .where("role", isNotEqualTo: "admin")
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            //the loading icon
+            // Show loading icon
             return const CircularProgressIndicator();
-          }
-          else {
-            if (kDebugMode) {
-              print('it came here');
-            }
-            // Return the ListView.builder with your data
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length, // Use the length of documents in the snapshot
-              itemBuilder: (context, index) {
+          } else {
+            // Filter out the current user
+            final filteredDocs = snapshot.data!.docs.where((doc) => doc.id != currentUserID).toList();
 
-                // Access each document using snapshot.data!.docs[index]
-                final document = snapshot.data!.docs[index];
+            if (filteredDocs.isEmpty) {
+              return const Center(child: Text('No contacts available'));
+            }
+
+            if (kDebugMode) {
+              print('Filtered documents: ${filteredDocs.length}');
+            }
+
+            // Return the ListView.builder with filtered data
+            return ListView.builder(
+              itemCount: filteredDocs.length,
+              itemBuilder: (context, index) {
+                // Access each document using filteredDocs[index]
+                final document = filteredDocs[index];
                 // Access firstName and lastName fields from the document's data
                 final firstName = document['firstName'];
                 final lastName = document['lastName'];
