@@ -51,7 +51,7 @@ class _EditReportPageState extends State<EditReportPage> {
       context: context,
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2030),
+      lastDate: DateTime.now(),
     );
 
     if (picked != null && picked != _selectedDate) {
@@ -75,7 +75,7 @@ class _EditReportPageState extends State<EditReportPage> {
         'itemTitle': title,
         'description': description,
         'category': category,
-        'itemLostDate': _selectedDate.toIso8601String(),
+        'itemFoundDate': _selectedDate.toIso8601String(),
       });
 
       ScaffoldMessenger.of(context).showSnackBar(

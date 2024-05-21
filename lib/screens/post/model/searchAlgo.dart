@@ -10,7 +10,7 @@ class SearchResults {
 
 /* i grab the lost items with the current users ID, then i save them in variables,
 * then i get all the docs that are active
-* The i do the matching */
+* Then i do the matching */
 Future<List<String>> searchLostItemsForCurrentUser(String currentUserID) async {
   //store the matched in this list
   List<String> matchedTitles = [];
