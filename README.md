@@ -1,6 +1,7 @@
 # lost_and_found
 
-lost and found application where the user is able to report their lost or found items and the system will do the matching for you. Connected to firebase.
+lost and found application where the user is able to report their lost or found items and the system will do the matching for you. Connected to firebase. 
+For the firebase ensure to create a project and download your google-services.json file , and fix the code in firebaseoptions.dart file.
 
 ![home page](https://github.com/Hawraa91/Lost-and-found-App/assets/132151739/e061a5f9-60c7-4e79-90a5-2532aaf1caba)
 ![Screenshot_20240501_224659](https://github.com/Hawraa91/Lost-and-found-App/assets/132151739/8d3f39d3-044c-42ac-8077-f0e145407301)
