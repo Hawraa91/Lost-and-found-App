@@ -30,9 +30,9 @@ Future<List<String>> searchLostItemsForCurrentUser(String currentUserID) async {
       //String? lostTitle = (lostDoc.data() as Map<String, dynamic>?)?['itemTitle'];
       String? lostName = (lostDoc.data() as Map<String, dynamic>?)?['itemName'];
       String? lostName2 = lostName?.toLowerCase();
-      if (kDebugMode) {
-        print('object in lower case --> $lostName2');
-      }
+      // if (kDebugMode) {
+      //   print('object in lower case --> $lostName2');
+      // }
       String? lostCateg = (lostDoc.data() as Map<String, dynamic>?)?['category'];
       bool? lostResolved = (lostDoc.data() as Map<String, dynamic>?)?['isResolved'];
       String? lostLocation = (lostDoc.data() as Map<String, dynamic>?)?['locationFound'];
@@ -53,10 +53,10 @@ Future<List<String>> searchLostItemsForCurrentUser(String currentUserID) async {
         String? lostCountry = lostLoc?.first.trim().toLowerCase();
         String? foundCountry = foundloc?.first.trim().toLowerCase();
 
-        if(kDebugMode){
-          print(lostCountry);
-          print(foundCountry);
-        }
+        // if(kDebugMode){
+        //   print(lostCountry);
+        //   print(foundCountry);
+        // }
 
         // Check if the titles of the lost and found items match (only if it was not resolved)
         if (lostResolved != true) {

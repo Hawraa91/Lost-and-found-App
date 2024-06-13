@@ -402,7 +402,7 @@ Widget buildMainScreen(BuildContext context, String currentUserID, String imageU
                             category: category,
                             date: date,
                             receiverUserID: receiverUserID,
-                              imageUrl: imageUrl,
+                            imageUrl: imageUrl,
                           )
                         ],
                       );
